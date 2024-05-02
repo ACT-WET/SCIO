@@ -148,6 +148,12 @@
 		BB6568E624215FDB00229999 /* SysLogTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6568E524215FDB00229999 /* SysLogTextViewController.swift */; };
 		BB8FD1BA2BCDA3E800D09321 /* WeplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8FD1B92BCDA3E800D09321 /* WeplayViewController.swift */; };
 		BB8FD1BC2BCDA3FE00D09321 /* weplay.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB8FD1BB2BCDA3FE00D09321 /* weplay.storyboard */; };
+		BBB411382BE03F5900B36E93 /* FogDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411372BE03F5900B36E93 /* FogDetailsViewController.swift */; };
+		BBB4113A2BE157E300B36E93 /* DCPowerDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411392BE157E300B36E93 /* DCPowerDetailViewController.swift */; };
+		BBB4113C2BE157F700B36E93 /* ShooterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4113B2BE157F700B36E93 /* ShooterDetailViewController.swift */; };
+		BBB4113E2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */; };
+		BBB411402BE18F4800B36E93 /* DCSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */; };
+		BBB411422BE2C1AC00B36E93 /* ShooterSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411412BE2C1AC00B36E93 /* ShooterSettingsViewController.swift */; };
 		BBCC80F8291583B200AF0683 /* FillerShowsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */; };
 		BBCC80F9291583B200AF0683 /* fillerShows.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBCC80F7291583B200AF0683 /* fillerShows.storyboard */; };
 		BBEB6E8626F11840003F23B4 /* saltfill.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBEB6E8326F11840003F23B4 /* saltfill.storyboard */; };
@@ -362,6 +368,12 @@
 		BB6568E524215FDB00229999 /* SysLogTextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SysLogTextViewController.swift; sourceTree = "<group>"; };
 		BB8FD1B92BCDA3E800D09321 /* WeplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeplayViewController.swift; sourceTree = "<group>"; };
 		BB8FD1BB2BCDA3FE00D09321 /* weplay.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = weplay.storyboard; sourceTree = "<group>"; };
+		BBB411372BE03F5900B36E93 /* FogDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FogDetailsViewController.swift; sourceTree = "<group>"; };
+		BBB411392BE157E300B36E93 /* DCPowerDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCPowerDetailViewController.swift; sourceTree = "<group>"; };
+		BBB4113B2BE157F700B36E93 /* ShooterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShooterDetailViewController.swift; sourceTree = "<group>"; };
+		BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCSettingsSelectViewController.swift; sourceTree = "<group>"; };
+		BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCSettingsViewController.swift; sourceTree = "<group>"; };
+		BBB411412BE2C1AC00B36E93 /* ShooterSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShooterSettingsViewController.swift; sourceTree = "<group>"; };
 		BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillerShowsViewController.swift; sourceTree = "<group>"; };
 		BBCC80F7291583B200AF0683 /* fillerShows.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = fillerShows.storyboard; sourceTree = "<group>"; };
 		BBEB6E8326F11840003F23B4 /* saltfill.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = saltfill.storyboard; sourceTree = "<group>"; };
@@ -553,6 +565,11 @@
 			children = (
 				9B725D79214775BD008886A2 /* PumpsSpecs.swift */,
 				9B725D78214775BC008886A2 /* pumps.storyboard */,
+				BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */,
+				BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */,
+				BBB411392BE157E300B36E93 /* DCPowerDetailViewController.swift */,
+				BBB4113B2BE157F700B36E93 /* ShooterDetailViewController.swift */,
+				BBB411412BE2C1AC00B36E93 /* ShooterSettingsViewController.swift */,
 				9B725D7A214775BD008886A2 /* PumpSettingsViewController.swift */,
 				9B725D7C214775BD008886A2 /* AutoPumpDetailViewController.swift */,
 				9B725D7B214775BD008886A2 /* PumpsViewController.swift */,
@@ -811,6 +828,7 @@
 				9BC042B32267C265001E2F49 /* fog.storyboard */,
 				9BC042B42267C265001E2F49 /* FogSpecs.swift */,
 				9BC042B52267C265001E2F49 /* FogViewController.swift */,
+				BBB411372BE03F5900B36E93 /* FogDetailsViewController.swift */,
 				9BC042B62267C265001E2F49 /* FogSettingsViewController.swift */,
 			);
 			name = Fog;
@@ -1132,6 +1150,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B5F3F2520DC5AB400D3CFDF /* Network+CoreDataProperties.swift in Sources */,
+				BBB4113A2BE157E300B36E93 /* DCPowerDetailViewController.swift in Sources */,
 				BB629E0E26E013670005D4CB /* ACTPlaylistViewController.m in Sources */,
 				BB629E0126E0126F0005D4CB /* ACTMoveDeleteShowPlaylistViewController.m in Sources */,
 				BB629DE426E012500005D4CB /* ShowlistSettingsViewController.swift in Sources */,
@@ -1146,6 +1165,7 @@
 				BB2479DC2710B3D700C94588 /* SaltPurgeSettingsViewController.swift in Sources */,
 				9B5F401C20DC5B1200D3CFDF /* SettingsViewController.swift in Sources */,
 				9B5F3F1E20DC5AB400D3CFDF /* Wind+CoreDataProperties.swift in Sources */,
+				BBB411402BE18F4800B36E93 /* DCSettingsViewController.swift in Sources */,
 				BB629DE526E012500005D4CB /* ACTPlaylistSettingsViewController.m in Sources */,
 				9B5F3F1B20DC5AB400D3CFDF /* PumpDetail+CoreDataProperties.swift in Sources */,
 				9B147509225E649A00D9E577 /* OzonePopupViewController.swift in Sources */,
@@ -1163,6 +1183,7 @@
 				9B5F3F2120DC5AB400D3CFDF /* Network+CoreDataClass.swift in Sources */,
 				9B5F3FAA20DC5AF400D3CFDF /* ACTUISafeNavigationController.m in Sources */,
 				9B5F3F7620DC5AD900D3CFDF /* UIButton+AFNetworking.m in Sources */,
+				BBB411422BE2C1AC00B36E93 /* ShooterSettingsViewController.swift in Sources */,
 				BB629DFF26E0126F0005D4CB /* ACTAddShowPlaylistViewController.m in Sources */,
 				9B5F3F8F20DC5AD900D3CFDF /* RDVCalendarView.m in Sources */,
 				9B5F3F7B20DC5AD900D3CFDF /* AFURLConnectionOperation.m in Sources */,
@@ -1174,12 +1195,14 @@
 				9B4E1080218265B700604006 /* ORPViewController.swift in Sources */,
 				9B5F3F9020DC5AD900D3CFDF /* RDVCalendarViewController.m in Sources */,
 				9B4E107F218265B700604006 /* PHViewController.swift in Sources */,
+				BBB4113E2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift in Sources */,
 				9B5F401920DC5B1200D3CFDF /* HomeViewController.swift in Sources */,
 				9BB3349521482B350004FFBC /* WeekSchedulerSpecs.swift in Sources */,
 				9BC042B82267C265001E2F49 /* FogSpecs.swift in Sources */,
 				9B5F3F7420DC5AD900D3CFDF /* AFNetworkActivityIndicatorManager.m in Sources */,
 				9B5F403A20DC5B1200D3CFDF /* OperationManual.swift in Sources */,
 				9B5F3F8920DC5AD900D3CFDF /* modbus-rtu.c in Sources */,
+				BBB4113C2BE157F700B36E93 /* ShooterDetailViewController.swift in Sources */,
 				9B5F3F8420DC5AD900D3CFDF /* modbus.c in Sources */,
 				9B725D7F214775BD008886A2 /* PumpSettingsViewController.swift in Sources */,
 				9B5F3F8520DC5AD900D3CFDF /* modbus-tcp.c in Sources */,
@@ -1245,6 +1268,7 @@
 				9B5F3FAD20DC5AF400D3CFDF /* ShowManager.swift in Sources */,
 				BBF9B8D823F4B4F800DF67A1 /* SystemStatusViewController.swift in Sources */,
 				9B5F3F1A20DC5AB400D3CFDF /* Pump+CoreDataProperties.swift in Sources */,
+				BBB411382BE03F5900B36E93 /* FogDetailsViewController.swift in Sources */,
 				BB6568E624215FDB00229999 /* SysLogTextViewController.swift in Sources */,
 				DB46ABAA23B1AFE8003A4388 /* PumpSchedulerViewController.swift in Sources */,
 				9B5F3F0B20DC5AA000D3CFDF /* iPadControls.xcdatamodeld in Sources */,
@@ -1322,7 +1346,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1378,7 +1402,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -1398,7 +1422,7 @@
 				DEVELOPMENT_TEAM = 754D679GZJ;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 754D679GZJ;
 				INFOPLIST_FILE = "iPadControls/Resources/iPadControls-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = WET.iPadControls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1420,7 +1444,7 @@
 				DEVELOPMENT_TEAM = 754D679GZJ;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 754D679GZJ;
 				INFOPLIST_FILE = "iPadControls/Resources/iPadControls-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = WET.iPadControls;
 				PRODUCT_NAME = "$(TARGET_NAME)";

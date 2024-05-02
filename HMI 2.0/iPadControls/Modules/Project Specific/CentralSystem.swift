@@ -410,34 +410,49 @@ public class CentralSystem: NSObject, SimplePingDelegate{
             
             self.failedToPingserver = false
             
-            if let latency = timeElapsed{
-//                print("Server pinged succesfully")
+             if let latency = timeElapsed {
+//                print("PLC pinged successfully")
                 self.logger.logData(data:"CENTRAL SYSTEM: SERVER PINING SUCCESS -> \(latency.description)")
+                //After pinging the plc, you wanted to make sure that you are actually getting a data. If pinging fails then there's something wrong with the plc itself, else you are just waiting for the plc to give you a data. NOTE: any register number will do.
                 
-                //Same as pinging the plc.. For the server, you wanted to make sure that you are actually getting a data. If pinging fails then there's something wrong with the server itself, else you are just waiting for the server to give you a data. NOTE: any path number will do.
-                
-                self.httpComm.httpGetResponseFromPath(url: LIGHTS_SERVER_PATH){ (response) in
-                    
-                    guard response != nil else {
-                        self.serverConnectionState = CONNECTION_STATE_POOR_CONNECTION
-                        UserDefaults.standard.set("poorServer", forKey: "ServerConnectionStatus")
-                        return
-                    }
-                    
-                    self.serverConnectionState = CONNECTION_STATE_CONNECTED
-                    
-                    UserDefaults.standard.set("serverConnected", forKey: "ServerConnectionStatus")
-                    self.getErrorLogFromServer()
-                    self.getServerTime()
-                }
-                
-                
+                self.serverConnectionState = CONNECTION_STATE_CONNECTED
+                // NOTE: Plain ping can only ping one address at a time. So, when PLC is already connected -- ping the server next or vice versa.
+
+                UserDefaults.standard.set("serverConnected", forKey: "ServerConnectionStatus")
                 if self.numberOfFailedServerConnections > 0 {
                     self.numberOfFailedServerConnections = 0
 //                    print("RESETTING SERVER FAILED COUNTER TO \(self.numberOfFailedPlcConnections)")
                 }
-                
             }
+            
+//            if let latency = timeElapsed{
+////                print("Server pinged succesfully")
+//                self.logger.logData(data:"CENTRAL SYSTEM: SERVER PINING SUCCESS -> \(latency.description)")
+//
+//                //Same as pinging the plc.. For the server, you wanted to make sure that you are actually getting a data. If pinging fails then there's something wrong with the server itself, else you are just waiting for the server to give you a data. NOTE: any path number will do.
+//
+//                self.httpComm.httpGetResponseFromPath(url: LIGHTS_SERVER_PATH){ (response) in
+//
+//                    guard response != nil else {
+//                        self.serverConnectionState = CONNECTION_STATE_POOR_CONNECTION
+//                        UserDefaults.standard.set("poorServer", forKey: "ServerConnectionStatus")
+//                        return
+//                    }
+//
+//                    self.serverConnectionState = CONNECTION_STATE_CONNECTED
+//
+//                    UserDefaults.standard.set("serverConnected", forKey: "ServerConnectionStatus")
+//                    self.getErrorLogFromServer()
+//                    self.getServerTime()
+//                }
+//
+//
+//                if self.numberOfFailedServerConnections > 0 {
+//                    self.numberOfFailedServerConnections = 0
+////                    print("RESETTING SERVER FAILED COUNTER TO \(self.numberOfFailedPlcConnections)")
+//                }
+//
+//            }
             
             if error != nil {
                 self.numberOfFailedServerConnections += 1

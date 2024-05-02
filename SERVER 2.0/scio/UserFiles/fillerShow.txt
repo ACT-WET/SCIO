@@ -1,4 +1,13 @@
 {
   "FillerShow_Number" : 1,
-  "FillerShow_Enable" : 0
+  "FillerShow_Enable" : 0,
+  "WFillerShow_Enable" : 1,
+  "WFillerShow_Number" : 4,
+  "Sunday" : 1,
+  "Monday" : 0,
+  "Tuesday" : 0,
+  "Wednesday" : 0,
+  "Thursday" : 0,
+  "Friday" : 0,
+  "Saturday" : 1
 }

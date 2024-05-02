@@ -147,7 +147,7 @@ filtrationPump_Status = 1; //1 - pump fault, 0 - good
 //plc_ip = 10.27.173.230 // Change these ip address when you deploy at site
 //spm_ip = 10.27.173.201
 
-plc_client = jsModbus.createTCPClient(502,'10.0.4.231',function(err){
+plc_client = jsModbus.createTCPClient(502,'10.0.4.230',function(err){
     if(err){
         watchDog.eventLog('PLC Modbus Connection Failed');
         PLCConnected=false;
@@ -186,6 +186,10 @@ for(var f=1;f<5;f++){
 }
 weplay=riskyParse(fs.readFileSync(__dirname+'/UserFiles/weplay.txt','utf-8'),'weplay','weplayBkp',1);
 filler=riskyParse(fs.readFileSync(__dirname+'/UserFiles/filler.txt','utf-8'),'filler','fillerBkp',1);
+
+wweplay=riskyParse(fs.readFileSync(__dirname+'/UserFiles/wweplay.txt','utf-8'),'wweplay','wweplayBkp',1);
+wfiller=riskyParse(fs.readFileSync(__dirname+'/UserFiles/wfiller.txt','utf-8'),'wfiller','wfillerBkp',1);
+
 timetable=riskyParse(fs.readFileSync(__dirname+'/UserFiles/timetable.txt','utf-8'),'timetable','timetableBkp',1);
 lights=riskyParse(fs.readFileSync(__dirname+'/UserFiles/lights.txt','utf-8'),'lights','lightsBkp',1);
 filterSch=riskyParse(fs.readFileSync(__dirname+'/UserFiles/filterSch.txt','utf-8'),'filterSch','filterSchBkp',1);
@@ -458,6 +462,28 @@ function onRequest(request, response){
                 response.writeHead(200,{"Content-Type": "text"});
                 setFiller(query);
                 response.end(JSON.stringify(filler));
+            
+            }else if (path === '/readWWeplay'){
+            
+                response.writeHead(200,{"Content-Type": "text"});
+                response.end(JSON.stringify(wweplay));
+            
+            }else if (path === '/writeWWeplay'){
+            
+                response.writeHead(200,{"Content-Type": "text"});
+                setWWeplay(query);
+                response.end(JSON.stringify(wweplay));
+            
+            }else if (path === '/readWFillerData'){
+            
+                response.writeHead(200,{"Content-Type": "text"});
+                response.end(JSON.stringify(wfiller));
+            
+            }else if (path === '/writeWFillerData'){
+            
+                response.writeHead(200,{"Content-Type": "text"});
+                setWFiller(query);
+                response.end(JSON.stringify(wfiller));
             
             }else if (path === '/readLights'){
             
@@ -1194,6 +1220,35 @@ function setFiller(query){
     }
     else{
         watchDog.eventLog('Filler. Bad data. No donut for you.'); 
+    }
+}
+function setWWeplay(query){
+
+    query = decodeURIComponent(query);
+    var buf = riskyParse(query,'setWWeplay');
+
+    if((buf !== 0)) {
+        fs.writeFileSync(__dirname+'/UserFiles/wweplay.txt',query,'utf-8');
+        fs.writeFileSync(__dirname+'/UserFiles/wweplayBkp.txt',query,'utf-8');
+        wweplay = buf;
+    }
+    else{
+        watchDog.eventLog('WWeplay. Bad data. No donut for you.');
+    }
+}
+
+function setWFiller(query){
+
+    query = decodeURIComponent(query);
+    var buf = riskyParse(query,'setWFiller');
+
+    if((buf !== 0)) {
+        fs.writeFileSync(__dirname+'/UserFiles/wfiller.txt',query,'utf-8');
+        fs.writeFileSync(__dirname+'/UserFiles/wfillerBkp.txt',query,'utf-8');
+        wfiller = buf;
+    }
+    else{
+        watchDog.eventLog('WFiller. Bad data. No donut for you.'); 
     }
 }
 function setPLC(query){

@@ -10,18 +10,38 @@ import UIKit
 
 class PumpSettingsViewController: UIViewController{
 
-    
-    @IBOutlet weak var rrlFdelayTimer: UITextField!
-    @IBOutlet weak var maxFrequency: UITextField!
-    @IBOutlet weak var maxTemperature: UITextField!
-    @IBOutlet weak var midTemperature: UITextField!
-    @IBOutlet weak var maxVoltage: UITextField!
-    @IBOutlet weak var minVoltage: UITextField!
-    @IBOutlet weak var maxCurrent: UITextField!
-    
-    @IBOutlet weak var pressDelay: UITextField!
     @IBOutlet weak var noConnectionView: UIView!
     @IBOutlet weak var noConnectionLbl: UILabel!
+    
+    @IBOutlet weak var psll1003TimerTxt: UITextField!
+    @IBOutlet weak var psll1004TimerTxt: UITextField!
+    @IBOutlet weak var psll1005TimerTxt: UITextField!
+    @IBOutlet weak var psll1006TimerTxt: UITextField!
+    @IBOutlet weak var psll10034WarningTimerTxt: UITextField!
+    @IBOutlet weak var psll10056WarningTimerTxt: UITextField!
+    
+    @IBOutlet weak var vfd103TimerTxt: UITextField!
+    @IBOutlet weak var vfd104TimerTxt: UITextField!
+    @IBOutlet weak var vfd105TimerTxt: UITextField!
+    @IBOutlet weak var vfd106TimerTxt: UITextField!
+    @IBOutlet weak var vfd107TimerTxt: UITextField!
+    @IBOutlet weak var vfd108TimerTxt: UITextField!
+    @IBOutlet weak var vfd109TimerTxt: UITextField!
+    
+    @IBOutlet weak var blosmaxFreq: UILabel!
+    @IBOutlet weak var blosminFreq: UILabel!
+    @IBOutlet weak var blosmaxVolt: UILabel!
+    @IBOutlet weak var blosminVolt: UILabel!
+    @IBOutlet weak var blosmaxCurr: UILabel!
+    @IBOutlet weak var blosminCurr: UILabel!
+    
+    @IBOutlet weak var plumemaxFreq: UILabel!
+    @IBOutlet weak var plumeminFreq: UILabel!
+    @IBOutlet weak var plumemaxVolt: UILabel!
+    @IBOutlet weak var plumeminVolt: UILabel!
+    @IBOutlet weak var plumemaxCurr: UILabel!
+    @IBOutlet weak var plumeminCurr: UILabel!
+    
     private var centralSystem = CentralSystem()
     //Object References
     let logger = Logger()
@@ -48,13 +68,6 @@ class PumpSettingsViewController: UIViewController{
         centralSystem.getNetworkParameters()
         centralSystem.connect()
         CENTRAL_SYSTEM = centralSystem
-        var pumpDetail = PumpDetail.query(["pumpNumber":1]) as! [PumpDetail]
-        
-        guard pumpDetail.count != 0 else{
-            return
-        }
-        
-        pumpDetails = pumpDetail[0] as PumpDetail
         
         self.getCurrentSetpoints()
         self.constructSaveButton()
@@ -71,35 +84,122 @@ class PumpSettingsViewController: UIViewController{
     //MARK: - Get Current Setpoints
     
     private func getCurrentSetpoints(){
-         
-       guard let maxFreq = UserDefaults.standard.object(forKey: "defaultmaxFreq") as? Float else { return }
-       guard let maxCurrent = UserDefaults.standard.object(forKey: "defaultmaxCurrent") as? Float else { return }
-       guard let maxVltg = UserDefaults.standard.object(forKey: "defaultmaxVoltage") as? Float else { return }
-       guard let minVltg = UserDefaults.standard.object(forKey: "defaultminVoltage") as? Float else { return }
-       guard let maxTemp = UserDefaults.standard.object(forKey: "defaultmaxTemp") as? Float else { return }
-       guard let midTemp = UserDefaults.standard.object(forKey: "defaultmidTemp") as? Float else { return }
-       
-       self.maxFrequency.text = "\(maxFreq)"
-       self.maxCurrent.text = "\(maxCurrent)"
-       self.maxVoltage.text = "\(maxVltg)"
-       self.minVoltage.text = "\(minVltg)"
-       self.maxTemperature.text = "\(maxTemp)"
-       self.midTemperature.text = "\(midTemp)"
+        CENTRAL_SYSTEM?.readRegister(length: Int32(BLOSSOM_PLUME_MAX_SP.count) , startingRegister: Int32(BLOSSOM_PLUME_MAX_SP.startAddr), completion: { (sucess, response) in
+            
+            //Check points to make sure the PLC Call was successful
+            
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            
+            self.blosminFreq.text = "\(Int(truncating: response![0] as! NSNumber))"
+            self.blosmaxFreq.text = "\(Int(truncating: response![1] as! NSNumber))"
+            self.blosminVolt.text = "\(Int(truncating: response![2] as! NSNumber))"
+            self.blosmaxVolt.text = "\(Int(truncating: response![3] as! NSNumber))"
+            self.blosminCurr.text = "\(Int(truncating: response![4] as! NSNumber))"
+            self.blosmaxCurr.text = "\(Int(truncating: response![5] as! NSNumber))"
+            
+            self.plumeminFreq.text = "\(Int(truncating: response![6] as! NSNumber))"
+            self.plumemaxFreq.text = "\(Int(truncating: response![7] as! NSNumber))"
+            self.plumeminVolt.text = "\(Int(truncating: response![8] as! NSNumber))"
+            self.plumemaxVolt.text = "\(Int(truncating: response![9] as! NSNumber))"
+            self.plumeminCurr.text = "\(Int(truncating: response![10] as! NSNumber))"
+            self.plumemaxCurr.text = "\(Int(truncating: response![11] as! NSNumber))"
+        })
         
-        CENTRAL_SYSTEM?.readRegister(length: 1, startingRegister: Int32(PUMP_PRESSURE_DELAYTIMER), completion:{ (success, response) in
+        CENTRAL_SYSTEM?.readRegister(length: Int32(BLOSSOM_DELAYTIMERS.count) , startingRegister: Int32(BLOSSOM_DELAYTIMERS.startAddr), completion: { (sucess, response) in
             
-            guard success == true else { return }
+            //Check points to make sure the PLC Call was successful
             
-            let pressValue = Int(truncating: response![0] as! NSNumber)
-            self.pressDelay.text = "\(pressValue)"
-            CENTRAL_SYSTEM?.readRegister(length: 1, startingRegister: Int32(STRAINER_PRESSURE_DELAYTIMER), completion:{ (success, response) in
-                
-                guard success == true else { return }
-                
-                let lFValue = Int(truncating: response![0] as! NSNumber)
-                self.rrlFdelayTimer.text = "\(lFValue)"
-                
-            })
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            
+            self.psll10034WarningTimerTxt.text = "\(Int(truncating: response![0] as! NSNumber))"
+            self.psll10056WarningTimerTxt.text = "\(Int(truncating: response![1] as! NSNumber))"
+            self.psll1003TimerTxt.text = "\(Int(truncating: response![3] as! NSNumber))"
+            self.psll1004TimerTxt.text = "\(Int(truncating: response![4] as! NSNumber))"
+            self.psll1005TimerTxt.text = "\(Int(truncating: response![5] as! NSNumber))"
+            self.psll1006TimerTxt.text = "\(Int(truncating: response![6] as! NSNumber))"
+        })
+        CENTRAL_SYSTEM?.readRegister(length: 1 , startingRegister: Int32(VFD103_CFG_DELAYTIMER), completion: { (sucess, response) in
+            
+            //Check points to make sure the PLC Call was successful
+            
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            
+            self.vfd103TimerTxt.text = "\(Int(truncating: response![0] as! NSNumber))"
+        })
+        CENTRAL_SYSTEM?.readRegister(length: 1 , startingRegister: Int32(VFD104_CFG_DELAYTIMER), completion: { (sucess, response) in
+            
+            //Check points to make sure the PLC Call was successful
+            
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            
+            self.vfd104TimerTxt.text = "\(Int(truncating: response![0] as! NSNumber))"
+        })
+        CENTRAL_SYSTEM?.readRegister(length: 1 , startingRegister: Int32(VFD105_CFG_DELAYTIMER), completion: { (sucess, response) in
+            
+            //Check points to make sure the PLC Call was successful
+            
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            
+            self.vfd105TimerTxt.text = "\(Int(truncating: response![0] as! NSNumber))"
+        })
+        CENTRAL_SYSTEM?.readRegister(length: 1 , startingRegister: Int32(VFD106_CFG_DELAYTIMER), completion: { (sucess, response) in
+            
+            //Check points to make sure the PLC Call was successful
+            
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            
+            self.vfd106TimerTxt.text = "\(Int(truncating: response![0] as! NSNumber))"
+        })
+        CENTRAL_SYSTEM?.readRegister(length: 1 , startingRegister: Int32(VFD107_CFG_DELAYTIMER), completion: { (sucess, response) in
+            
+            //Check points to make sure the PLC Call was successful
+            
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            
+            self.vfd107TimerTxt.text = "\(Int(truncating: response![0] as! NSNumber))"
+        })
+        CENTRAL_SYSTEM?.readRegister(length: 1 , startingRegister: Int32(VFD108_CFG_DELAYTIMER), completion: { (sucess, response) in
+            
+            //Check points to make sure the PLC Call was successful
+            
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            
+            self.vfd108TimerTxt.text = "\(Int(truncating: response![0] as! NSNumber))"
+        })
+        CENTRAL_SYSTEM?.readRegister(length: 1 , startingRegister: Int32(VFD109_CFG_DELAYTIMER), completion: { (sucess, response) in
+            
+            //Check points to make sure the PLC Call was successful
+            
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            
+            self.vfd109TimerTxt.text = "\(Int(truncating: response![0] as! NSNumber))"
         })
         
     }
@@ -138,42 +238,100 @@ class PumpSettingsViewController: UIViewController{
     
     @objc private func savePumpSettings(){
        
-          //MAX_FREQUENCY_SP = 2000
-          //MAX_TEMPERATURE_SP = 2002
-          //MID_TEMPERATURE_SP = 2004
-          //MAX_VOLTAGE_SP = 2008
-          //MIN_VOLTAGE_SP = 2010
-          //MAX_CURRENT_SP = 2012
-
-          let maxFrequency = Float(self.maxFrequency.text!)
-          let maxTemperature = Float(self.maxTemperature.text!)
-          let midTemperature = Float(self.midTemperature.text!)
-          let maxVoltage = Float(self.maxVoltage.text!)
-          let minVoltage = Float(self.minVoltage.text!)
-          let maxCurrent = Float(self.maxCurrent.text!)
-          let pressure = Int(self.pressDelay.text!)
-          let lf = Int(self.rrlFdelayTimer.text!)
-
-          guard maxFrequency != nil && maxTemperature != nil && midTemperature != nil && maxVoltage != nil && minVoltage != nil && maxCurrent != nil && pressure != nil && lf != nil else{
-              self.logger.logData(data: "INVALID OR NO INPUT IN ONE OR MORE SETPOINT FIELDS")
-              return
+          if let warning1Val = psll10034WarningTimerTxt.text, !warning1Val.isEmpty,
+             let warning1Value = Int(warning1Val) {
+              if warning1Value >= 0 && warning1Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: BLOSSOM_PSL10034_WARNING_TIMER, value: warning1Value)
+              }
+          }
+        
+          if let warning2Val = psll10056WarningTimerTxt.text, !warning2Val.isEmpty,
+             let warning2Value = Int(warning2Val) {
+              if warning2Value >= 0 && warning2Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: BLOSSOM_PSL10056_WARNING_TIMER, value: warning2Value)
+              }
           }
           
-          CENTRAL_SYSTEM!.writeRealValue(register: MAX_FREQUENCY_SP, value: maxFrequency!)
-          CENTRAL_SYSTEM!.writeRealValue(register: MAX_TEMPERATURE_SP, value: maxTemperature!)
-          CENTRAL_SYSTEM!.writeRealValue(register: MID_TEMPERATURE_SP, value: midTemperature!)
-          CENTRAL_SYSTEM!.writeRealValue(register: MAX_VOLTAGE_SP, value: maxVoltage!)
-          CENTRAL_SYSTEM!.writeRealValue(register: MIN_VOLTAGE_SP, value: minVoltage!)
-          CENTRAL_SYSTEM!.writeRealValue(register: MAX_CURRENT_SP, value: maxCurrent!)
-          CENTRAL_SYSTEM!.writeRegister(register: PUMP_PRESSURE_DELAYTIMER, value: pressure!)
-          CENTRAL_SYSTEM!.writeRegister(register: STRAINER_PRESSURE_DELAYTIMER, value: lf!)
-          UserDefaults.standard.set(maxCurrent!, forKey: "defaultmaxCurrent")
-          UserDefaults.standard.set(maxFrequency!, forKey: "defaultmaxFreq")
-          UserDefaults.standard.set(maxTemperature!, forKey: "defaultmaxTemp")
-          UserDefaults.standard.set(midTemperature!, forKey: "defaultmidTemp")
-          UserDefaults.standard.set(maxVoltage!, forKey: "defaultmaxVoltage")
-          UserDefaults.standard.set(minVoltage!, forKey: "defaultminVoltage")
-          UserDefaults.standard.synchronize()
+          if let fault1Val = psll1003TimerTxt.text, !fault1Val.isEmpty,
+             let fault1Value = Int(fault1Val) {
+              if fault1Value >= 0 && fault1Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: BLOSSOM_PSL1003_FAULT_TIMER, value: fault1Value)
+              }
+          }
+          
+          if let fault2Val = psll1004TimerTxt.text, !fault2Val.isEmpty,
+             let fault2Value = Int(fault2Val) {
+              if fault2Value >= 0 && fault2Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: BLOSSOM_PSL1004_FAULT_TIMER, value: fault2Value)
+              }
+          }
+          
+          if let fault3Val = psll1005TimerTxt.text, !fault3Val.isEmpty,
+             let fault3Value = Int(fault3Val) {
+              if fault3Value >= 0 && fault3Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: BLOSSOM_PSL1005_FAULT_TIMER, value: fault3Value)
+              }
+          }
+        
+          if let fault4Val = psll1006TimerTxt.text, !fault4Val.isEmpty,
+             let fault4Value = Int(fault4Val) {
+              if fault4Value >= 0 && fault4Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: BLOSSOM_PSL1006_FAULT_TIMER, value: fault4Value)
+              }
+          }
+        
+          if let vfd103Val = vfd103TimerTxt.text, !vfd103Val.isEmpty,
+             let vfd103Value = Int(vfd103Val) {
+              if vfd103Value >= 0 && vfd103Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: VFD103_CFG_DELAYTIMER, value: vfd103Value)
+              }
+          }
+          
+          if let vfd104Val = vfd104TimerTxt.text, !vfd104Val.isEmpty,
+             let vfd104Value = Int(vfd104Val) {
+              if vfd104Value >= 0 && vfd104Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: VFD104_CFG_DELAYTIMER, value: vfd104Value)
+              }
+          }
+          
+          if let vfd105Val = vfd105TimerTxt.text, !vfd105Val.isEmpty,
+             let vfd105Value = Int(vfd105Val) {
+              if vfd105Value >= 0 && vfd105Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: VFD105_CFG_DELAYTIMER, value: vfd105Value)
+              }
+          }
+          
+          if let vfd106Val = vfd106TimerTxt.text, !vfd106Val.isEmpty,
+             let vfd106Value = Int(vfd106Val) {
+              if vfd106Value >= 0 && vfd106Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: VFD106_CFG_DELAYTIMER, value: vfd106Value)
+              }
+          }
+          
+          if let vfd107Val = vfd107TimerTxt.text, !vfd107Val.isEmpty,
+             let vfd107Value = Int(vfd107Val) {
+              if vfd107Value >= 0 && vfd107Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: VFD107_CFG_DELAYTIMER, value: vfd107Value)
+              }
+          }
+          
+          if let vfd108Val = vfd108TimerTxt.text, !vfd108Val.isEmpty,
+             let vfd108Value = Int(vfd108Val) {
+              if vfd108Value >= 0 && vfd108Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: VFD108_CFG_DELAYTIMER, value: vfd108Value)
+              }
+          }
+          
+          if let vfd109Val = vfd109TimerTxt.text, !vfd109Val.isEmpty,
+             let vfd109Value = Int(vfd109Val) {
+              if vfd109Value >= 0 && vfd109Value <= 60 {
+                 CENTRAL_SYSTEM?.writeRegister(register: VFD109_CFG_DELAYTIMER, value: vfd109Value)
+              }
+          }
+        
+          DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+              self.getCurrentSetpoints()
+          }
     }
 
 }

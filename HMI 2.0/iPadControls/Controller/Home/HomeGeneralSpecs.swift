@@ -41,9 +41,9 @@ var setUDForConnection            = false
  ***************************************************************************/
 
 //Testing Only
-let PLC_IP_ADDRESS                 = "10.0.4.231"//"192.168.1.230"
-let SERVER_IP_ADDRESS              = "10.0.4.2"//"192.168.1.1"
-let SPM_IP_ADDRESS                 = "10.0.4.201"//"192.168.1.201"
+let PLC_IP_ADDRESS                 = "10.0.4.230"//"192.168.1.230"
+let SERVER_IP_ADDRESS              = "10.0.4.230"//"192.168.1.1"
+let SPM_IP_ADDRESS                 = "10.0.4.200"//"192.168.1.201"
 
 //let PLC_IP_ADDRESS                 = "192.168.1.230"
 //let SERVER_IP_ADDRESS              = "192.168.1.1"
@@ -189,6 +189,12 @@ let WRITE_WEPLAY_SERVER_PATH                   = "writeWeplay"
 let READ_FILLER_SERVER_PATH                    = "readFillerData"
 let WRITE_FILLER_SERVER_PATH                   = "writeFillerData"
 
+let READ_WEEKEND_WEPLAY_SERVER_PATH            = "readWWeplay"
+let WRITE_WEEKEND_WEPLAY_SERVER_PATH           = "writeWWeplay"
+
+let READ_WEEKEND_FILLER_SERVER_PATH            = "readWFillerData"
+let WRITE_WEEKEND_FILLER_SERVER_PATH           = "writeWFillerData"
+
 let SCREENS = [
     
     "playlist",
@@ -200,9 +206,9 @@ let SCREENS = [
     "wind",
     "WQMultiple",
     "waterLevel",
-    "fillerShows",
+    "",
     "filtration",
-    "operationManual",
+    "fog",
     "weplay",
     "",
     "",

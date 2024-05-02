@@ -30,27 +30,18 @@ class WaterLevelSettingsViewController: UIViewController{
     @IBOutlet weak var belowLLSPDelay:  UITextField!
     @IBOutlet weak var belowLLLSPDelay:  UITextField!
     @IBOutlet weak var makeupTimeout:   UITextField!
-    @IBOutlet weak var lsllDelayTimer:  UITextField!
-    @IBOutlet weak var ls201llDelayTimer:  UITextField!
-    @IBOutlet weak var ls301llDelayTimer:  UITextField!
-    
-    @IBOutlet weak var lt3001ScaledVal:   UILabel!
-    @IBOutlet weak var lt3001ScaledMin:   UITextField!
-    @IBOutlet weak var lt3001ScaledMax:   UITextField!
-    @IBOutlet weak var lt3001abvHSP:   UITextField!
-    @IBOutlet weak var lt3001blwLSP:   UITextField!
-    @IBOutlet weak var lt3001blwLLSP:   UITextField!
-    @IBOutlet weak var lt3001blwLLLSP:   UITextField!
     
     //No Connection View
     @IBOutlet weak var noConnectionView: UIView!
     @IBOutlet weak var noConnectionLbl:  UILabel!
     
+    @IBOutlet weak var frceDosingSwitch: UISwitch!
+    @IBOutlet weak var makeupDisableSwitch: UISwitch!
     //Object References
     let logger = Logger()
     
     var currentSetpoints = WATER_LEVEL_SENSOR_VALUES()
-    var lt3001liveSensorValues  = WATER_LEVEL_SENSOR_VALUES()
+    var ls1001liveSensorValues  = WATER_LEVEL_SENSOR_VALUES()
     var LT1001SetPoints = [Double]()
     var readLT1001once = false
     var readLT1002once = false
@@ -83,6 +74,7 @@ class WaterLevelSettingsViewController: UIViewController{
         CENTRAL_SYSTEM = centralSystem
         constructSaveButton()
         readTimersFromPLC()
+        readLVCmdRegistersFromPLC()
         
         //Add notification observer to get system stat
         NotificationCenter.default.addObserver(self, selector: #selector(checkSystemStat), name: NSNotification.Name(rawValue: "updateSystemStat"), object: nil)
@@ -124,11 +116,6 @@ class WaterLevelSettingsViewController: UIViewController{
             noConnectionView.isUserInteractionEnabled = false
             
             //Now that the connection is established, run functions
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(LT1001_WATER_LEVEL_SCALED_VALUE), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let scaledVal = Float(response)
-               self.lt3001ScaledVal.text =  String(format: "%.2f", scaledVal!)
-            })
             
         } else {
             noConnectionView.alpha = 1
@@ -172,7 +159,7 @@ class WaterLevelSettingsViewController: UIViewController{
         
         if let belowLSPDelay = belowLSPDelay.text, !belowLSPDelay.isEmpty,
            let belowL = Int(belowLSPDelay) {
-            if belowL >= 0 && belowL <= 5 {
+            if belowL >= 0 && belowL <= 60 {
                 CENTRAL_SYSTEM?.writeRegister(register: WATER_LEVEL_BELOW_L_TIMER, value: belowL)
             }
         }
@@ -193,69 +180,38 @@ class WaterLevelSettingsViewController: UIViewController{
 
         if let makeupTimeout = makeupTimeout.text, !makeupTimeout.isEmpty,
            let makeup = Int(makeupTimeout) {
-            if makeup >= 0 && makeup <= 24 {
+            if makeup >= 0 && makeup <= 1440 {
                  CENTRAL_SYSTEM?.writeRegister(register: WATER_MAKEUP_TIMEROUT_TIMER, value: makeup)
             }
         }
         
-        if let lsllDelay = lsllDelayTimer.text, !lsllDelay.isEmpty,
-           let lsllD = Int(lsllDelay) {
-            if lsllD >= 0 {
-                 CENTRAL_SYSTEM?.writeRegister(register: LSLL1001_DELAYTIMER, value: lsllD)
-            }
-        }
-        if let ls201llDelay = ls201llDelayTimer.text, !ls201llDelay.isEmpty,
-           let lsllD = Int(ls201llDelay) {
-            if lsllD >= 0 {
-                 CENTRAL_SYSTEM?.writeRegister(register: LSLL2201_DELAYTIMER, value: lsllD)
-            }
-        }
-        if let ls301llDelay = ls301llDelayTimer.text, !ls301llDelay.isEmpty,
-           let lsllD = Int(ls301llDelay) {
-            if lsllD >= 0 {
-                 CENTRAL_SYSTEM?.writeRegister(register: LSLL2301_DELAYTIMER, value: lsllD)
-            }
-        }
-        //LT2001
-        
-        if let scalMin = lt3001ScaledMin.text, !scalMin.isEmpty,
-           let minValue = Float(scalMin) {
-
-           CENTRAL_SYSTEM?.writeRealValue(register: LT1001_WATER_LEVEL_SCALED_MIN, value: minValue)
-        }
-        
-        if let scalMax = lt3001ScaledMax.text, !scalMax.isEmpty,
-           let maxValue = Float(scalMax) {
-
-           CENTRAL_SYSTEM?.writeRealValue(register: LT1001_WATER_LEVEL_SCALED_MAX, value: maxValue)
-        }
-        
-        if let aboveH = lt3001abvHSP.text, !aboveH.isEmpty,
-           let aboveHSP = Float(aboveH) {
-
-           CENTRAL_SYSTEM?.writeRealValue(register: LT1001_WATER_ABOVE_HI, value: aboveHSP)
-        }
-
-        if let belowL = lt3001blwLSP.text, !belowL.isEmpty,
-           let belowLSP = Float(belowL) {
-
-           CENTRAL_SYSTEM?.writeRealValue(register: LT1001_WATER_LEVEL_BELOW_L, value: belowLSP)
-        }
-
-        if let belowLL = lt3001blwLLSP.text, !belowLL.isEmpty,
-           let belowLLSP = Float(belowLL) {
-
-           CENTRAL_SYSTEM?.writeRealValue(register: LT1001_WATER_LEVEL_BELOW_LL, value: belowLLSP)
-        }
-        
-        if let belowLLL = lt3001blwLLLSP.text, !belowLLL.isEmpty,
-           let belowLLLSP = Float(belowLLL) {
-
-           CENTRAL_SYSTEM?.writeRealValue(register: LT1001_WATER_LEVEL_BELOW_LLL, value: belowLLLSP)
-        }
         readTimersFromPLC()
     }
-
+    
+    func readLVCmdRegistersFromPLC(){
+        CENTRAL_SYSTEM!.readRegister(length: 4, startingRegister: Int32(WATER_LEVEL_LV1001.startAddr),  completion: { (success, response) in
+                 
+                 guard success == true else { return }
+                 let cmdArrays = self.convertIntToBitArr(a: Int(truncating: response![3] as! NSNumber))
+                 self.ls1001liveSensorValues.cmd_disableMkeup = cmdArrays[3]
+                 self.ls1001liveSensorValues.cmd_overrideFrceDosing = cmdArrays[4]
+            
+                 if self.ls1001liveSensorValues.cmd_disableMkeup == 1{
+                    self.makeupDisableSwitch.isOn = false
+                 }
+                 if self.ls1001liveSensorValues.cmd_disableMkeup == 0{
+                    self.makeupDisableSwitch.isOn = true
+                 }
+                 if self.ls1001liveSensorValues.cmd_overrideFrceDosing == 1{
+                    self.frceDosingSwitch.isOn = true
+                 }
+                 if self.ls1001liveSensorValues.cmd_overrideFrceDosing == 0{
+                    self.frceDosingSwitch.isOn = false
+                 }
+                 
+             })
+    
+     }
     
     /***************************************************************************
      * Function :  readTimersFromPLC
@@ -283,56 +239,43 @@ class WaterLevelSettingsViewController: UIViewController{
                 self.belowLLSPDelay.text     = "\(self.currentSetpoints.below_ll_timer)"
                 self.belowLLLSPDelay.text    = "\(self.currentSetpoints.below_lll_timer)"
             })
-            CENTRAL_SYSTEM!.readRegister(length: Int32(WATER_LEVEL_LSLL_TIMER_BITS.count), startingRegister: Int32(WATER_LEVEL_LSLL_TIMER_BITS.startBit),  completion: { (success, response) in
+            CENTRAL_SYSTEM!.readRegister(length: 1, startingRegister: Int32(WATER_MAKEUP_TIMEROUT_TIMER),  completion: { (success, response) in
                 
                 guard success == true else { return }
                 
-                self.currentSetpoints.makeup_timeout_timer = Int(truncating: response![0] as! NSNumber)
-                self.currentSetpoints.lsll_delayTimer = Int(truncating: response![4] as! NSNumber)
-                self.currentSetpoints.ls2201_delayTimer = Int(truncating: response![5] as! NSNumber)
-                self.currentSetpoints.ls2301_delayTimer = Int(truncating: response![6] as! NSNumber)
-                
-                self.makeupTimeout.text          = "\(self.currentSetpoints.makeup_timeout_timer)"
-                self.lsllDelayTimer.text         = "\(self.currentSetpoints.lsll_delayTimer)"
-                self.ls201llDelayTimer.text      = "\(self.currentSetpoints.ls2201_delayTimer)"
-                self.ls301llDelayTimer.text      = "\(self.currentSetpoints.ls2301_delayTimer)"
-            })
-        
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(LT1001_WATER_ABOVE_HI), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let abvH = Float(response)
-               self.lt3001abvHSP.text =  String(format: "%.2f", abvH!)
-            })
-        
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(LT1001_WATER_LEVEL_BELOW_L), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-                let blwL = Float(response)
-               self.lt3001blwLSP.text =  String(format: "%.2f", blwL!)
-            })
-        
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(LT1001_WATER_LEVEL_BELOW_LL), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-                let blwLL = Float(response)
-               self.lt3001blwLLSP.text =  String(format: "%.2f", blwLL!)
-            })
-        
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(LT1001_WATER_LEVEL_BELOW_LLL), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-                let blwLLL = Float(response)
-               self.lt3001blwLLLSP.text =  String(format: "%.2f", blwLLL!)
-            })
-        
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(LT1001_WATER_LEVEL_SCALED_MIN), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let minVal = Float(response)
-               self.lt3001ScaledMin.text =  String(format: "%.2f", minVal!)
-            })
-        
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(LT1001_WATER_LEVEL_SCALED_MAX), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let maxVal = Float(response)
-               self.lt3001ScaledMax.text =  String(format: "%.2f", maxVal!)
+                self.currentSetpoints.makeup_timeout_timer =  Int(truncating: response![0] as! NSNumber)
+                self.makeupTimeout.text       = "\(self.currentSetpoints.makeup_timeout_timer)"
             })
    
+    }
+    
+    @IBAction func sendCmdMakeupSwitch(_ sender: UISwitch) {
+        if self.ls1001liveSensorValues.cmd_disableMkeup == 1{
+            CENTRAL_SYSTEM?.writeBit(bit: CMD_iPAD_DISABLE, value: 0)
+            self.makeupDisableSwitch.isOn = true
+        }
+        if self.ls1001liveSensorValues.cmd_disableMkeup == 0{
+            CENTRAL_SYSTEM?.writeBit(bit: CMD_iPAD_DISABLE, value: 1)
+            self.makeupDisableSwitch.isOn = false
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.50) {
+            self.readLVCmdRegistersFromPLC()
+        }
+        
+        
+    }
+    
+    @IBAction func sendCmdDosingSwitch(_ sender: UISwitch) {
+        if self.ls1001liveSensorValues.cmd_overrideFrceDosing == 1{
+            CENTRAL_SYSTEM?.writeBit(bit: CMD_iPAD_DOSING, value: 0)
+            self.frceDosingSwitch.isOn = false
+        }
+        if self.ls1001liveSensorValues.cmd_overrideFrceDosing == 0{
+            CENTRAL_SYSTEM?.writeBit(bit: CMD_iPAD_DOSING, value: 1)
+            self.frceDosingSwitch.isOn = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.50) {
+            self.readLVCmdRegistersFromPLC()
+        }
     }
 }

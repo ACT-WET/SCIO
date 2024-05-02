@@ -23,6 +23,8 @@ let WRITE_FILTRATION_SERVER_PATH              = "writeFilterSch"
 let GET_FILLER_SHOW_SCH_HTTP_PATH  = "readFillerShowSch"
 let SET_FILLER_SHOW_SCH_HTTP_PATH  = "writeFillerShowSch"
 
+let FILTRATION_MAX_SP = (startAddr: 1000, count: 6)
+
 let FILTRATION_PUMP_EN                = 2010
 let FILTRATION_PUMP_SCH_BIT           = 2012
 

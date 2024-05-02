@@ -9,7 +9,7 @@ function tmdWrapper(){
     plc_client.destroy();
     plc_client=null;
 
-    plc_client = jsModbus.createTCPClient(502,'10.0.4.231',function(err){
+    plc_client = jsModbus.createTCPClient(502,'10.0.4.230',function(err){
 
       if(err){
 

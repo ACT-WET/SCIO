@@ -75,7 +75,22 @@ extension UIViewController {
         return interfaceData["SSID"] as? String
     }
 
+    func convertIntToBitArr (a: Int) -> [Int] {
+        let bitArrStr = padding(string: String(a, radix:2), toSize: 16).map { String($0) }
+        var bitArrInt = [Int]()
+        for index in 0..<bitArrStr.count{
+            bitArrInt.insert(Int(bitArrStr[index])!, at: index)
+        }
+        return bitArrInt.reversed()
+    }
     
+    func padding(string : String, toSize: Int) -> String {
+      var padded = string
+      for _ in 0..<(toSize - string.count) {
+        padded = "0" + padded
+      }
+        return padded
+    }
     
     func convertToJSON(object: Any, completion:@escaping (_ response: String?) -> ()) {
         let jsonData = try? JSONSerialization.data(withJSONObject: object, options: .prettyPrinted)

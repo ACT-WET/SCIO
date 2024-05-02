@@ -12,7 +12,6 @@ class PumpsViewController: UIViewController{
     
     @IBOutlet weak var noConnectionView: UIView!
     @IBOutlet weak var noConnectionErrorLbl: UILabel!
-    @IBOutlet weak var dispSchBtn: UIButton!
     //MARK: - Class Reference Objects -- Dependencies
     
     private let logger = Logger()
@@ -76,7 +75,6 @@ class PumpsViewController: UIViewController{
             //Change the connection stat indicator
             noConnectionView.alpha = 0
             noConnectionView.isUserInteractionEnabled = false
-            getSchdeulerStatus()
             getPumpRunningStat()
             getPumpFaultStat()
         } else {
@@ -91,34 +89,9 @@ class PumpsViewController: UIViewController{
         }
     }
     
-    func getSchdeulerStatus(){
-        CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(TWW_PUMP_SCH_BIT), completion: { (success, response) in
-                           
-           guard success == true else { return }
-           
-           let glssSchOn = Int(truncating: response![0] as! NSNumber)
-            
-           if glssSchOn == 1{
-                self.dispSchBtn.setTitleColor(GREEN_COLOR, for: .normal)
-           } else {
-                self.dispSchBtn.setTitleColor(DEFAULT_GRAY, for: .normal)
-           }
-        })
-    }
-    
     func getPumpRunningStat(){
         
-        let offset = 14
-        let tagNum = 202
         
-        for index in 0..<4 {
-            CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(PUMPS_RUNNING_STATUS_START_REGISTER + (index*offset)), completion:{ (success, response) in
-                if response != nil{
-                    let tempstatus = Int(truncating: response![0] as! NSNumber)
-                    self.parsePumpStatus(tag: tagNum + index, status: tempstatus)
-                }
-            })
-        }
     }
     
     func parsePumpStatus(tag: Int, status: Int) {
@@ -128,17 +101,6 @@ class PumpsViewController: UIViewController{
 
     func getPumpFaultStat(){
         
-        let offset = 14
-        let tagNum = 2
-        
-        for index in 0..<4 {
-            CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(PUMPS_FAULT_STATUS_START_REGISTER + (index*offset)), completion:{ (success, response) in
-                if response != nil{
-                    let tempstatus = Int(truncating: response![0] as! NSNumber)
-                    self.parsePumpFaults(tag: tagNum + index, status: tempstatus)
-                }
-            })
-        }
     }
     
     func parsePumpFaults(tag: Int, status: Int) {
@@ -186,15 +148,19 @@ class PumpsViewController: UIViewController{
         
         let registersSET1 = PUMP_SETS[iPadNumber-1]
         let iPadNumberRegister = registersSET1[0]
-        CENTRAL_SYSTEM!.writeRegister(register: iPadNumberRegister.register, value: 0)
+        //CENTRAL_SYSTEM!.writeRegister(register: iPadNumberRegister.register, value: 0)
         
         
     }
-    
-    @IBAction func redirectToPumpScheduler(_ sender: UIButton) {
-        let schedulerShowVC = UIStoryboard.init(name: "pumps", bundle: nil).instantiateViewController(withIdentifier: "pumpSchedulerViewController") as! PumpSchedulerViewController
-        schedulerShowVC.schedulerTag = sender.tag
-        navigationController?.pushViewController(schedulerShowVC, animated: true)
+    @IBAction func redirectToShooterDetails(_ sender: UIButton) {
+        let shootDetVC = UIStoryboard.init(name: "pumps", bundle: nil).instantiateViewController(withIdentifier: "shooterDetail") as! ShooterDetailViewController
+        shootDetVC.shooterNum = sender.tag
+        navigationController?.pushViewController(shootDetVC, animated: true)
+    }
+    @IBAction func redirectToDCPowerDetails(_ sender: UIButton) {
+        let dcPowDetVC = UIStoryboard.init(name: "pumps", bundle: nil).instantiateViewController(withIdentifier: "dcDetail") as! DCPowerDetailViewController
+        dcPowDetVC.dcNum = sender.tag
+        navigationController?.pushViewController(dcPowDetVC, animated: true)
     }
     
     @IBAction func redirectToPumpDetailsScheduler(_ sender: UIButton) {

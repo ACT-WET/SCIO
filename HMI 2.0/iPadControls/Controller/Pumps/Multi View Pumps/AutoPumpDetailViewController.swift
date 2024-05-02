@@ -26,6 +26,8 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     @IBOutlet weak var manualSpeedView: UIView!
     @IBOutlet weak var manualSpeedValue: UITextField!
     @IBOutlet weak var showSpeedValue: UITextField!
+    @IBOutlet weak var setFrequencyHandle: UIView!
+    @IBOutlet weak var frequencySetLabel: UILabel!
     
     //MARK: - Frequency Label Indicators
     
@@ -102,7 +104,12 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     private var temperatureLimit = 100
     private var pumpFaulted = false
     var currentScalingFactorPump = 10
+    var pumpRegister = 0
+    var pumpPreviosMode = 0
+    var pumpData = VFD_VALUES()
+    var pumpCmdReg = VFD101_CMD_REG
     private var centralSystem = CentralSystem()
+    var manualPumpGesture: UIPanGestureRecognizer!
     
     @IBOutlet weak var vfdNumber: UILabel!
     
@@ -126,77 +133,154 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         CENTRAL_SYSTEM = centralSystem
         setupPumpLabel()
         pumpIndicatorLimit = 0
-        
-        
         //Configure Pump Screen Text Content Based On Device Language
         configureScreenTextContent()
-        getIpadNumber()
-        
-        
-        
-        setPumpNumber()
         readCurrentPumpDetailsSpecs()
+        initializePumpGestureRecognizer()
         
         
         //Add notification observer to get system stat
         NotificationCenter.default.addObserver(self, selector: #selector(checkSystemStat), name: NSNotification.Name(rawValue: "updateSystemStat"), object: nil)
         
     }
+    private func initializePumpGestureRecognizer(){
+        
+        //RME: Initiate PUMP Flow Control Gesture Handler
+        
+        manualPumpGesture = UIPanGestureRecognizer(target: self, action: #selector(changePumpSpeedFrequency(sender:)))
+        setFrequencyHandle.isUserInteractionEnabled = true
+        setFrequencyHandle.addGestureRecognizer(self.manualPumpGesture)
+        manualPumpGesture.delegate = self
+        
+    }
      
     func setupPumpLabel(){
         switch pumpNumber {
-            case 201: vfdNumber.text = "VFD - 201"
-            case 202: vfdNumber.text = "VFD - 202"
-            case 203: vfdNumber.text = "VFD - 203"
-            case 204: vfdNumber.text = "VFD - 204"
-            case 205: vfdNumber.text = "VFD - 205"
+            case 101: vfdNumber.text = "VFD - 101"
+                      pumpRegister = VFD_101_DATAREGISTER.startAddr
+                      pumpCmdReg = VFD101_CMD_REG
+            case 103: vfdNumber.text = "VFD - 103"
+                      pumpRegister = VFD_103_DATAREGISTER.startAddr
+                      pumpCmdReg = VFD103_CMD_REG
+            case 104: vfdNumber.text = "VFD - 104"
+                      pumpRegister = VFD_104_DATAREGISTER.startAddr
+                      pumpCmdReg = VFD104_CMD_REG
+            case 105: vfdNumber.text = "VFD - 105"
+                      pumpRegister = VFD_105_DATAREGISTER.startAddr
+                      pumpCmdReg = VFD105_CMD_REG
+            case 106: vfdNumber.text = "VFD - 106"
+                      pumpRegister = VFD_106_DATAREGISTER.startAddr
+                      pumpCmdReg = VFD106_CMD_REG
+            case 107: vfdNumber.text = "VFD - 107"
+                      pumpRegister = VFD_107_DATAREGISTER.startAddr
+                      pumpCmdReg = VFD107_CMD_REG
+            case 108: vfdNumber.text = "VFD - 108"
+                      pumpRegister = VFD_108_DATAREGISTER.startAddr
+                      pumpCmdReg = VFD108_CMD_REG
+            case 109: vfdNumber.text = "VFD - 109"
+                      pumpRegister = VFD_109_DATAREGISTER.startAddr
+                      pumpCmdReg = VFD109_CMD_REG
         default:
             print("FAULT TAG")
         }
-//        if pumpNumber == 107 || pumpNumber == 109 {
-//            currentScalingFactorPump = 100
-//        } else {
-//            currentScalingFactorPump = 10
-//        }
-        if pumpNumber == 203 || pumpNumber == 204 || pumpNumber == 205{
-            self.showSpeedValue.isHidden = false
-            self.shwSpeedName.text = "SHOW SPEED"
-        } else if pumpNumber == 201 {
+        if pumpNumber == 101 {
             self.showSpeedValue.isHidden = false
             self.shwSpeedName.text = "BACKWASH SPEED"
-        } else if pumpNumber == 202 {
+            //currentScalingFactorPump = 10
+        } else {
             self.showSpeedValue.isHidden = true
             self.shwSpeedName.text = ""
+            //currentScalingFactorPump = 10
         }
-        currentScalingFactorPump = 10
+        
     }
     
     override func viewWillDisappear(_ animated: Bool){
         
-        let registersSET1 = PUMP_SETS[iPadNumber-1]
-        let iPadNumberRegister = registersSET1[0]
-        
-        CENTRAL_SYSTEM!.writeRegister(register: iPadNumberRegister.register, value: 0)
-        
-        //NOTE: We need to remove the notification observer so the PUMP stat check point will stop to avoid extra bandwith usage
         NotificationCenter.default.removeObserver(self)
         
     }
     
-    
-    
-    //MARK: - Set Pump Number To PLC
-    
-    private func setPumpNumber(){
+    private func readCurrentPumpData() {
         
-        //Let the PLC know the current PUMP number
-        
-        let registersSET1 = PUMP_SETS[iPadNumber-1]
-        let iPadNumberRegister = registersSET1[0]
-        
-        CENTRAL_SYSTEM!.writeRegister(register: iPadNumberRegister.register, value: pumpNumber)
-        
+        CENTRAL_SYSTEM?.readRegister(length: 18, startingRegister: Int32(pumpRegister), completion:{ (success, response) in
+            
+            guard success == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
+            self.pumpData.vfdReady = statusArrValues[0]
+            self.pumpData.vfdRunning = statusArrValues[1]
+            self.pumpData.pumpFaulted = statusArrValues[2]
+            self.pumpData.pumpWarning = statusArrValues[3]
+            self.pumpData.inHandMode = statusArrValues[4]
+            self.pumpData.inOffMode = statusArrValues[5]
+            self.pumpData.inAutoMode = statusArrValues[6]
+            self.pumpData.filtrationControlMode = statusArrValues[7]
+            self.pumpData.showControlMode = statusArrValues[8]
+            self.pumpData.schedulerControlMode = statusArrValues[9]
+            self.pumpData.plcControlMode = statusArrValues[10]
+            self.pumpData.vfdWarning = statusArrValues[11]
+            self.pumpData.strainerWarning = statusArrValues[12]
+            self.pumpData.notInAutoWarning = statusArrValues[13]
+            
+            let faultStatusArrValues = self.convertIntToBitArr(a: Int(truncating: response![4] as! NSNumber))
+            self.pumpData.fault_EStop = faultStatusArrValues[0]
+            self.pumpData.fault_Network = faultStatusArrValues[1]
+            self.pumpData.fault_VFDActive = faultStatusArrValues[2]
+            self.pumpData.fault_lowWaterLevel = faultStatusArrValues[3]
+            self.pumpData.fault_lowPressure = faultStatusArrValues[4]
+            self.pumpData.fault_GFCITripped = faultStatusArrValues[5]
+            self.pumpData.fault_FailToRunAlarm = faultStatusArrValues[6]
+            
+            self.pumpData.status_OutputFrequency = Int(truncating: response![8] as! NSNumber)
+            self.pumpData.status_OutputVoltage = Int(truncating: response![9] as! NSNumber)
+            self.pumpData.status_OutputCurrent = Int(truncating: response![10] as! NSNumber)
+            self.pumpData.status_OutputMotorPwr = Int(truncating: response![11] as! NSNumber)
+            self.pumpData.status_OutputTemperature = Int(truncating: response![12] as! NSNumber)
+            
+            self.pumpData.status_frequencyShowDataSP = Int(truncating: response![14] as! NSNumber)
+            self.pumpData.status_frequencyPLCDataSP = Int(truncating: response![15] as! NSNumber)
+            self.pumpData.cfg_frequencySP = Int(truncating: response![16] as! NSNumber)
+            self.pumpData.cfg_frequencyBWSP = Int(truncating: response![17] as! NSNumber)
+            
+            self.getVoltageReading(response: self.pumpData.status_OutputVoltage)
+            self.getCurrentReading(response: self.pumpData.status_OutputCurrent)
+            self.getTemperatureReading(response: self.pumpData.status_OutputTemperature)
+            self.getFrequencyReading(response: self.pumpData.status_OutputFrequency)
+            
+            self.checkForAutoManMode(auto:self.pumpData.inAutoMode, hand:self.pumpData.inHandMode, off:self.pumpData.inOffMode)
+            
+            let estop = self.view.viewWithTag(200) as? UILabel
+            let pressFault = self.view.viewWithTag(201) as? UILabel
+            let vfdFault = self.view.viewWithTag(202) as? UILabel
+            let gfciFault = self.view.viewWithTag(203) as? UILabel
+            let network = self.view.viewWithTag(204) as? UILabel
+            let cleanStrainer = self.view.viewWithTag(205) as? UILabel
+            let lowWW = self.view.viewWithTag(206) as? UILabel
+            let pumpFault = self.view.viewWithTag(207) as? UILabel
+            
+            self.pumpData.fault_EStop == 1 ? (estop?.isHidden = false) : (estop?.isHidden = true)
+            self.pumpData.fault_lowPressure == 1 ? (pressFault?.isHidden = false) : (pressFault?.isHidden = true)
+            self.pumpData.fault_VFDActive == 1 ? (vfdFault?.isHidden = false) : (vfdFault?.isHidden = true)
+            self.pumpData.fault_GFCITripped == 1 ? (gfciFault?.isHidden = false) : (gfciFault?.isHidden = true)
+            self.pumpData.fault_Network == 1 ? (network?.isHidden = false) : (network?.isHidden = true)
+            self.pumpData.strainerWarning == 1 ? (cleanStrainer?.isHidden = false) : (cleanStrainer?.isHidden = true)
+            self.pumpData.fault_lowWaterLevel == 1 ? (lowWW?.isHidden = false) : (lowWW?.isHidden = true)
+            self.pumpData.pumpFaulted == 1 ? (pumpFault?.isHidden = false) : (pumpFault?.isHidden = true)
+            
+            if self.readOnce == 0{
+                self.parseFaultsDataFromPLC()
+                self.readOnce = 1
+            }
+            
+            //print(statusArrValues)
+            
+        })
     }
+    
+    //MARK: - Set Pump Number To PL
 
     
     @objc func checkSystemStat(){
@@ -208,8 +292,8 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
 
             
             //Now that the connection is established, run functions
-            readCurrentPumpSpeed()
-            acquireDataFromPLC()
+            readCurrentPumpData()
+            readCurrentPumpDetailsSpecs()
             
         } else {
             noConnectionView.alpha = 1
@@ -256,66 +340,106 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         
     }
     
-    //MARK: - Get iPad Number
-    
-    private func getIpadNumber(){
-        
-        let ipadNum = UserDefaults.standard.object(forKey: IPAD_NUMBER_USER_DEFAULTS_NAME) as? Int
-        
-        if ipadNum == nil || ipadNum == 0{
-            self.iPadNumber = 1
-        } else {
-            self.iPadNumber = ipadNum!
-        }
-        
-    }
-    
     @objc private func readCurrentPumpDetailsSpecs() {
-        var pumpSet = 0
-        
-        if iPadNumber == 1 {
-            pumpSet = 0
-        } else {
-            pumpSet = 1
-        }
-        
-        
-        let registersSET1 = PUMP_DETAILS_SETS[pumpSet]
-        let startRegister = registersSET1[0]
-        
-        CENTRAL_SYSTEM!.readRegister(length: 5, startingRegister: Int32(startRegister.register), completion:{ (success, response) in
-            
-            guard success == true else { return }
-            
-            if self.readPumpDetailSpecsOnce == 0 {
-                self.readPumpDetailSpecsOnce = 1
+        if pumpNumber == 103 || pumpNumber == 104 || pumpNumber == 105 || pumpNumber == 106 {
+            CENTRAL_SYSTEM?.readRegister(length: Int32(BLOSSOM_PLUME_MAX_SP.count) , startingRegister: Int32(BLOSSOM_PLUME_MAX_SP.startAddr), completion: { (sucess, response) in
                 
+                //Check points to make sure the PLC Call was successful
                 
-                self.HZMax = Int(truncating: response![0] as! NSNumber) / 10
-                self.voltageMaxRangeValue  = Int(truncating: response![1] as! NSNumber)
+                guard sucess == true else{
+                    self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                    return
+                }
+                
+                self.HZMax = Int(truncating: response![1] as! NSNumber)
                 self.voltageMinRangeValue = Int(truncating: response![2] as! NSNumber)
-                self.currentMaxRangeValue = Int(truncating: response![3] as! NSNumber) / 10
-                self.temperatureMaxRangeValue = Int(truncating: response![4] as! NSNumber)
-                
-                self.frequencyValueLabel.text = "\(self.HZMax)"
-                
-                // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
-                
-                self.voltageLimit = self.voltageMaxRangeValue + 100
-                self.voltageValueLabel.text   = "\(self.voltageLimit)"
-                
-                // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
-                self.currentLimit = self.currentMaxRangeValue + 10
-                self.currentValueLabel.text = "\(self.currentLimit)"
-                
-                //Note temperature always stays at 100 limit.
-                
-                
-                //Add necessary view elements to the view
-                self.constructViewElements()
-            }
+                self.voltageMaxRangeValue = Int(truncating: response![3] as! NSNumber)
+                self.currentMaxRangeValue = Int(truncating: response![5] as! NSNumber)
+                self.temperatureMaxRangeValue = 100
+            })
+            self.frequencyValueLabel.text = "\(self.HZMax)"
             
-        })
+            // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
+            
+            self.voltageLimit = self.voltageMaxRangeValue + 100
+            self.voltageValueLabel.text   = "\(self.voltageLimit)"
+            
+            // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
+            self.currentLimit = self.currentMaxRangeValue + 10
+            self.currentValueLabel.text = "\(self.currentLimit)"
+            
+            //Note temperature always stays at 100 limit.
+            
+            
+            //Add necessary view elements to the view
+            self.constructViewElements()
+        }
+        if pumpNumber == 107 || pumpNumber == 108 || pumpNumber == 109 {
+            CENTRAL_SYSTEM?.readRegister(length: Int32(BLOSSOM_PLUME_MAX_SP.count) , startingRegister: Int32(BLOSSOM_PLUME_MAX_SP.startAddr), completion: { (sucess, response) in
+                
+                //Check points to make sure the PLC Call was successful
+                
+                guard sucess == true else{
+                    self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                    return
+                }
+                
+                self.HZMax = Int(truncating: response![7] as! NSNumber)
+                self.voltageMinRangeValue = Int(truncating: response![8] as! NSNumber)
+                self.voltageMaxRangeValue = Int(truncating: response![9] as! NSNumber)
+                self.currentMaxRangeValue = Int(truncating: response![11] as! NSNumber)
+                self.temperatureMaxRangeValue = 100
+            })
+            self.frequencyValueLabel.text = "\(self.HZMax)"
+            
+            // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
+            
+            self.voltageLimit = self.voltageMaxRangeValue + 100
+            self.voltageValueLabel.text   = "\(self.voltageLimit)"
+            
+            // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
+            self.currentLimit = self.currentMaxRangeValue + 10
+            self.currentValueLabel.text = "\(self.currentLimit)"
+            
+            //Note temperature always stays at 100 limit.
+            
+            
+            //Add necessary view elements to the view
+            self.constructViewElements()
+        }
+        if pumpNumber == 101 {
+            CENTRAL_SYSTEM?.readRegister(length: Int32(FILTRATION_MAX_SP.count) , startingRegister: Int32(FILTRATION_MAX_SP.startAddr), completion: { (sucess, response) in
+                
+                //Check points to make sure the PLC Call was successful
+                
+                guard sucess == true else{
+                    self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                    return
+                }
+                
+                self.HZMax = Int(truncating: response![1] as! NSNumber)
+                self.voltageMinRangeValue = Int(truncating: response![2] as! NSNumber)
+                self.voltageMaxRangeValue = Int(truncating: response![3] as! NSNumber)
+                self.currentMaxRangeValue = Int(truncating: response![5] as! NSNumber)
+                self.temperatureMaxRangeValue = 100
+            })
+            self.frequencyValueLabel.text = "\(self.HZMax)"
+            
+            // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
+            
+            self.voltageLimit = self.voltageMaxRangeValue + 100
+            self.voltageValueLabel.text   = "\(self.voltageLimit)"
+            
+            // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
+            self.currentLimit = self.currentMaxRangeValue + 10
+            self.currentValueLabel.text = "\(self.currentLimit)"
+            
+            //Note temperature always stays at 100 limit.
+            
+            
+            //Add necessary view elements to the view
+            self.constructViewElements()
+        }
     }
     
     //MARK: - Construct View Elements
@@ -387,163 +511,31 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         
     }
     
-    
-    //====================================
-    //                                     GET PUMP DETAILS AND READINGS
-    //====================================
-    
-    private func readCurrentPumpSpeed() {
-        pumpIndicatorLimit += 1
-        
-        var pumpSet = 0
-        
-        iPadNumber == 1 ? (pumpSet = 0) : (pumpSet = 1)
-        
-        let registersSET1 = PUMP_SETS[pumpSet]
-        let startRegister = registersSET1[1]
-        
-        CENTRAL_SYSTEM!.readRegister(length: 14, startingRegister: Int32(startRegister.register), completion:{ (success, response) in
-            
-            guard response != nil else { return }
-            
-            self.getVoltageReading(response: response)
-            self.getCurrentReading(response: response)
-            self.getTemperatureReading(response: response)
-            self.getFrequencyReading(response: response)
-            self.checkForAutoManMode(response: response)
-            self.getManualSpeedReading(response: response)
-            
-            
-            if self.readOnce == 0 {
-                self.readOnce = 1
-                let feedback = Int(truncating: response![8] as! NSNumber)
-                let startStopMode = Int(truncating: response![7] as! NSNumber)
-                
-                if feedback == 0{
-                    
-                    //Pump is in auto mode
-                    self.localStat = 0
-                    self.changeAutManModeIndicatorRotation(autoMode: true)
-                    self.autoModeIndicator.alpha = 1
-                    self.handModeIndicator.alpha = 0
-                    self.frequencyIndicator.isHidden = false
-                    self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps_on"), for: .normal)
-                    
-                }else if feedback == 1 && startStopMode == 1{
-                    
-                    //Pump is in manual mode
-                    self.localStat = 2
-                    self.changeAutManModeIndicatorRotation(autoMode: false)
-                    self.autoModeIndicator.alpha = 0
-                    self.handModeIndicator.alpha = 1
-                    self.frequencyIndicator.isHidden = false
-                    self.isManualMode = true
-                    
-                    self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps_on"), for: .normal)
-                    
-                }else if feedback == 1 && startStopMode == 0{
-                    
-                    //Pump is in off mode
-                    self.localStat = 1
-                    self.changeAutManModeIndicatorRotation(autoMode: false)
-                    self.autoModeIndicator.alpha = 0
-                    self.handModeIndicator.alpha = 0
-                    self.frequencyIndicator.isHidden = true
-                    self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
-                    
-                }
-                
-            }
-            
-        })
-    }
-    
-    func pad(string : String, toSize: Int) -> String{
-        
-        var padded = string
-        
-        for _ in 0..<toSize - string.characters.count{
-            padded = "0" + padded
-        }
-        
-        return padded
-        
-    }
-    
-    
     //MARK: - Read Water On Fire Values
     
-    private func acquireDataFromPLC(){
-        var faultStates = 0
-        
-        if iPadNumber == 1 {
-            faultStates = 12
-        } else {
-            faultStates = 32
-        }
-        
-        CENTRAL_SYSTEM?.readRegister(length: 1, startingRegister: Int32(faultStates), completion:{ (success, response) in
+    private func parseFaultsDataFromPLC(){
+        CENTRAL_SYSTEM?.readRegister(length: 18, startingRegister: Int32(pumpRegister), completion:{ (success, response) in
             
-            guard success == true else { return }
-                
-                //Bitwise Operation
-                let decimalRsp = Int(truncating: response![0] as! NSNumber)
-                let base_2_binary = String(decimalRsp, radix: 2)
-                let Bit_16:String = self.pad(string: base_2_binary, toSize: 16)  //Convert to 16 bit
-                let bits =  Bit_16.characters.map { String($0) }
-                self.parseStates(bits: bits)
-                
+            guard success == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            self.pumpData.status_frequencyShowDataSP = Int(truncating: response![14] as! NSNumber)
+            self.pumpData.status_frequencyPLCDataSP = Int(truncating: response![15] as! NSNumber)
+            self.pumpData.cfg_frequencySP = Int(truncating: response![16] as! NSNumber)
+            self.pumpData.cfg_frequencyBWSP = Int(truncating: response![17] as! NSNumber)
+            
+            self.getManualSpeedReading(manSpeed: self.pumpData.cfg_frequencySP, showSpeed:self.pumpData.status_frequencyShowDataSP)
+            
+            //print(statusArrValues)
             
         })
     }
-    
-    private func parseStates(bits:[String]){
-        
-        
-        for fault in PUMP_FAULT_SET {
-            
-            let faultTag = fault.tag
-            let state = Int(bits[15 - fault.bitwiseLocation])
-            let indicator = view.viewWithTag(faultTag) as? UILabel
-            
-            if faultTag != 204 && faultTag != 207
-            {
-                if state == 1
-                {
-                    indicator?.isHidden = false
-                }
-                else
-                {
-                    indicator?.isHidden = true
-                }
-            }
-            
-            
-            if faultTag == 204 {
-                if state == 1 {
-                    indicator?.isHidden = true
-                } else {
-                    indicator?.isHidden = false
-                }
-            }
-            
-            if faultTag == 207 {
-                
-                readPlayStopBit(startStopMode: state ?? 0)
-            }
-            
-            
-        }
-        
-    }
-    
-    
-    
     
     //MARK: - Get Voltage Reading
     
-    private func getVoltageReading(response:[AnyObject]?){
-        let voltage = Int(truncating: response![3] as! NSNumber)
+    private func getVoltageReading(response:Int){
+        let voltage = response
         let voltageValue = voltage / 10
         let voltageRemainder = voltage % 10
         let indicatorLocation = abs(790 - (Double(voltageValue) * pixelPerVoltage))
@@ -570,8 +562,8 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     
     
     
-    private func getCurrentReading(response:[AnyObject]?){
-        let current = Int(truncating: response![2] as! NSNumber)
+    private func getCurrentReading(response:Int){
+        let current = response
         let currentValue = current / currentScalingFactorPump
         let currentRemainder = current % currentScalingFactorPump
         let indicatorLocation = abs(690 - (Double(currentValue) * pixelPerCurrent))
@@ -595,8 +587,8 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     
     //MARK: - Get Temperature Reading
     
-    private func getTemperatureReading(response:[AnyObject]?){
-        let temperature = Int(truncating: response![4] as! NSNumber)
+    private func getTemperatureReading(response:Int){
+        let temperature = response
         let temperatureMid = 50
         let indicatorLocation = 690 - (Double(temperature) * pixelPerTemperature)
         
@@ -623,10 +615,10 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     
     //MARK: - Get Frequency Reading
     
-    private func getFrequencyReading(response:[AnyObject]?){
+    private func getFrequencyReading(response:Int){
         // If pumpstate == 0 (Auto) then show the frequency indicator/background frame/indicator value. Note: the frequency indicator's user interaction is disabled.
         
-        let frequency = Int(truncating: response![1] as! NSNumber)
+        let frequency = response
         
         let frequencyValue = frequency / 10
         let frequencyRemainder = frequency % 10
@@ -659,23 +651,27 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     
     //MARK: - Check For Auto/Man Mode
     
-    private func checkForAutoManMode(response:[AnyObject]?){
+    private func checkForAutoManMode(auto:Int, hand:Int, off:Int){
         
-        let feedback = Int(truncating: response![6] as! NSNumber)
-        let startStopMode = Int(truncating: response![7] as! NSNumber)
+        let inAuto = auto
+        let inHand = hand
+        let inOFF  = off
         
-        if feedback == 0 && self.localStat == 0{
+        if inAuto == 1{
             
             //Pump is in auto mode
             self.pumpState = 0
+            self.pumpPreviosMode = 0
             self.changeAutManModeIndicatorRotation(autoMode: true)
             self.autoModeIndicator.alpha = 1
             self.handModeIndicator.alpha = 0
             self.manualSpeedView.alpha = 0
             self.frequencyIndicator.isHidden = false
+            self.setFrequencyHandle.isHidden = true
+            playStopButtonIcon.isHidden = true
             self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps_on"), for: .normal)
             
-        }else if feedback == 1 && startStopMode == 0 && self.localStat == 1{
+        }else if inOFF == 1{
             
             //Pump is in off mode
             self.pumpState = 1
@@ -684,161 +680,75 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.handModeIndicator.alpha = 0
             self.manualSpeedView.alpha = 0
             self.frequencyIndicator.isHidden = true
+            self.setFrequencyHandle.isHidden = true
+            playStopButtonIcon.isHidden = true
             self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
             
-        }else if feedback == 1 && startStopMode == 0 && self.localStat == 2{
+        } else if inHand == 1{
             
             //Pump is in manual mode
             self.pumpState = 2
+            self.pumpPreviosMode = 1
             self.changeAutManModeIndicatorRotation(autoMode: false)
             self.autoModeIndicator.alpha = 0
             self.handModeIndicator.alpha = 1
             self.manualSpeedView.alpha = 1
             self.frequencyIndicator.isHidden = false
+            self.setFrequencyHandle.isHidden = false
+            playStopButtonIcon.isHidden = false
             self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps_on"), for: .normal)
             
-        }else if feedback == 1 && startStopMode == 0 && self.localStat == 3{
-            
-            //Pump is in off mode
-            self.pumpState = 3
-            self.changeAutManModeIndicatorRotation(autoMode: false)
-            self.autoModeIndicator.alpha = 0
-            self.handModeIndicator.alpha = 0
-            self.manualSpeedView.alpha = 0
-            self.frequencyIndicator.isHidden = true
-            self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
-            
-        }
-        
-        
-    }
-    
-    
-    
-    
-    @IBAction func changeAutoManMode(_ sender: Any) {
-        
-        var manualBit = 0
-        var autoBit = 0
-        var startStopBit = 0
-        
-        
-        if iPadNumber == 1{
-            
-            let registerSet = PUMP_SETS[0]
-            
-            autoBit = registerSet[6].register
-            manualBit = registerSet[7].register
-            startStopBit = registerSet[8].register
-            
-            
-        }else{
-            
-            let registerSet = PUMP_SETS[1]
-            
-            
-            autoBit = registerSet[6].register
-            manualBit = registerSet[7].register
-            startStopBit = registerSet[8].register
-            
-            
-        }
-        
-        switch pumpState{
-            
-        case 0:
-            
-            //Switch to off mode
-            self.localStat = 1
-            CENTRAL_SYSTEM?.writeRegister(register: manualBit, value: 1)
-            CENTRAL_SYSTEM?.writeRegister(register: autoBit, value: 0)
-            CENTRAL_SYSTEM?.writeRegister(register: startStopBit, value: 0)
-            isManualMode = false
-            
-            break
-            
-        case 1:
-            
-            //Switch to Manual Mode mode
-            self.localStat = 2
-            
-            CENTRAL_SYSTEM?.writeRegister(register: manualBit, value: 1)
-            CENTRAL_SYSTEM?.writeRegister(register: autoBit, value: 0)
-            CENTRAL_SYSTEM?.writeRegister(register: startStopBit, value: 0)
-            isManualMode = true
-            
-            
-            break
-            
-        case 2:
-            
-            //Switch to off mode
-            self.localStat = 3
-            CENTRAL_SYSTEM?.writeRegister(register: manualBit, value: 1)
-            CENTRAL_SYSTEM?.writeRegister(register: autoBit, value: 0)
-            CENTRAL_SYSTEM?.writeRegister(register: startStopBit, value: 0)
-            isManualMode = false
-            
-            
-            break
-            
-        case 3:
-            
-            //Switch To Auto Mode
-            self.localStat = 0
-            CENTRAL_SYSTEM?.writeRegister(register: manualBit, value: 0)
-            CENTRAL_SYSTEM?.writeRegister(register: autoBit, value: 1)
-            CENTRAL_SYSTEM?.writeRegister(register: startStopBit, value: 0)
-            isManualMode = false
-            
-            
-            
-            break
-            
-            
-        default:
-            
-            print("PUMP STATE NOT FOUND")
-            
-        }
-        
-        
-        
-    }
-    
-    
-    private func readPlayStopBit(startStopMode: Int) {
-        if isManualMode {
-            playStopButtonIcon.isHidden = false
-            
-            if startStopMode == 1 {
-                //stop
-                playStopButtonIcon.setImage(#imageLiteral(resourceName: "stopButton"), for: .normal)
-                
-            } else {
-                //play
-                playStopButtonIcon.setImage(#imageLiteral(resourceName: "playButton"), for: .normal)
-                
-            }
-        } else {
-            playStopButtonIcon.isHidden = true
         }
     }
     
-    @IBAction func playStopButtonPressed(_ sender: Any) {
-        var startStopBit = 0
-        
-        if iPadNumber == 1 {
-            startStopBit = 9
-        } else {
-            startStopBit = 29
+    
+    
+    
+    @IBAction func changeAutoManMode(_ sender: UIButton) {
+        if self.pumpData.inHandMode == 1 {
+            //Turn OFF
+            self.pumpPreviosMode = 1
+            CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.setOff, value: 1)
         }
-        
-        
-        if playStopButtonIcon.imageView?.image == #imageLiteral(resourceName: "playButton") {
-            CENTRAL_SYSTEM?.writeRegister(register: startStopBit, value: 1)
+        if self.pumpData.inAutoMode == 1 {
+            //Turn OFF
+            self.pumpPreviosMode = 0
+            CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.setOff, value: 1)
+        }
+        if self.pumpData.inOffMode == 1 && self.pumpPreviosMode == 1 {
+            //Turn Auto
+            CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.setAuto, value: 1)
+        }
+        if self.pumpData.inOffMode == 1 && self.pumpPreviosMode == 0 {
+            //Turn Hand
+            CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.setHand, value: 1)
+        }
+    }
+    
+    
+    private func readPlayStopBit() {
+        if self.pumpData.vfdRunning == 1 {
+            //stop
+            playStopButtonIcon.setImage(#imageLiteral(resourceName: "stopButton"), for: .normal)
+            
         } else {
-            CENTRAL_SYSTEM?.writeRegister(register: startStopBit, value: 0)
+            //play
+            playStopButtonIcon.setImage(#imageLiteral(resourceName: "playButton"), for: .normal)
+            
+        }
+    }
+    
+    @IBAction func playStopButtonPressed(_ sender: UIButton) {
+        
+        if self.pumpData.vfdRunning == 1 {
+            //stop
+            CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.setHandStop, value: 1)
+        } else {
+            //play
+            CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.setHandStart, value: 1)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+            self.readPlayStopBit()
         }
     }
     
@@ -876,13 +786,13 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     //====================================
     
     
-    private func getManualSpeedReading(response: [AnyObject]?){
+    private func getManualSpeedReading(manSpeed:Int,showSpeed:Int){
         if readManualFrequencySpeed || !readManualFrequencySpeedOnce {
             readManualFrequencySpeedOnce = true
             readManualFrequencySpeed = false
             
-            let manualSpeed = Int(truncating: response![0] as! NSNumber)
-            let shwSpeed = Int(truncating: response![9] as! NSNumber)
+            let manualSpeed = manSpeed
+            let shwSpeed = showSpeed
             
             let manualSpeedValue = manualSpeed / 10
             let manualSpeedRemainder = manualSpeed % 10
@@ -893,11 +803,16 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             if pixelPerFrequency == Double.infinity {
                 pixelPerFrequency = 0
             }
+            let length = Double(manualSpeedValue) * pixelPerFrequency
             
             if manualSpeedValue > Int(HZMax){
+                setFrequencyHandle.frame = CGRect(x: 443, y: 285, width: 108, height: 26)
                 self.manualSpeedValue.text  = "\(HZMax)"
+                self.frequencySetLabel.text = "\(HZMax)"
             } else {
+                setFrequencyHandle.frame = CGRect(x: 443, y: (735 - length), width: 108, height: 26)
                 self.manualSpeedValue.text  = "\(manualSpeedValue).\(manualSpeedRemainder)"
+                self.frequencySetLabel.text = "\(manualSpeedValue).\(manualSpeedRemainder)"
             }
             if shwSpeedValue > Int(HZMax){
                 self.showSpeedValue.text  = "\(HZMax)"
@@ -937,19 +852,9 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             
             
             if sender.state == .ended {
-                if iPadNumber == 1{
-                    CENTRAL_SYSTEM?.writeRegister(register: 2, value: convertedHerts) //NOTE: We multiply the frequency by 10 becuase PLC expects 3 digit number
-                    setReadManualSpeedBoolean()
-                    
-                } else {
-                    CENTRAL_SYSTEM?.writeRegister(register: 22, value: convertedHerts) //NOTE: We multiply the frequency by 10 becuase PLC expects 3 digit number
-                    setReadManualSpeedBoolean()
-                }
+                CENTRAL_SYSTEM?.writeRegister(register: pumpCmdReg.setFreqSP, value: Int(convertedHerts))
             }
-            
         }
-        
-        
     }
     
     @IBAction func setManualSpeed(_ sender: UIButton) {
@@ -972,20 +877,8 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         }
         shwSpeed = shwSpeed! * 10
         
-        if iPadNumber == 1{
-            
-            
-            CENTRAL_SYSTEM?.writeRegister(register: 2, value: Int(manSpeed!))
-            CENTRAL_SYSTEM?.writeRegister(register: 11, value: Int(shwSpeed!))
-            
-            
-        } else {
-            
-            
-            CENTRAL_SYSTEM?.writeRegister(register: 22, value: Int(manSpeed!))
-            CENTRAL_SYSTEM?.writeRegister(register: 31, value: Int(shwSpeed!))
-            
-        }
+        CENTRAL_SYSTEM?.writeRegister(register: pumpCmdReg.setFreqSP, value: Int(manSpeed!))
+        self.readOnce = 0
         readManualFrequencySpeedOnce = false
     }
     private func setReadManualSpeedBoolean(){

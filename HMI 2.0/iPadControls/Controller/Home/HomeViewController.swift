@@ -46,6 +46,8 @@ class ACTHomeViewController: UIViewController{
     private var httpComm = HTTPComm()
     var weplayData:[Int] = []
     var fillerData:[Int] = []
+    var wweplayData:[Int] = []
+    var wfillerData:[Int] = []
     
     //Data Structures
     
@@ -214,6 +216,24 @@ class ACTHomeViewController: UIViewController{
             //print("This is the read server path \(responseArray)")
         }
         return self.fillerData
+    }
+    
+    func readWWeplayData() -> [Int]{
+        httpComm.httpGetResponseFromPath(url: "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/\(READ_WEEKEND_WEPLAY_SERVER_PATH)"){ (response) in
+            guard let responseArray = response as? [Int] else { return }
+            self.wweplayData = responseArray
+            //print("This is the read server path \(responseArray)")
+        }
+        return self.wweplayData
+    }
+    
+    func readWFillerData() -> [Int]{
+        httpComm.httpGetResponseFromPath(url: "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/\(READ_WEEKEND_FILLER_SERVER_PATH)"){ (response) in
+            guard let responseArray = response as? [Int] else { return }
+            self.wfillerData = responseArray
+            //print("This is the read server path \(responseArray)")
+        }
+        return self.wfillerData
     }
 
 

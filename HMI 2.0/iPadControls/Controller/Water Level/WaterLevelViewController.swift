@@ -36,14 +36,13 @@ class WaterLevelViewController: UIViewController{
     @IBOutlet weak var noConnectionView:                    UIView!
     @IBOutlet weak var noConnectionErrorLbl:                UILabel!
     
+    @IBOutlet weak var autoHandModeImgView: UIImageView!
+    @IBOutlet weak var stopBtn: UIButton!
+    @IBOutlet weak var startBtn: UIButton!
+    @IBOutlet weak var handModeView: UIView!
     //MARK: - Water Level Sensors Faults
     @IBOutlet weak var lt1001View: UIView!
-    
-    @IBOutlet weak var lowWaterNoShow: UIImageView!
-    @IBOutlet weak var basinLvlGreen:                   UIImageView!
-    @IBOutlet weak var tankLvlGreen:                    UIImageView!
     @IBOutlet weak var fillTimeout:                         UIImageView!
-    @IBOutlet weak var waterMakeupFaucet:                   UIImageView!
     
     //MARK: - Class Reference Objects -- Dependencies
     
@@ -55,7 +54,7 @@ class WaterLevelViewController: UIViewController{
     //MARK: - Data Structures
     
     private var langData          = Dictionary<String, String>()
-    private var lt1001liveSensorValues  = WATER_LEVEL_SENSOR_VALUES()
+    private var ls1001liveSensorValues  = WATER_LEVEL_SENSOR_VALUES()
     private var centralSystem = CentralSystem()
     private var acquiredTimersFromPLC = 0
     
@@ -88,7 +87,7 @@ class WaterLevelViewController: UIViewController{
         
         //Configure Water Level Screen
         configureWaterLevel()
-        
+        self.handModeView.isHidden = true
         //Configure WaterLeveScreen Text Content Based On Device Language
         configureScreenTextContent()
 
@@ -124,7 +123,6 @@ class WaterLevelViewController: UIViewController{
             noConnectionView.isUserInteractionEnabled = false
             
             //Now that the connection is established, run functions
-            parseWaterLevelFaults()
             readWaterLevelLiveValues()
             
         } else {
@@ -179,7 +177,7 @@ class WaterLevelViewController: UIViewController{
     
     private func readWaterLevelLiveValues(){
         
-        CENTRAL_SYSTEM?.readBits(length: Int32(WATER_LEVEL_SENSOR_BITS_1.count) , startingRegister: Int32(WATER_LEVEL_SENSOR_BITS_1.startBit), completion: { (sucess, response) in
+        CENTRAL_SYSTEM?.readRegister(length: Int32(WATER_LEVEL_LV1001.count) , startingRegister: Int32(WATER_LEVEL_LV1001.startAddr), completion: { (sucess, response) in
             
             //Check points to make sure the PLC Call was successful
             
@@ -187,37 +185,33 @@ class WaterLevelViewController: UIViewController{
                 self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
                 return
             }
-            self.lt1001liveSensorValues.channelFault          = Int(truncating: response![0] as! NSNumber)
-            self.lt1001liveSensorValues.above_High            = Int(truncating: response![1] as! NSNumber)
-            self.lt1001liveSensorValues.below_l               = Int(truncating: response![2] as! NSNumber)
-            self.lt1001liveSensorValues.below_ll              = Int(truncating: response![3] as! NSNumber)
-            self.lt1001liveSensorValues.below_lll             = Int(truncating: response![4] as! NSNumber)
-            self.lt1001liveSensorValues.waterMakeupTimeout    = Int(truncating: response![5] as! NSNumber)
-            self.lt1001liveSensorValues.waterMakeup           = Int(truncating: response![6] as! NSNumber)
-            CENTRAL_SYSTEM?.readBits(length: 5 , startingRegister: 3000, completion: { (sucess, response) in
+            let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
+            self.ls1001liveSensorValues.valveEnabled = statusArrValues[0]
+            self.ls1001liveSensorValues.valveOpen = statusArrValues[1]
+            self.ls1001liveSensorValues.faulted = statusArrValues[2]
+            self.ls1001liveSensorValues.inAuto = statusArrValues[3]
+            self.ls1001liveSensorValues.inHand = statusArrValues[4]
+            self.ls1001liveSensorValues.startCmdActive = statusArrValues[5]
+            self.ls1001liveSensorValues.stopCmdActive = statusArrValues[6]
+            self.ls1001liveSensorValues.waterMakeupTimeout = statusArrValues[7]
+            self.ls1001liveSensorValues.malfunction = statusArrValues[8]
+            self.ls1001liveSensorValues.eStop = statusArrValues[9]
+            
+            let cmdArrValues = self.convertIntToBitArr(a: Int(truncating: response![3] as! NSNumber))
+            self.ls1001liveSensorValues.cmd_HandMode = cmdArrValues[0]
+            self.ls1001liveSensorValues.cmd_HandStart = cmdArrValues[1]
+            self.ls1001liveSensorValues.cmd_HandStop = cmdArrValues[2]
+            self.ls1001liveSensorValues.cmd_disableMkeup = cmdArrValues[3]
+            self.ls1001liveSensorValues.cmd_overrideFrceDosing = cmdArrValues[4]
+            self.ls1001liveSensorValues.cmd_deviceFaultReset = cmdArrValues[5]
+            
                 
-                //Check points to make sure the PLC Call was successful
-                guard sucess == true else{
-                    return
-                }
-                self.lt1001liveSensorValues.lsll              = Int(truncating: response![0] as! NSNumber)
-                self.lt1001liveSensorValues.ls201ll           = Int(truncating: response![1] as! NSNumber)
-                self.lt1001liveSensorValues.ls301ll           = Int(truncating: response![2] as! NSNumber)
-                self.lt1001liveSensorValues.ls201llA          = Int(truncating: response![3] as! NSNumber)
-                self.lt1001liveSensorValues.ls301llA          = Int(truncating: response![4] as! NSNumber)
-                
-                CENTRAL_SYSTEM!.readRealRegister(register: WATER_LEVEL_LT1001_SCALED_VALUE_BIT, length: 2){ (success, response)  in
-                           
-                   guard success == true else{
-                       return
-                   }
-                   self.lt1001liveSensorValues.scaledValue = Double(response)!
-                   self.parseLT1001Data()
-                }
-            })
+            //print(statusArrValues)
+            self.parseLV1001Data()
         })
-        
     }
+    
+    
     
     
     /***************************************************************************
@@ -227,133 +221,137 @@ class WaterLevelViewController: UIViewController{
      * Comment  :
      ***************************************************************************/
     
-    private func parseWaterLevelFaults(){
+    func parseLV1001Data(){
         
-        if lt1001liveSensorValues.channelFault == 1 {
-            waterLevelIcon.image = #imageLiteral(resourceName: "waterlevel_outline-red")
-        } else {
-            waterLevelIcon.image = #imageLiteral(resourceName: "waterlevel_outline-gray")
-        }
+               let abvH = self.lt1001View.viewWithTag(2001) as? UIImageView
+               let blwL = self.lt1001View.viewWithTag(2002) as? UIImageView
+               let blwLL = self.lt1001View.viewWithTag(2003) as? UIImageView
+               let blwLLL = self.lt1001View.viewWithTag(2004) as? UIImageView
+               let valveStatus = self.lt1001View.viewWithTag(2005) as? UILabel
+               let startCmdActive = self.lt1001View.viewWithTag(2006) as? UIImageView
+               let stopCmdActive = self.lt1001View.viewWithTag(2007) as? UIImageView
+               let faulted = self.lt1001View.viewWithTag(2008) as? UIImageView
+               let timeOut = self.lt1001View.viewWithTag(2009) as? UIImageView
+               let malfunction = self.lt1001View.viewWithTag(2010) as? UIImageView
+               let eStop = self.lt1001View.viewWithTag(2011) as? UIImageView
         
-        if  lt1001liveSensorValues.below_lll == 1
-        {
-            lowWaterNoShow.isHidden = false
-        } else
-        {
-            lowWaterNoShow.isHidden = true
-        }
-        
-        if lt1001liveSensorValues.waterMakeupTimeout == 1{
-            fillTimeout.isHidden = false
-        } else {
-            fillTimeout.isHidden = true
-        }
-    }
-    
-    func parseLT1001Data(){
-        
-               let scaledValue = self.lt1001View.viewWithTag(2001) as? UILabel
-               let abvH = self.lt1001View.viewWithTag(2002) as? UIImageView
-               let blwL = self.lt1001View.viewWithTag(2003) as? UIImageView
-               let blwLL = self.lt1001View.viewWithTag(2004) as? UIImageView
-               let blwLLL = self.lt1001View.viewWithTag(2005) as? UIImageView
-               let chFault = self.lt1001View.viewWithTag(2006) as? UIImageView
-               let makeupOn = self.lt1001View.viewWithTag(2007) as? UILabel
-               let makeupTimeout = self.lt1001View.viewWithTag(2008) as? UIImageView
-               let lsll = self.lt1001View.viewWithTag(2009) as? UIImageView
-               let ls201OF = self.lt1001View.viewWithTag(2010) as? UIImageView
-               let ls301OF = self.lt1001View.viewWithTag(2011) as? UIImageView
-               let ls201OFA = self.lt1001View.viewWithTag(2010) as? UIImageView
-               let ls301OFA = self.lt1001View.viewWithTag(2011) as? UIImageView
-        
-               scaledValue?.text = String(format: "%.1f", self.lt1001liveSensorValues.scaledValue)
-        
-               if self.lt1001liveSensorValues.above_High == 1
+            
+               if self.ls1001liveSensorValues.above_High == 1
                {
                    abvH?.image = #imageLiteral(resourceName: "red")
                } else {
                    abvH?.image = #imageLiteral(resourceName: "green")
                }
                
-               if self.lt1001liveSensorValues.below_l == 1
+               if self.ls1001liveSensorValues.below_l == 1
                {
                    blwL?.image = #imageLiteral(resourceName: "red")
                } else {
                    blwL?.image = #imageLiteral(resourceName: "green")
                }
                
-               if self.lt1001liveSensorValues.below_ll == 1
+               if self.ls1001liveSensorValues.below_ll == 1
                {
                    blwLL?.image = #imageLiteral(resourceName: "red")
                } else {
                    blwLL?.image = #imageLiteral(resourceName: "green")
                }
         
-               if self.lt1001liveSensorValues.below_lll == 1
+               if self.ls1001liveSensorValues.below_lll == 1
                {
                    blwLLL?.image = #imageLiteral(resourceName: "red")
                } else {
                    blwLLL?.image = #imageLiteral(resourceName: "green")
                }
         
-               if self.lt1001liveSensorValues.channelFault == 1
+               if self.ls1001liveSensorValues.faulted == 1
                {
-                   chFault?.image = #imageLiteral(resourceName: "red")
+                   faulted?.image = #imageLiteral(resourceName: "red")
+                   waterLevelIcon.image = #imageLiteral(resourceName: "waterlevel_outline-red")
                } else {
-                   chFault?.image = #imageLiteral(resourceName: "green")
+                   faulted?.image = #imageLiteral(resourceName: "green")
+                   waterLevelIcon.image = #imageLiteral(resourceName: "waterlevel_outline-gray")
                }
         
-               if self.lt1001liveSensorValues.waterMakeup == 1 {
-                   makeupOn?.text = "ON"
-                   waterMakeupFaucet.alpha = 1
-                   tankLvlGreen.image = #imageLiteral(resourceName: "waterlevelgray")
+               if self.ls1001liveSensorValues.waterMakeupTimeout == 1 {
+                   timeOut?.image = #imageLiteral(resourceName: "red")
+                   fillTimeout.isHidden = false
                } else {
-                   makeupOn?.text = "OFF"
-                   waterMakeupFaucet.alpha = 0
-                   if self.lt1001liveSensorValues.below_ll == 1 || self.lt1001liveSensorValues.below_lll == 1{
-                      tankLvlGreen.image = #imageLiteral(resourceName: "waterlevelred")
-                   } else {
-                      tankLvlGreen.image = #imageLiteral(resourceName: "waterlevelgreen")
-                   }
+                   timeOut?.image = #imageLiteral(resourceName: "green")
+                   fillTimeout.isHidden = true
+               }
+               
+               if self.ls1001liveSensorValues.malfunction == 1 {
+                   malfunction?.image = #imageLiteral(resourceName: "red")
+               } else {
+                   malfunction?.image = #imageLiteral(resourceName: "green")
+               }
+             
+               if self.ls1001liveSensorValues.eStop == 1 {
+                   eStop?.image = #imageLiteral(resourceName: "red")
+               } else {
+                   eStop?.image = #imageLiteral(resourceName: "green")
+               }
+               
+               if self.ls1001liveSensorValues.startCmdActive == 1 {
+                   startCmdActive?.image = #imageLiteral(resourceName: "green")
+               } else {
+                   startCmdActive?.image = #imageLiteral(resourceName: "blank_icon_on")
                }
         
-               if self.lt1001liveSensorValues.waterMakeupTimeout == 1 {
-                   makeupTimeout?.image = #imageLiteral(resourceName: "red")
+               if self.ls1001liveSensorValues.stopCmdActive == 1 {
+                   stopCmdActive?.image = #imageLiteral(resourceName: "green")
                } else {
-                   makeupTimeout?.image = #imageLiteral(resourceName: "green")
+                   stopCmdActive?.image = #imageLiteral(resourceName: "blank_icon_on")
+               }
+               
+               if self.ls1001liveSensorValues.valveOpen == 1 {
+                   valveStatus?.text = "OPEN"
+               } else {
+                   valveStatus?.text = "CLOSE"
                }
         
-               if self.lt1001liveSensorValues.lsll == 1 {
-                   lsll?.image = #imageLiteral(resourceName: "red")
-                   basinLvlGreen.image = #imageLiteral(resourceName: "lowlevelRed")
+               if self.ls1001liveSensorValues.cmd_HandStart == 1 {
+                  startBtn.isEnabled = false
                } else {
-                   lsll?.image = #imageLiteral(resourceName: "green")
-                   basinLvlGreen.image = #imageLiteral(resourceName: "lowlevelGreen")
+                  startBtn.isEnabled = true
                }
         
-               if self.lt1001liveSensorValues.ls201ll == 1 {
-                   ls201OF?.image = #imageLiteral(resourceName: "red")
+               if self.ls1001liveSensorValues.cmd_HandStop == 1 {
+                  stopBtn.isEnabled = false
                } else {
-                   ls201OF?.image = #imageLiteral(resourceName: "green")
+                  stopBtn.isEnabled = true
                }
         
-               if self.lt1001liveSensorValues.ls301ll == 1 {
-                   ls301OF?.image = #imageLiteral(resourceName: "red")
-               } else {
-                   ls301OF?.image = #imageLiteral(resourceName: "green")
+               if self.ls1001liveSensorValues.inAuto == 1 {
+                  autoHandModeImgView.image = #imageLiteral(resourceName: "autoMode")
+                  autoHandModeImgView.rotate360Degrees(animate: true)
+                  self.handModeView.isHidden = true
                }
         
-               if self.lt1001liveSensorValues.ls201llA == 1 {
-                   ls201OFA?.image = #imageLiteral(resourceName: "red")
-               } else {
-                   ls201OFA?.image = #imageLiteral(resourceName: "green")
+               if self.ls1001liveSensorValues.inHand == 1 {
+                   autoHandModeImgView.rotate360Degrees(animate: false)
+                   autoHandModeImgView.image = #imageLiteral(resourceName: "handMode")
+                   self.handModeView.isHidden = false
                }
-       
-               if self.lt1001liveSensorValues.ls301llA == 1 {
-                   ls301OFA?.image = #imageLiteral(resourceName: "red")
-               } else {
-                   ls301OFA?.image = #imageLiteral(resourceName: "green")
-               }
+    }
+    @IBAction func sendStartCmd(_ sender: UIButton) {
+      CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDSTART, value: 1)
+    }
+    
+    @IBAction func sendStopCmd(_ sender: UIButton) {
+      CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDSTOP, value: 1)
+    }
+    @IBAction func sendAutoHandCmd(_ sender: UIButton) {
+        if self.ls1001liveSensorValues.inAuto == 1{
+            CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDMODE, value: 1)
+        }
+        if self.ls1001liveSensorValues.inHand == 1{
+            CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDMODE, value: 0)
+        }
+    }
+    @IBAction func sendFaultResetCmd(_ sender: UIButton) {
+        CENTRAL_SYSTEM?.writeBit(bit: CMD_FAULTRESET, value: 1)
     }
     
     @IBAction func settingsButtonPressed(_ sender: UIButton) {

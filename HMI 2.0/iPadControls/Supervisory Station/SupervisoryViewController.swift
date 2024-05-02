@@ -83,6 +83,13 @@ class SupervisoryViewController: UIViewController {
                 bc102?.text = "FORCE IGNITION"
             }
         })
+        func pad(string : String, toSize: Int) -> String {
+          var padded = string
+          for _ in 0..<(toSize - string.count) {
+            padded = "0" + padded
+          }
+            return padded
+        }
         CENTRAL_SYSTEM?.readRegister(length: 1, startingRegister: Int32(BC101_STATUS), completion:{ (success, response) in
                    
               guard success == true else { return }
