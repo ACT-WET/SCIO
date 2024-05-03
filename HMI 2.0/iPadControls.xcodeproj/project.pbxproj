@@ -9,17 +9,11 @@
 /* Begin PBXBuildFile section */
 		1A99ACADBDAC29F15DBF767B /* Pods_iPadControls.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEAE4F3BAAD085CDE6B570C5 /* Pods_iPadControls.framework */; };
 		9B006223212C7E160066CC9B /* check12or24Hour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B006222212C7E160066CC9B /* check12or24Hour.swift */; };
-		9B147509225E649A00D9E577 /* OzonePopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B147508225E649A00D9E577 /* OzonePopupViewController.swift */; };
 		9B147C9D20DC68C0003DDFE8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B147C9B20DC68C0003DDFE8 /* LaunchScreen.storyboard */; };
 		9B3D3B6F20DC615B00E34BE4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B3D3B6E20DC615B00E34BE4 /* AppDelegate.swift */; };
 		9B3EB64120C70D8C0071D3AA /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B3EB64020C70D8C0071D3AA /* CFNetwork.framework */; };
 		9B4E107B218265B700604006 /* WaterQualitySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4E1073218265B700604006 /* WaterQualitySpecs.swift */; };
-		9B4E107C218265B700604006 /* TDSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4E1074218265B700604006 /* TDSViewController.swift */; };
 		9B4E107D218265B700604006 /* WaterQualityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4E1075218265B700604006 /* WaterQualityViewController.swift */; };
-		9B4E107E218265B700604006 /* WaterQualitySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4E1076218265B700604006 /* WaterQualitySettingsViewController.swift */; };
-		9B4E107F218265B700604006 /* PHViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4E1077218265B700604006 /* PHViewController.swift */; };
-		9B4E1080218265B700604006 /* ORPViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4E1078218265B700604006 /* ORPViewController.swift */; };
-		9B4E1081218265B700604006 /* BromineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4E1079218265B700604006 /* BromineViewController.swift */; };
 		9B4E1082218265B700604006 /* WQMultiple.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B4E107A218265B700604006 /* WQMultiple.storyboard */; };
 		9B5F3F0220DC5A8D00D3CFDF /* versionNum.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9B5F3F0020DC5A8D00D3CFDF /* versionNum.txt */; };
 		9B5F3F0320DC5A8D00D3CFDF /* SCIO.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 9B5F3F0120DC5A8D00D3CFDF /* SCIO.rtf */; };
@@ -131,7 +125,6 @@
 		BB4093A425E35D07008A110A /* LightsSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4093A125E35D07008A110A /* LightsSpecs.swift */; };
 		BB45A1A72A85CDCD0054C038 /* OManual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = BB45A1A62A85CDCD0054C038 /* OManual.pdf */; };
 		BB59252323E35A6400F49039 /* EStop.png in Resources */ = {isa = PBXBuildFile; fileRef = BB59252223E35A6400F49039 /* EStop.png */; };
-		BB5F80DA222721F500E4A602 /* BRSetpointViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5F80D9222721F500E4A602 /* BRSetpointViewController.swift */; };
 		BB629DE226E012500005D4CB /* ACTInstantPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB629DDD26E0124F0005D4CB /* ACTInstantPlayViewController.m */; };
 		BB629DE326E012500005D4CB /* showList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB629DDE26E0124F0005D4CB /* showList.storyboard */; };
 		BB629DE426E012500005D4CB /* ShowlistSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB629DDF26E0124F0005D4CB /* ShowlistSettingsViewController.swift */; };
@@ -154,6 +147,9 @@
 		BBB4113E2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */; };
 		BBB411402BE18F4800B36E93 /* DCSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */; };
 		BBB411422BE2C1AC00B36E93 /* ShooterSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411412BE2C1AC00B36E93 /* ShooterSettingsViewController.swift */; };
+		BBB411442BE5874800B36E93 /* WQDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411432BE5874800B36E93 /* WQDetailViewController.swift */; };
+		BBB411462BE59AA400B36E93 /* WaterQualitySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411452BE59AA400B36E93 /* WaterQualitySettingsViewController.swift */; };
+		BBB411482BE5AC7000B36E93 /* WQSettingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */; };
 		BBCC80F8291583B200AF0683 /* FillerShowsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */; };
 		BBCC80F9291583B200AF0683 /* fillerShows.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBCC80F7291583B200AF0683 /* fillerShows.storyboard */; };
 		BBEB6E8626F11840003F23B4 /* saltfill.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBEB6E8326F11840003F23B4 /* saltfill.storyboard */; };
@@ -184,18 +180,12 @@
 /* Begin PBXFileReference section */
 		88243C0A1DEF5965004D39D8 /* iPadControls.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iPadControls.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B006222212C7E160066CC9B /* check12or24Hour.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = check12or24Hour.swift; sourceTree = "<group>"; };
-		9B147508225E649A00D9E577 /* OzonePopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OzonePopupViewController.swift; sourceTree = "<group>"; };
 		9B147C9C20DC68C0003DDFE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9B3D3B6D20DC5EFD00E34BE4 /* iPadControls-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "iPadControls-Bridging-Header.h"; path = "Resources/iPadControls-Bridging-Header.h"; sourceTree = "<group>"; };
 		9B3D3B6E20DC615B00E34BE4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9B3EB64020C70D8C0071D3AA /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		9B4E1073218265B700604006 /* WaterQualitySpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterQualitySpecs.swift; sourceTree = "<group>"; };
-		9B4E1074218265B700604006 /* TDSViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TDSViewController.swift; sourceTree = "<group>"; };
 		9B4E1075218265B700604006 /* WaterQualityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterQualityViewController.swift; sourceTree = "<group>"; };
-		9B4E1076218265B700604006 /* WaterQualitySettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterQualitySettingsViewController.swift; sourceTree = "<group>"; };
-		9B4E1077218265B700604006 /* PHViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PHViewController.swift; sourceTree = "<group>"; };
-		9B4E1078218265B700604006 /* ORPViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ORPViewController.swift; sourceTree = "<group>"; };
-		9B4E1079218265B700604006 /* BromineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BromineViewController.swift; sourceTree = "<group>"; };
 		9B4E107A218265B700604006 /* WQMultiple.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = WQMultiple.storyboard; sourceTree = "<group>"; };
 		9B5F3F0020DC5A8D00D3CFDF /* versionNum.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = versionNum.txt; path = Specs/versionNum.txt; sourceTree = "<group>"; };
 		9B5F3F0120DC5A8D00D3CFDF /* SCIO.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = SCIO.rtf; path = Specs/SCIO.rtf; sourceTree = "<group>"; };
@@ -342,7 +332,6 @@
 		BB4093A125E35D07008A110A /* LightsSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightsSpecs.swift; sourceTree = "<group>"; };
 		BB45A1A62A85CDCD0054C038 /* OManual.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OManual.pdf; sourceTree = "<group>"; };
 		BB59252223E35A6400F49039 /* EStop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EStop.png; sourceTree = "<group>"; };
-		BB5F80D9222721F500E4A602 /* BRSetpointViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BRSetpointViewController.swift; sourceTree = "<group>"; };
 		BB629DDD26E0124F0005D4CB /* ACTInstantPlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACTInstantPlayViewController.m; sourceTree = "<group>"; };
 		BB629DDE26E0124F0005D4CB /* showList.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = showList.storyboard; sourceTree = "<group>"; };
 		BB629DDF26E0124F0005D4CB /* ShowlistSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowlistSettingsViewController.swift; sourceTree = "<group>"; };
@@ -374,6 +363,9 @@
 		BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCSettingsSelectViewController.swift; sourceTree = "<group>"; };
 		BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCSettingsViewController.swift; sourceTree = "<group>"; };
 		BBB411412BE2C1AC00B36E93 /* ShooterSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShooterSettingsViewController.swift; sourceTree = "<group>"; };
+		BBB411432BE5874800B36E93 /* WQDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WQDetailViewController.swift; sourceTree = "<group>"; };
+		BBB411452BE59AA400B36E93 /* WaterQualitySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterQualitySettingsViewController.swift; sourceTree = "<group>"; };
+		BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WQSettingsDetailViewController.swift; sourceTree = "<group>"; };
 		BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillerShowsViewController.swift; sourceTree = "<group>"; };
 		BBCC80F7291583B200AF0683 /* fillerShows.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = fillerShows.storyboard; sourceTree = "<group>"; };
 		BBEB6E8326F11840003F23B4 /* saltfill.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = saltfill.storyboard; sourceTree = "<group>"; };
@@ -582,16 +574,12 @@
 		9B4E1072218265B700604006 /* Water Quality */ = {
 			isa = PBXGroup;
 			children = (
-				9B147508225E649A00D9E577 /* OzonePopupViewController.swift */,
-				BB5F80D9222721F500E4A602 /* BRSetpointViewController.swift */,
-				9B4E1074218265B700604006 /* TDSViewController.swift */,
-				9B4E1077218265B700604006 /* PHViewController.swift */,
-				9B4E1078218265B700604006 /* ORPViewController.swift */,
-				9B4E1079218265B700604006 /* BromineViewController.swift */,
 				9B4E1075218265B700604006 /* WaterQualityViewController.swift */,
+				BBB411432BE5874800B36E93 /* WQDetailViewController.swift */,
 				9B4E107A218265B700604006 /* WQMultiple.storyboard */,
+				BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */,
+				BBB411452BE59AA400B36E93 /* WaterQualitySettingsViewController.swift */,
 				9B4E1073218265B700604006 /* WaterQualitySpecs.swift */,
-				9B4E1076218265B700604006 /* WaterQualitySettingsViewController.swift */,
 			);
 			name = "Water Quality";
 			path = "iPadControls/Controller/Water Quality";
@@ -1168,16 +1156,15 @@
 				BBB411402BE18F4800B36E93 /* DCSettingsViewController.swift in Sources */,
 				BB629DE526E012500005D4CB /* ACTPlaylistSettingsViewController.m in Sources */,
 				9B5F3F1B20DC5AB400D3CFDF /* PumpDetail+CoreDataProperties.swift in Sources */,
-				9B147509225E649A00D9E577 /* OzonePopupViewController.swift in Sources */,
 				BBF9B8DA23F4B4F800DF67A1 /* SystemFaultViewController.swift in Sources */,
 				9B5F3FAC20DC5AF400D3CFDF /* HTTPComm.swift in Sources */,
 				9B3D3B6F20DC615B00E34BE4 /* AppDelegate.swift in Sources */,
+				BBB411482BE5AC7000B36E93 /* WQSettingsDetailViewController.swift in Sources */,
 				BBF9B8D723F4B4F800DF67A1 /* SystemStatusSpecs.swift in Sources */,
 				9B725DA121477601008886A2 /* WeekSchedulerPopoverView.swift in Sources */,
 				9B5F3FA920DC5AF400D3CFDF /* ACTDayValues.m in Sources */,
 				9B5F3F8120DC5AD900D3CFDF /* AFSecurityPolicy.m in Sources */,
 				BB629DE226E012500005D4CB /* ACTInstantPlayViewController.m in Sources */,
-				9B4E107C218265B700604006 /* TDSViewController.swift in Sources */,
 				BBEB6E8E26F15573003F23B4 /* SaltFillSettingsViewController.swift in Sources */,
 				BBF0F972240D9A3800886076 /* WindSpecs.swift in Sources */,
 				9B5F3F2120DC5AB400D3CFDF /* Network+CoreDataClass.swift in Sources */,
@@ -1188,13 +1175,10 @@
 				9B5F3F8F20DC5AD900D3CFDF /* RDVCalendarView.m in Sources */,
 				9B5F3F7B20DC5AD900D3CFDF /* AFURLConnectionOperation.m in Sources */,
 				9B5F3F7320DC5AD900D3CFDF /* UIRefreshControl+AFNetworking.m in Sources */,
-				9B4E107E218265B700604006 /* WaterQualitySettingsViewController.swift in Sources */,
 				9BC042B92267C265001E2F49 /* FogViewController.swift in Sources */,
 				9B5F3F7120DC5AD900D3CFDF /* UIAlertView+AFNetworking.m in Sources */,
 				BBF0F95A240D911700886076 /* FiltrationViewController.swift in Sources */,
-				9B4E1080218265B700604006 /* ORPViewController.swift in Sources */,
 				9B5F3F9020DC5AD900D3CFDF /* RDVCalendarViewController.m in Sources */,
-				9B4E107F218265B700604006 /* PHViewController.swift in Sources */,
 				BBB4113E2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift in Sources */,
 				9B5F401920DC5B1200D3CFDF /* HomeViewController.swift in Sources */,
 				9BB3349521482B350004FFBC /* WeekSchedulerSpecs.swift in Sources */,
@@ -1204,6 +1188,7 @@
 				9B5F3F8920DC5AD900D3CFDF /* modbus-rtu.c in Sources */,
 				BBB4113C2BE157F700B36E93 /* ShooterDetailViewController.swift in Sources */,
 				9B5F3F8420DC5AD900D3CFDF /* modbus.c in Sources */,
+				BBB411442BE5874800B36E93 /* WQDetailViewController.swift in Sources */,
 				9B725D7F214775BD008886A2 /* PumpSettingsViewController.swift in Sources */,
 				9B5F3F8520DC5AD900D3CFDF /* modbus-tcp.c in Sources */,
 				9B5F3F8020DC5AD900D3CFDF /* AFNetworkReachabilityManager.m in Sources */,
@@ -1240,10 +1225,9 @@
 				9B725DA321477601008886A2 /* WeekendViewController.swift in Sources */,
 				BBF721FA26E7F63F0090FFCC /* windSettingsViewController.swift in Sources */,
 				9B5F3F7820DC5AD900D3CFDF /* UIWebView+AFNetworking.m in Sources */,
-				BB5F80DA222721F500E4A602 /* BRSetpointViewController.swift in Sources */,
+				BBB411462BE59AA400B36E93 /* WaterQualitySettingsViewController.swift in Sources */,
 				9B725D80214775BD008886A2 /* PumpsViewController.swift in Sources */,
 				9B5F3FA820DC5AF400D3CFDF /* Utilits.m in Sources */,
-				9B4E1081218265B700604006 /* BromineViewController.swift in Sources */,
 				BB37240829CB7B97002BE775 /* SupervisoryViewController.swift in Sources */,
 				9B5F3F7D20DC5AD900D3CFDF /* AFHTTPRequestOperationManager.m in Sources */,
 				BB4093A325E35D07008A110A /* LightsViewController.swift in Sources */,

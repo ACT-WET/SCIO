@@ -11,25 +11,16 @@ import UIKit
 class FiltrationSettingsViewController: UIViewController, UITextFieldDelegate{
 
      
-        @IBOutlet weak var bwDuration: UITextField!
-        @IBOutlet weak var valveOpenClose: UITextField!
         @IBOutlet weak var noConnectionView: UIView!
         @IBOutlet weak var noConnectionErrorLbl: UILabel!
         
-        @IBOutlet weak var pdshDelay: UITextField!
-        @IBOutlet weak var pt1001scalMax: UITextField!
-        @IBOutlet weak var pt1002scalMax: UITextField!
-        @IBOutlet weak var pt1003scalMax: UITextField!
-        @IBOutlet weak var pt1001scalMin: UITextField!
-        @IBOutlet weak var pt1002scalMin: UITextField!
-        @IBOutlet weak var pt1003scalMin: UITextField!
-        @IBOutlet weak var cleanStrSP: UITextField!
-        @IBOutlet weak var pumpOFFSP: UITextField!
-        @IBOutlet weak var bwPressSP: UITextField!
+        @IBOutlet weak var pslTimer: UITextField!
+        @IBOutlet weak var psllTimer: UITextField!
+        @IBOutlet weak var vfd101FailToRunTimer: UITextField!
         private var readSettings = true
         private var centralSystem = CentralSystem()
         //MARK: - View Life Cycle
-        
+        let logger = Logger()
         override func viewDidLoad(){
             
             super.viewDidLoad()
@@ -82,58 +73,24 @@ class FiltrationSettingsViewController: UIViewController, UITextFieldDelegate{
         
         
         private func readValues() {
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(PT1001_SCALEDMIN), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let val = Double(response)
-               self.pt1001scalMin.text =  String(format: "%.1f", val!)
-            })
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(PT1002_SCALEDMIN), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let val = Double(response)
-               self.pt1002scalMin.text =  String(format: "%.1f", val!)
-            })
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(PT1003_SCALEDMIN), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let val = Double(response)
-               self.pt1003scalMin.text =  String(format: "%.1f", val!)
-            })
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(PT1001_SCALEDMAX), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let val = Double(response)
-               self.pt1001scalMax.text =  String(format: "%.1f", val!)
-            })
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(PT1002_SCALEDMAX), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let val = Double(response)
-               self.pt1002scalMax.text =  String(format: "%.1f", val!)
-            })
-            CENTRAL_SYSTEM?.readRealRegister(register: Int(PT1003_SCALEDMAX), length: 2, completion: { (success, response) in
-               guard success == true else { return }
-               let val = Double(response)
-               self.pt1003scalMax.text =  String(format: "%.1f", val!)
-            })
-            CENTRAL_SYSTEM?.readRegister(length: 3, startingRegister: Int32(FILTRATION_BW_DURATION_REGISTER), completion: { (success, response) in
+            CENTRAL_SYSTEM?.readRegister(length: Int32(FILTRATION_DELAYTIMERS.count) , startingRegister: Int32(FILTRATION_DELAYTIMERS.startAddr), completion: { (sucess, response) in
                 
-                guard success == true else { return }
-                let bwDuration = Int(truncating: response![0] as! NSNumber)
-                let pdsh = Int(truncating: response![1] as! NSNumber)
-                let valveOpenCloseValue = Int(truncating: response![2] as! NSNumber)
+                //Check points to make sure the PLC Call was successful
                 
-                self.bwDuration.text = "\(bwDuration)"
-                self.pdshDelay.text = "\(pdsh)"
-                self.valveOpenClose.text = "\(valveOpenCloseValue)"
+                guard sucess == true else{
+                    self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                    return
+                }
+                
+                self.pslTimer.text = "\(Int(truncating: response![0] as! NSNumber))"
+                self.psllTimer.text = "\(Int(truncating: response![3] as! NSNumber))"
+                
             })
-            CENTRAL_SYSTEM?.readRegister(length: 3, startingRegister: Int32(FILTRATION_STRAINERSP_REGISTER), completion: { (success, response) in
+            CENTRAL_SYSTEM?.readRegister(length: 1, startingRegister: Int32(VFD101_CFG_DELAYTIMER), completion: { (success, response) in
                 
                 guard success == true else { return }
                 
-                let cleanSP = Int(truncating: response![0] as! NSNumber)
-                let pmpOFFSP = Int(truncating: response![1] as! NSNumber)
-                let bwPressSP = Int(truncating: response![2] as! NSNumber)
-                
-                self.cleanStrSP.text = "\(cleanSP)"
-                self.pumpOFFSP.text = "\(pmpOFFSP)"
-                self.bwPressSP.text = "\(bwPressSP)"
+               self.vfd101FailToRunTimer.text = "\(Int(truncating: response![0] as! NSNumber))"
             })
             
             
@@ -144,42 +101,27 @@ class FiltrationSettingsViewController: UIViewController, UITextFieldDelegate{
         //MARK: - Save  Setpoints
         
         @objc private func saveSetpoints(){
-            guard let backwashDurationText = bwDuration.text,
-                let backWashValue = Int(backwashDurationText),
-                let pdshText = pdshDelay.text,
-                let pdshvalue = Int(pdshText),
-                let valveOpenCloseText = valveOpenClose.text,
-                let valveOpenCloseValue = Int(valveOpenCloseText),
-                let bwPressTxt = bwPressSP.text,
-                let bwPressVal = Int(bwPressTxt),
-                let cleanSPTxt = cleanStrSP.text,
-                let cleanSPVal = Int(cleanSPTxt),
-                let pmpOFFTxt = pumpOFFSP.text,
-                let pmpOFFVal = Int(pmpOFFTxt),
-                let pt1001scalMin = Float(pt1001scalMin.text!),
-                let pt1002scalMin = Float(pt1002scalMin.text!),
-                let pt1003scalMin = Float(pt1003scalMin.text!),
-                let pt1001scalMax = Float(pt1001scalMax.text!),
-                let pt1002scalMax = Float(pt1002scalMax.text!),
-                let pt1003scalMax = Float(pt1003scalMax.text!) else { return }
-            
-            CENTRAL_SYSTEM?.writeRegister(register: FILTRATION_BW_DURATION_REGISTER, value: backWashValue)
-            CENTRAL_SYSTEM?.writeRegister(register: FILTRATION_PDSH_DELAY, value: pdshvalue)
-            CENTRAL_SYSTEM?.writeRegister(register: FILTRATION_VALVE_OPEN_CLOSE_TIME_BIT, value: valveOpenCloseValue)
-            
-            CENTRAL_SYSTEM?.writeRegister(register: FILTRATION_STRAINERSP_REGISTER, value: cleanSPVal)
-            CENTRAL_SYSTEM?.writeRegister(register: FILTRATION_PUMPOFF_REGISTER, value: pmpOFFVal)
-            CENTRAL_SYSTEM?.writeRegister(register: FILTRATION_BWPRESSSP_REGISTER, value: bwPressVal)
-            
-            CENTRAL_SYSTEM!.writeRealValue(register: PT1001_SCALEDMIN, value: pt1001scalMin)
-            CENTRAL_SYSTEM!.writeRealValue(register: PT1002_SCALEDMIN, value: pt1002scalMin)
-            CENTRAL_SYSTEM!.writeRealValue(register: PT1003_SCALEDMIN, value: pt1003scalMin)
-            CENTRAL_SYSTEM!.writeRealValue(register: PT1001_SCALEDMAX, value: pt1001scalMax)
-            CENTRAL_SYSTEM!.writeRealValue(register: PT1002_SCALEDMAX, value: pt1002scalMax)
-            CENTRAL_SYSTEM!.writeRealValue(register: PT1003_SCALEDMAX, value: pt1003scalMax)
+           if let vfd101Val = vfd101FailToRunTimer.text, !vfd101Val.isEmpty,
+              let vfd101Value = Int(vfd101Val) {
+               if vfd101Value >= 0 && vfd101Value <= 60 {
+                  CENTRAL_SYSTEM?.writeRegister(register: VFD101_CFG_DELAYTIMER, value: vfd101Value)
+               }
+           }
+           if let psl1001Val = pslTimer.text, !psl1001Val.isEmpty,
+              let psl1001Value = Int(psl1001Val) {
+               if psl1001Value >= 0 && psl1001Value <= 60 {
+                  CENTRAL_SYSTEM?.writeRegister(register: FILTRATION_PSL1001_FAULT_TIMER, value: psl1001Value)
+               }
+           }
+           if let psll1001Val = psllTimer.text, !psll1001Val.isEmpty,
+              let psll1001Value = Int(psll1001Val) {
+               if psll1001Value >= 0 && psll1001Value <= 60 {
+                  CENTRAL_SYSTEM?.writeRegister(register: FILTRATION_PSLL1001_FAULT_TIMER, value: psll1001Value)
+               }
+           }
             
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.readValues()
             }
         }

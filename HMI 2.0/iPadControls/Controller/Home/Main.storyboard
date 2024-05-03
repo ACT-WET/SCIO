@@ -254,17 +254,6 @@
                                     <action selector="pushToStoryboard:" destination="pKM-ao-vnB" eventType="touchUpInside" id="t5L-ih-eZD"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="13" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OD5-eQ-Rif" userLabel="Intrusion">
-                                <rect key="frame" x="478" y="619" width="130" height="130"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" backgroundImage="fillerShow">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="pushToStoryboard:" destination="pKM-ao-vnB" eventType="touchUpInside" id="Kh0-2b-Wb5"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" userInteractionEnabled="NO" tag="4" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="opI-cK-w2S" userLabel="FillerShow">
                                 <rect key="frame" x="898" y="199" width="130" height="130"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -328,6 +317,17 @@
                                     <segue destination="pTN-TH-DK4" kind="embed" id="V30-bc-TU5"/>
                                 </connections>
                             </containerView>
+                            <button opaque="NO" tag="13" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OD5-eQ-Rif" userLabel="Intrusion">
+                                <rect key="frame" x="478" y="619" width="130" height="130"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="weplay" backgroundImage="background">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="pushToStoryboard:" destination="pKM-ao-vnB" eventType="touchUpInside" id="Kh0-2b-Wb5"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.10196078431372549" green="0.10196078431372549" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -528,7 +528,6 @@
         <image name="WETLogo" width="138" height="36"/>
         <image name="background" width="313" height="313"/>
         <image name="button_background" width="542" height="125"/>
-        <image name="fillerShow" width="522" height="522"/>
         <image name="filtration" width="500" height="500"/>
         <image name="flame" catalog="system" width="109" height="128"/>
         <image name="fog" width="500" height="500"/>
@@ -541,6 +540,7 @@
         <image name="shortcut_playlist_off" width="315" height="315"/>
         <image name="water_level" width="500" height="500"/>
         <image name="water_quality" width="500" height="500"/>
+        <image name="weplay" width="120" height="120"/>
         <image name="wind" width="500" height="500"/>
     </resources>
 </document>

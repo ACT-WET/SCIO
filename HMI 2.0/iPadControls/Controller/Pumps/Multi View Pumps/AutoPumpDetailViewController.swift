@@ -28,6 +28,7 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     @IBOutlet weak var showSpeedValue: UITextField!
     @IBOutlet weak var setFrequencyHandle: UIView!
     @IBOutlet weak var frequencySetLabel: UILabel!
+    @IBOutlet weak var autoResetSwtch: UISwitch!
     
     //MARK: - Frequency Label Indicators
     
@@ -183,15 +184,8 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         default:
             print("FAULT TAG")
         }
-        if pumpNumber == 101 {
-            self.showSpeedValue.isHidden = false
-            self.shwSpeedName.text = "BACKWASH SPEED"
-            //currentScalingFactorPump = 10
-        } else {
-            self.showSpeedValue.isHidden = true
-            self.shwSpeedName.text = ""
-            //currentScalingFactorPump = 10
-        }
+        self.showSpeedValue.isHidden = true
+        self.shwSpeedName.text = ""
         
     }
     
@@ -224,6 +218,9 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.pumpData.vfdWarning = statusArrValues[11]
             self.pumpData.strainerWarning = statusArrValues[12]
             self.pumpData.notInAutoWarning = statusArrValues[13]
+            
+            let cmdArrValues = self.convertIntToBitArr(a: Int(truncating: response![3] as! NSNumber))
+            self.pumpData.cmd_enableAutoReset = cmdArrValues[7]
             
             let faultStatusArrValues = self.convertIntToBitArr(a: Int(truncating: response![4] as! NSNumber))
             self.pumpData.fault_EStop = faultStatusArrValues[0]
@@ -525,7 +522,12 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.pumpData.cfg_frequencySP = Int(truncating: response![16] as! NSNumber)
             self.pumpData.cfg_frequencyBWSP = Int(truncating: response![17] as! NSNumber)
             
-            self.getManualSpeedReading(manSpeed: self.pumpData.cfg_frequencySP, showSpeed:self.pumpData.status_frequencyShowDataSP)
+            if self.pumpData.cmd_enableAutoReset == 1{
+                self.autoResetSwtch.isOn = true
+            } else {
+                self.autoResetSwtch.isOn = false
+            }
+            self.getManualSpeedReading(manSpeed: self.pumpData.cfg_frequencySP, showSpeed:self.pumpData.cfg_frequencyBWSP)
             
             //print(statusArrValues)
             
@@ -787,40 +789,34 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     
     
     private func getManualSpeedReading(manSpeed:Int,showSpeed:Int){
-        if readManualFrequencySpeed || !readManualFrequencySpeedOnce {
-            readManualFrequencySpeedOnce = true
-            readManualFrequencySpeed = false
-            
-            let manualSpeed = manSpeed
-            let shwSpeed = showSpeed
-            
-            let manualSpeedValue = manualSpeed / 10
-            let manualSpeedRemainder = manualSpeed % 10
-            let shwSpeedValue = shwSpeed / 10
-            let shwSpeedRemainder = shwSpeed % 10
-            var pixelPerFrequency = 450.0 / Double(HZMax)
-            
-            if pixelPerFrequency == Double.infinity {
-                pixelPerFrequency = 0
-            }
-            let length = Double(manualSpeedValue) * pixelPerFrequency
-            
-            if manualSpeedValue > Int(HZMax){
-                setFrequencyHandle.frame = CGRect(x: 443, y: 285, width: 108, height: 26)
-                self.manualSpeedValue.text  = "\(HZMax)"
-                self.frequencySetLabel.text = "\(HZMax)"
-            } else {
-                setFrequencyHandle.frame = CGRect(x: 443, y: (735 - length), width: 108, height: 26)
-                self.manualSpeedValue.text  = "\(manualSpeedValue).\(manualSpeedRemainder)"
-                self.frequencySetLabel.text = "\(manualSpeedValue).\(manualSpeedRemainder)"
-            }
-            if shwSpeedValue > Int(HZMax){
-                self.showSpeedValue.text  = "\(HZMax)"
-            } else {
-                self.showSpeedValue.text  = "\(shwSpeedValue).\(shwSpeedRemainder)"
-            }
-        }
+        let manualSpeed = manSpeed
+        let shwSpeed = showSpeed
         
+        let manualSpeedValue = manualSpeed / 10
+        let manualSpeedRemainder = manualSpeed % 10
+        let shwSpeedValue = shwSpeed / 10
+        let shwSpeedRemainder = shwSpeed % 10
+        var pixelPerFrequency = 450.0 / Double(HZMax)
+        
+        if pixelPerFrequency == Double.infinity {
+            pixelPerFrequency = 0
+        }
+        let length = Double(manualSpeedValue) * pixelPerFrequency
+        
+        if manualSpeedValue > Int(HZMax){
+            setFrequencyHandle.frame = CGRect(x: 443, y: 285, width: 108, height: 26)
+            self.manualSpeedValue.text  = "\(HZMax)"
+            self.frequencySetLabel.text = "\(HZMax)"
+        } else {
+            setFrequencyHandle.frame = CGRect(x: 443, y: (735 - length), width: 108, height: 26)
+            self.manualSpeedValue.text  = "\(manualSpeedValue).\(manualSpeedRemainder)"
+            self.frequencySetLabel.text = "\(manualSpeedValue).\(manualSpeedRemainder)"
+        }
+        if shwSpeedValue > Int(HZMax){
+            self.showSpeedValue.text  = "\(HZMax)"
+        } else {
+            self.showSpeedValue.text  = "\(shwSpeedValue).\(shwSpeedRemainder)"
+        }
     }
     
     
@@ -847,12 +843,13 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             let herts = Double(flowRange) / pixelPerFrequency
             let formattedHerts = String(format: "%.1f", herts)
             let convertedHerts = Int(herts * 10)
-            
+            frequencySetLabel.text = formattedHerts
             print(convertedHerts)
             
             
             if sender.state == .ended {
                 CENTRAL_SYSTEM?.writeRegister(register: pumpCmdReg.setFreqSP, value: Int(convertedHerts))
+                self.readOnce = 0
             }
         }
     }
@@ -878,6 +875,7 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         shwSpeed = shwSpeed! * 10
         
         CENTRAL_SYSTEM?.writeRegister(register: pumpCmdReg.setFreqSP, value: Int(manSpeed!))
+        CENTRAL_SYSTEM?.writeRegister(register: pumpCmdReg.setBWSP, value: Int(shwSpeed!))
         self.readOnce = 0
         readManualFrequencySpeedOnce = false
     }
@@ -887,4 +885,19 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         }
     }
     
+    @IBAction func sendFaultResetCmd(_ sender: UIButton) {
+        CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.faultReset, value: 1)
+    }
+    
+    @IBAction func sendWarningResetCmd(_ sender: UIButton) {
+        CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.warningReset, value: 1)
+    }
+    
+    @IBAction func sendAutoResetSwtchCmd(_ sender: UISwitch) {
+        if self.pumpData.cmd_enableAutoReset == 1{
+            CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.enableAutoReset, value: 0)
+        } else {
+            CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.enableAutoReset, value: 1)
+        }
+    }
 }

@@ -50,4 +50,24 @@ public struct  WIND_SENSOR_1 {
 
 let WIND_TIMER_PLC_ADDRESSES = 6526
 
-let WIND_SPM_HAND_MODE = 810
+let WEATHER_SYSTEM_DATA = (startAddr: 800, count: 16)
+
+public struct WEATHER_SYSTEM_SENSOR_VALUES{
+    
+    var measuredSpeed        = 0
+    var correctedSpeed       = 0
+    var measuredDirection    = 0
+    var correctedDirection   = 0
+    var temperatureinC       = 0
+    var temperatureinF       = 0
+    var dewPointinC          = 0
+    var dewPointinF          = 0
+    var precipitation        = 0
+    var precipIntensity      = 0
+    var atmosPressure        = 0
+    var humidity             = 0
+    var solarRadiation       = 0
+    var gpsLatitude          = 0
+    var gpsLogitude          = 0
+    var gpsHeightAbvSea      = 0
+}

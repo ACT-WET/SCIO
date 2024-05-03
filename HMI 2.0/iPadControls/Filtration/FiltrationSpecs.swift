@@ -25,8 +25,8 @@ let SET_FILLER_SHOW_SCH_HTTP_PATH  = "writeFillerShowSch"
 
 let FILTRATION_MAX_SP = (startAddr: 1000, count: 6)
 
-let FILTRATION_PUMP_EN                = 2010
-let FILTRATION_PUMP_SCH_BIT           = 2012
+let FILTRATION_PUMP_EN                = 8500
+let FILTRATION_PUMP_SCH_BIT           = 8502
 
 let FILTRATION_STATUS                           = (register: 2013,type:"EBOOL", count: 1)
 let FILTRATION_ON_OFF_WRITE_REGISTERS           = [2012]
@@ -56,7 +56,7 @@ let CONVERTED_BW_SPEED_LIMIT                    = 500  // Change to 600 if limit
 
 /* MISC */
 let FILTRATION_PIXEL_PER_BACKWASH               = 258.0 / 50.0
-let PIXEL_PER_FREQUENCY                         = 258.0 / 50.0
+let PIXEL_PER_FREQUENCY                         = 258.0 / 60.0
 let FILTRATION_PIXEL_PER_MANUAL_SPEED           = 258.0 / 50.0
 let FILTRATION_PUMP_SPEED_INDICATOR_READ_LIMIT  = 2
 let FILTRATION_BW_SPEED_INDICATOR_READ_LIMIT    = 2
@@ -64,7 +64,7 @@ let FILTRATION_PIXEL_PER_FREQUENCY              = 50.0 / 258.0
 let CONVERTED_FILTRATION_PIXEL_PER_FREQUENCY    = Float(String(format: "%.2f", FILTRATION_PIXEL_PER_FREQUENCY))
 let CONVERTED_FILTRATION_PIXEL_PER_BW           = Float(String(format: "%.2f", FILTRATION_PIXEL_PER_FREQUENCY))
 let MAX_FILTRATION_BACKWASH_SPEED               = 50.0
-let MAX_FILTRATION_FREQUENCY                    = 50.0
+let MAX_FILTRATION_FREQUENCY                    = 60.0
 let DAY_PICKER_DATA_SOURCE                      = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"]
 
 let PT1001_SCALEDVAL                = 4104

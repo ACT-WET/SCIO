@@ -80,16 +80,11 @@ class PumpSchedulerViewController: UIViewController {
         }
         readPumpEnStatus()
         
-        if schedulerTag == 22{
-            readServerPath = READ_TWW_SERVER_PATH
-            writeServerPath = WRITE_TWW_SERVER_PATH
-            self.navigationItem.title = "REFLECTING POOL PUMPS SCHEDULER"
-            self.noteSchedulerData.text = "PUMP 202 ARE CONTROLLED BY THIS SCHEDULER"
-        } else if schedulerTag == 11{
+        if schedulerTag == 11{
             readServerPath = READ_FILTRATION_SERVER_PATH
             writeServerPath = WRITE_FILTRATION_SERVER_PATH
             self.navigationItem.title = "FILTRATION PUMPS SCHEDULER"
-            self.noteSchedulerData.text = "PUMP 201 IS CONTROLLED BY THIS SCHEDULER"
+            self.noteSchedulerData.text = "PUMP 101 IS CONTROLLED BY THIS SCHEDULER"
         }
         
         //Add notification observer to get system stat
@@ -171,12 +166,6 @@ class PumpSchedulerViewController: UIViewController {
                 CENTRAL_SYSTEM?.writeBit(bit: FILTRATION_PUMP_EN, value: 0)
             }
            
-        } else if schedulerTag == 22{
-            if scheduleSwitch.isOn{
-                CENTRAL_SYSTEM?.writeBit(bit: TWW_PUMP_EN, value: 1)
-            } else {
-                CENTRAL_SYSTEM?.writeBit(bit: TWW_PUMP_EN, value: 0)
-            }
         }
         readPumpEnStatus()
     }
@@ -187,19 +176,6 @@ class PumpSchedulerViewController: UIViewController {
     func readPumpEnStatus(){
         if schedulerTag == 11{
             CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(FILTRATION_PUMP_EN), completion: { (success, response) in
-                
-                guard success == true else { return }
-                
-                let status = Int(truncating: response![0] as! NSNumber)
-                
-                if status == 1{
-                    self.scheduleSwitch.isOn = true
-                } else {
-                    self.scheduleSwitch.isOn = false
-                }
-            })
-        } else if schedulerTag == 22{
-            CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(TWW_PUMP_EN), completion: { (success, response) in
                 
                 guard success == true else { return }
                 

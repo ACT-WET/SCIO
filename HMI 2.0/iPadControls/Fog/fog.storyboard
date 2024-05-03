@@ -1140,7 +1140,7 @@
                         <color key="backgroundColor" red="0.13723513479999999" green="0.13726624849999999" blue="0.13723316790000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="1IB-R9-Ifk"/>
                     </view>
-                    <navigationItem key="navigationItem" title="WATER LEVEL SETTINGS" id="gU2-09-fAI" userLabel="FOG SETTINGS"/>
+                    <navigationItem key="navigationItem" title="FOG SETTINGS" id="gU2-09-fAI" userLabel="FOG SETTINGS"/>
                     <connections>
                         <outlet property="noConnectionErrorLbl" destination="UQk-Ms-WnA" id="etM-d4-NT0"/>
                         <outlet property="noConnectionView" destination="eyg-rW-fjB" id="Pze-AA-630"/>

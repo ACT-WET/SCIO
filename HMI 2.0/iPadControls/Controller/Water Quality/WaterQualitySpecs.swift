@@ -8,86 +8,48 @@
 
 import Foundation
 
-let WALL1_OZONE_FAULTS                 = 2252
-let WALL2_OZONE_FAULTS                 = 2262
-let WALL3_OZONE_FAULTS                 = 2272
+public struct AI_VALUES{
+    
+    var status_abvHH = 0
+    var status_abvH = 0
+    var status_blwL = 0
+    var status_blwLL = 0
+    var status_blwLLL = 0
+    var status_faulted = 0
+    var status_channelFault = 0
+    var status_scalingFault = 0
+    var status_outOFRangeFault = 0
+    
+    var cmd_iPadOverride = 0
+    var cmd_frceHigh = 0
+    var cmd_frceLow = 0
+    
+    var status_ScaledVal = 0
+    var status_precision = 0
+    var status_ScaledValMax = 0
+    var status_ScaledValMin = 0
+    
+    var cfg_overrideValSP = 0
+    var cfg_abvHHSP = 0
+    var cfg_abvHSP = 0
+    var cfg_blwLSP = 0
+    var cfg_blwLLSP = 0
+    var cfg_blwLLLSP = 0
+    var cfg_abvHHTimer = 0
+    var cfg_abvHTimer = 0
+    var cfg_blwLTimer = 0
+    var cfg_blwLLTimer = 0
+    var cfg_blwLLLTimer = 0
+    
+}
 
-//=============== Water Quality
+var pH_SENSOR_DATAREGISTER           = (startAddr: 400, count: 20)
+var ORP_SENSOR_DATAREGISTER          = (startAddr: 425, count: 20)
+var CONDUCTIVITY_SENSOR_DATAREGISTER = (startAddr: 450, count: 20)
+var BR_SENSOR_DATAREGISTER           = (startAddr: 475, count: 20)
+var AT1001_TEMP_DATAREGISTER         = (startAddr: 500, count: 20)
+var TT1002_TEMP_DATAREGISTER         = (startAddr: 525, count: 20)
+var TT1003_TEMP_DATAREGISTER         = (startAddr: 550, count: 20)
 
-let WQ1_LIVE_SERVER_PATH            = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/WQ1_Live"
-let WQ1_DAY_SERVER_PATH             = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/WQ1_Day"
-
-let WQ2_LIVE_SERVER_PATH            = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/WQ2_Live"
-let WQ2_DAY_SERVER_PATH             = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/WQ2_Day"
-
-let WQ3_LIVE_SERVER_PATH            = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/WQ3_Live"
-let WQ3_DAY_SERVER_PATH             = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/WQ3_Day"
-
-//Water Quality Channel Faults
-
-let WQ_PH_CHANNEL_FAULT_BIT           = 302
-let WQ_OPR_CHANNEL_FAULT_BIT          = 310
-let WQ_TDS_CHANNEL_FAULT_BIT          = 320
-let WQ_PH_SCALED_VALUE                = 304
-let WQ_BR_DOSING_TIMEOUT_BIT          = 331
-let WQ_BR_ENABLED_BIT                 = 342
-let WQ_BR_DOSING                      = 330
-
-//Water Quality Timers
-
-let WQ_PH_TIMER_REGISTER              = 312
-let WQ_ORP_TIMER_REGISTER             = 316
-let WQ_TDS_TIMER_REGISTER             = 320
-let WQ_BR_TIMER_REGISTER              = 347
-
-//Water Quality Scale Min/ Max Real Value Addresses
-
-//PH SCALE MIN : 302
-//PH SCALE MAX : 304
-//OPR SCALE MIN: 312
-//ORP SCALE MAX: 314
-//TDS SCALE MIN: 322
-//TDS SCALE MAX: 324
-
-let WQ_SCALE_MIN = 302
-let WQ_SCALE_MAX = 304
-
-//SETPOINTs - not used for this project
-
-let WQ_ORP_TARGET_VAL_SP_ADDR_REAL   = 330
-let WQ_ORP_HIGH_SP_ADDR_REAL         = 318
-let WQ_ORP_LOW_SP_ADDR_REAL          = 316
-
-//Water Quality Data Acquisition States
-
-let WQ_LIVE_MODE_STATE                = 0
-let WQ_DAY_MODE_STATE                 = 1
-let WQ_WEEK_MODE_STATE                = 2
-
-//Water Quality Data Setpoints
-
-let WQ_GRAPH_LINE_WIDTH:CGFloat       = 1.5
-let WQ_GRAPH_LINE_COLOR:UIColor       = UIColor(red: 200.0/255.0, green: 200.0/255.0, blue: 200.0/255.0, alpha: 1.0)
-let WQ_GRAPH_FILL_ALPHA:CGFloat       = 0.4
-
-//Min and Max Sensor values based on PLC Specsheet
-
-let WQ_PH_MAX_VAL                     = 14.0
-let WQ_PH_MIN_VAL                     = 0.0
-
-let WQ_BR_MAX_VAL                     = 1.0
-let WQ_BR_MIN_VAL                     = 0.0
-
-let WQ_ORP_MAX_VAL                    = 2000.0 // 1000.0
-let WQ_ORP_MIN_VAL                    = -1000.0 // 0
-
-let WQ_TDS_MAX_VAL                    = 1999.0
-let WQ_TDS_MIN_VAL                    = 0.0
-
-let WQ_PH_LOW_SP                      = 7.00
-let WQ_PH_HI_SP                       = 8.00
-
-let WQ_GRAPH_MAX_DATA_POINTS          = 900.0
-let WQ_GRAPH_X_AXIS_RANGE:Double      = 900
-
-let WQ_PH_VALUE_DIVISOR               = 100.0
+var BR_VALVE_DATAREGISTER            = (startAddr: 575, count: 20)
+var FREEZE_VALVE_DATAREGISTER        = (startAddr: 600, count: 20)

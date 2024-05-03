@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate {
     
     
     @IBOutlet weak var noConnectionView: UIView!
@@ -24,22 +24,7 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
     @IBOutlet weak var frequencyIndicator: UIView!
     @IBOutlet weak var frequencyIndicatorValue: UILabel!
     @IBOutlet weak var frequencySetpointBackground: UIView!
-    
-    @IBOutlet weak var bwashSpeedIndicator: UIView!
-    @IBOutlet weak var bwashSpeedIndicatorValue: UILabel!
-    
-    @IBOutlet weak var manualBwashButton: UIButton!
-    @IBOutlet weak var cannotRunBwashLbl: UILabel!
-    
-    @IBOutlet weak var dayPicker: UIPickerView!
-    @IBOutlet weak var backwashDuration: UILabel!
-    
-    @IBOutlet weak var backWashScheduler: UIView!
-    @IBOutlet weak var countDownTimerBG: UIView!
-    @IBOutlet weak var countDownTimer: UILabel!
-    
     @IBOutlet weak var pumpSchBtn: UIButton!
-       @IBOutlet weak var ptView: UIView!
     
     var manulPumpGesture: UIPanGestureRecognizer!
     var backWashGesture: UIPanGestureRecognizer!
@@ -55,7 +40,9 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
     
     private var langData = [String : String]()
     private var iPadNumber = 0
-    var pumpNumber = 201
+    var pumpNumber = 101
+    var pumpCmdReg = VFD101_CMD_REG
+    var readOnce = 0
     private var bwashRunning = 0
     private var is24hours = true
     private var showStoppers = ShowStoppers()
@@ -74,7 +61,6 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
     private var selectedTimeOfDay = 0
     private var duration = 0  //In Minutes
     private var backWashShowNumber = 999
-    private var loadedScheduler = 0
     private var readBackWashSpeedOnce  = false
     private var frequency: Int?
     private var manualSpeed: Int?
@@ -82,6 +68,8 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
     private var readManualSpeedOncePLC = false
     var READ_BACKWASH_PATH = ""
     var WRITE_BACKWASH_PATH = ""
+    var pumpRegister = VFD_101_DATAREGISTER.startAddr
+    var pumpData = VFD_VALUES()
     //private var centralSystem = CentralSystem()
     //MARK: - View Life Cycle
     
@@ -95,18 +83,10 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
     
     override func viewWillAppear(_ animated: Bool){
         checkAMPM()
-        loadedScheduler = 0
         
         //Load Backwash Duration for Backwash Scheduler
         setInitialParam()
-        loadBWDuration()
-        
-        
         initializePumpGestureRecognizer()
-        initializeBackWashGestureRecognizer()
-        getIpadNumber()
-        
-        setPumpNumber()
         
         //Add notification observer to get system stat
         
@@ -115,70 +95,15 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
 
     override func viewWillDisappear(_ animated: Bool){
         
-        //Set pump number to
-        let registersSET1 = PUMP_SETS[iPadNumber-1]
-        let iPadNumberRegister = registersSET1[0]
-        
-        CENTRAL_SYSTEM!.writeRegister(register: iPadNumberRegister.register, value: 0)
-        
         //NOTE: We need to remove the notification observer so the PUMP stat check point will stop to avoid extra bandwith usage
+        self.readOnce = 0
         NotificationCenter.default.removeObserver(self)
         
     }
     
     func setInitialParam(){
-        self.navigationItem.title = "FILTRATION - 201"
-        self.pumpButton.setTitle("P - 201", for: .normal)
-        READ_BACKWASH_PATH = READ_BACK_WASH1
-        WRITE_BACKWASH_PATH = WRITE_BACK_WASH1
-    }
-    
-    func readPTValues(){
-       let pt1001scaledValue = self.ptView.viewWithTag(2001) as? UILabel
-       let pt1002scaledValue = self.ptView.viewWithTag(2002) as? UILabel
-       let pt1003scaledValue = self.ptView.viewWithTag(2003) as? UILabel
-       
-       let pt1001chFImg = self.ptView.viewWithTag(4001) as? UIImageView
-       let pt1002chFImg = self.ptView.viewWithTag(4002) as? UIImageView
-       let pt1003chFImg = self.ptView.viewWithTag(4003) as? UIImageView
-       
-       CENTRAL_SYSTEM!.readRealRegister(register:Int(PT1001_SCALEDVAL), length: 2){ (success, response)  in
-           
-          guard success == true else{
-              return
-          }
-           let val = Double(response)!
-           pt1001scaledValue!.text = String(format: "%.1f", val)
-       }
-       CENTRAL_SYSTEM!.readRealRegister(register:Int(PT1002_SCALEDVAL), length: 2){ (success, response)  in
-           
-          guard success == true else{
-              return
-          }
-           let val = Double(response)!
-           pt1002scaledValue!.text = String(format: "%.1f", val)
-       }
-       CENTRAL_SYSTEM!.readRealRegister(register:Int(PT1003_SCALEDVAL), length: 2){ (success, response)  in
-           
-          guard success == true else{
-              return
-          }
-           let val = Double(response)!
-           pt1003scaledValue!.text = String(format: "%.1f", val)
-       }
-       CENTRAL_SYSTEM?.readBits(length: 13, startingRegister: Int32(PT1001_SCALEDVAL), completion: { (sucess, response) in
-           
-           if response != nil{
-               let pt1001chFault = Int(truncating: response![0] as! NSNumber)
-               let pt1002chFault = Int(truncating: response![6] as! NSNumber)
-               let pt1003chFault = Int(truncating: response![12] as! NSNumber)
-               
-               pt1001chFault == 1 ? ( pt1001chFImg?.image = #imageLiteral(resourceName: "red")) : (pt1001chFImg?.image = #imageLiteral(resourceName: "green"))
-               pt1002chFault == 1 ? ( pt1002chFImg?.image = #imageLiteral(resourceName: "red")) : (pt1002chFImg?.image = #imageLiteral(resourceName: "green"))
-               pt1003chFault == 1 ? ( pt1003chFImg?.image = #imageLiteral(resourceName: "red")) : (pt1003chFImg?.image = #imageLiteral(resourceName: "green"))
-           }
-           
-       })
+        self.navigationItem.title = "FILTRATION - 101"
+        self.pumpButton.setTitle("P - 101", for: .normal)
     }
     /***************************************************************************
      * Function :  Check System Stat
@@ -195,13 +120,8 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
             
             //Change the connection stat indicator
             noConnectionView.alpha = 0
-            
-            readManualBwash()
-            readBWFeedback()
-            readPTValues()
             getSchdeulerStatus()
             readCurrentFiltrationPumpDetails()
-            readBackWashRunning()
             
         } else {
             noConnectionView.alpha = 1
@@ -237,44 +157,6 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
     }
     
     /***************************************************************************
-     * Function :  Set Pump Number to PLC
-     * Input    :  none
-     * Output   :  none
-     * Comment  :  Write the pump number to the ipad register to get all the details for that pump number
-     ***************************************************************************/
-    
-    private func setPumpNumber(){
-        
-        //Let the PLC know the current PUMP number
-        
-        let registersSET1 = PUMP_SETS[iPadNumber-1]
-        let iPadNumberRegister = registersSET1[0]
-        
-        CENTRAL_SYSTEM!.writeRegister(register: iPadNumberRegister.register, value: pumpNumber)
-        
-    }
-    
-    
-    /***************************************************************************
-     * Function :  Get Ipad Number
-     * Input    :  none
-     * Output   :  none
-     * Comment  :  Based on the iPad Number ( 1 or 2 ) the registers will change
-     ***************************************************************************/
-    
-    private func getIpadNumber(){
-        
-        let ipadNum = UserDefaults.standard.object(forKey: IPAD_NUMBER_USER_DEFAULTS_NAME) as? Int
-        
-        if ipadNum == nil || ipadNum == 0{
-            iPadNumber = 1
-        }else{
-            iPadNumber = ipadNum!
-        }
-        
-    }
-    
-    /***************************************************************************
      * Function :  Initialize Pump Gesture Recognizer
      * Input    :  none
      * Output   :  none
@@ -292,159 +174,6 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
         
     }
     
-    
-    private func initializeBackWashGestureRecognizer(){
-        
-        backWashGesture = UIPanGestureRecognizer(target: self, action: #selector(changeBackWashFrequency(sender:)))
-        //bwashSpeedIndicator.isUserInteractionEnabled = true
-        bwashSpeedIndicator.addGestureRecognizer(self.backWashGesture)
-        backWashGesture.delegate = self
-        
-    }
-    
-    
-    
-    /***************************************************************************
-     * Function :  Read Back Wash Feedback
-     * Input    :  none
-     * Output   :  none
-     * Comment  :  We want to read the back wash status so we can decide whether user can run/schedule backwash or not
-     
-     RESPONSE STRUCTURE
-     BWshowNumber = 999;
-     "PDSH_req4BW" = 0;
-     SchBWStatus = 2;
-     duration = 2;
-     manBWcanRun = 1;
-     schDay = 6;
-     schTime = 1545;
-     timeLastBW = 154500;
-     timeout = 86400;
-     timeoutCountdown = 80917;
-     trigBacklog = 0;
-     
-     ***************************************************************************/
-    
-    private func readBWFeedback(){
-        
-            self.httpComm.httpGetResponseFromPath(url: READ_BACKWASH_PATH){ (response) in
-                
-                guard let responseDictinary = response as? NSDictionary else { return }
-                
-                
-                let backWashStatus = responseDictinary["SchBWStatus"] as? Int
-                
-                if self.loadedScheduler == 0 {
-                    guard
-                        let backWashScheduledDay = responseDictinary["schDay"] as? Int,
-                        let backWashScheduledTime = responseDictinary["schTime"] as? Int else { return }
-                    
-                    
-                    self.dayPicker.selectRow(backWashScheduledDay - 1, inComponent: 0, animated: true)
-                    UserDefaults.standard.set(backWashScheduledDay, forKey: "Day")
-                    
-                    if self.is24hours {
-                        
-                        let hour = backWashScheduledTime / 100
-                        let minute = backWashScheduledTime % 100
-                        
-                        self.dayPicker.selectRow(hour, inComponent: 1, animated: true)
-                        self.dayPicker.selectRow(minute, inComponent: 2, animated: true)
-                        
-                        UserDefaults.standard.set(hour, forKey: "Hour")
-                        UserDefaults.standard.set(minute, forKey: "Minute")
-                        self.loadedScheduler = 1
-                        
-                        
-                    } else {
-                        var hour = backWashScheduledTime / 100
-                        let minute = backWashScheduledTime % 100
-                        let timeOfDay = hour - 12
-                        
-                        
-                        // check if its 12 AM
-                        if backWashScheduledTime < 60 {
-                            self.dayPicker.selectRow(11, inComponent: 1, animated: true)
-                            self.dayPicker.selectRow(minute, inComponent: 2, animated: true)
-                            self.dayPicker.selectRow(0, inComponent: 3, animated: true)
-                            
-                            UserDefaults.standard.set(11, forKey: "Hour")
-                            UserDefaults.standard.set(minute, forKey: "Minute")
-                            UserDefaults.standard.set(0, forKey: "TimeOfDay")
-                            
-                        } else if timeOfDay == 0{
-                            //check if it's 12 PM
-                            self.dayPicker.selectRow(hour - 1, inComponent: 1, animated: true)
-                            self.dayPicker.selectRow(minute, inComponent: 2, animated: true)
-                            self.dayPicker.selectRow(1, inComponent: 3, animated: true)
-                            
-                            UserDefaults.standard.set(hour - 1, forKey: "Hour")
-                            UserDefaults.standard.set(minute, forKey: "Minute")
-                            UserDefaults.standard.set(12, forKey: "TimeOfDay")
-                            
-                        } else if timeOfDay < 0 {
-                            //check if it's AM in general
-                            self.dayPicker.selectRow(hour - 1, inComponent: 1, animated: true)
-                            self.dayPicker.selectRow(minute, inComponent: 2, animated: true)
-                            self.dayPicker.selectRow(0, inComponent: 3, animated: true)
-                            
-                            UserDefaults.standard.set(hour - 1, forKey: "Hour")
-                            UserDefaults.standard.set(minute, forKey: "Minute")
-                            UserDefaults.standard.set(0, forKey: "TimeOfDay")
-                            
-                            
-                            
-                        } else {
-                            //check if it's PM
-                            hour = timeOfDay
-                            
-                            self.dayPicker.selectRow(hour - 1, inComponent: 1, animated: true)
-                            self.dayPicker.selectRow(minute, inComponent: 2, animated: true)
-                            self.dayPicker.selectRow(1, inComponent: 3, animated: true)
-                            
-                            UserDefaults.standard.set(hour - 1, forKey: "Hour")
-                            UserDefaults.standard.set(minute, forKey: "Minute")
-                            UserDefaults.standard.set(12, forKey: "TimeOfDay")
-                            
-                        }
-                        
-                        self.loadedScheduler = 1
-                        
-                    }
-                    
-                }
-                
-                //If the back wash status is 2: show the count down timer
-                
-                if backWashStatus == 2{
-                    self.backWashScheduler.isHidden = false
-                    self.countDownTimerBG.isHidden = false
-                    
-                    if let countDownSeconds = responseDictinary["timeoutCountdown"] as? Int {
-                        let hours = countDownSeconds / 3600
-                        let minutes = (countDownSeconds % 3600) / 60
-                        let seconds = (countDownSeconds % 3600) % 60
-                        
-                        self.countDownTimer.text = "\(hours):\(minutes):\(seconds)"
-                    }
-              
-                    
-                  
-                    
-                } else if backWashStatus == 0 {
-                    self.backWashScheduler.isHidden = false
-                    self.countDownTimerBG.isHidden = true
-                } else {
-                    self.backWashScheduler.isHidden = false
-                    self.countDownTimerBG.isHidden = true
-                }
-                
-            }
-    }
-    
-    
-    
-    
     //====================================
     //                                     FILTRATION MONITOR
     //====================================
@@ -459,26 +188,90 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
     
     private func readCurrentFiltrationPumpDetails(){
         
-        var pumpSet = 0
-        
-        if iPadNumber == 1{
-            pumpSet = 0
-        }else if iPadNumber == 2{
-            pumpSet = 1
-        }
-        
-        let registersSET1 = PUMP_SETS[pumpSet]
-        let startRegister = registersSET1[1]
-        
-        
-        
-        CENTRAL_SYSTEM!.readRegister(length: 14, startingRegister: Int32(startRegister.register), completion:{ (success, response) in
+        CENTRAL_SYSTEM?.readRegister(length: 18, startingRegister: Int32(pumpRegister), completion:{ (success, response) in
             
-            guard response != nil else { return }
+            guard success == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
+            self.pumpData.vfdReady = statusArrValues[0]
+            self.pumpData.vfdRunning = statusArrValues[1]
+            self.pumpData.pumpFaulted = statusArrValues[2]
+            self.pumpData.pumpWarning = statusArrValues[3]
+            self.pumpData.inHandMode = statusArrValues[4]
+            self.pumpData.inOffMode = statusArrValues[5]
+            self.pumpData.inAutoMode = statusArrValues[6]
+            self.pumpData.filtrationControlMode = statusArrValues[7]
+            self.pumpData.showControlMode = statusArrValues[8]
+            self.pumpData.schedulerControlMode = statusArrValues[9]
+            self.pumpData.plcControlMode = statusArrValues[10]
+            self.pumpData.vfdWarning = statusArrValues[11]
+            self.pumpData.strainerWarning = statusArrValues[12]
+            self.pumpData.notInAutoWarning = statusArrValues[13]
             
-            self.readCurrentFiltrationSpeed(response: response)
-            self.readCurrentManualSpeed(response: response)
-            self.readCurrentBackwashSpeed(response: response)
+            let faultStatusArrValues = self.convertIntToBitArr(a: Int(truncating: response![4] as! NSNumber))
+            self.pumpData.fault_EStop = faultStatusArrValues[0]
+            self.pumpData.fault_Network = faultStatusArrValues[1]
+            self.pumpData.fault_VFDActive = faultStatusArrValues[2]
+            self.pumpData.fault_lowWaterLevel = faultStatusArrValues[3]
+            self.pumpData.fault_lowPressure = faultStatusArrValues[4]
+            self.pumpData.fault_GFCITripped = faultStatusArrValues[5]
+            self.pumpData.fault_FailToRunAlarm = faultStatusArrValues[6]
+            
+            self.pumpData.status_OutputFrequency = Int(truncating: response![8] as! NSNumber)
+            self.pumpData.status_OutputVoltage = Int(truncating: response![9] as! NSNumber)
+            self.pumpData.status_OutputCurrent = Int(truncating: response![10] as! NSNumber)
+            self.pumpData.status_OutputMotorPwr = Int(truncating: response![11] as! NSNumber)
+            self.pumpData.status_OutputTemperature = Int(truncating: response![12] as! NSNumber)
+            
+            self.pumpData.status_frequencyShowDataSP = Int(truncating: response![14] as! NSNumber)
+            self.pumpData.status_frequencyPLCDataSP = Int(truncating: response![15] as! NSNumber)
+            self.pumpData.cfg_frequencySP = Int(truncating: response![16] as! NSNumber)
+            self.pumpData.cfg_frequencyBWSP = Int(truncating: response![17] as! NSNumber)
+            
+            
+            
+            if self.readOnce == 0{
+                self.readCurrentFiltrationSpeed(response: self.pumpData.status_OutputFrequency)
+                self.readCurrentManualSpeed(response: self.pumpData.cfg_frequencySP)
+                self.readOnce = 1
+            }
+            
+            //print(statusArrValues)
+            
+        })
+        CENTRAL_SYSTEM?.readRegister(length: Int32(SYSTEM_PRESSURE.count), startingRegister: Int32(SYSTEM_PRESSURE.startAddr), completion:{ (success, response) in
+            
+            guard success == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![0] as! NSNumber))
+            
+            let psl1001 = self.view.viewWithTag(2001) as? UIImageView
+            let psl1003 = self.view.viewWithTag(2002) as? UIImageView
+            let psl1005 = self.view.viewWithTag(2003) as? UIImageView
+            let psll1001 = self.view.viewWithTag(2004) as? UIImageView
+            let psll1003 = self.view.viewWithTag(2005) as? UIImageView
+            let psll1004 = self.view.viewWithTag(2006) as? UIImageView
+            let psll1005 = self.view.viewWithTag(2007) as? UIImageView
+            let psll1006 = self.view.viewWithTag(2008) as? UIImageView
+            
+            statusArrValues[0] == 1 ? (psl1001?.image = #imageLiteral(resourceName: "yellow")) : (psl1001?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            statusArrValues[1] == 1 ? (psl1003?.image = #imageLiteral(resourceName: "yellow")) : (psl1003?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            statusArrValues[2] == 1 ? (psl1005?.image = #imageLiteral(resourceName: "yellow")) : (psl1005?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            statusArrValues[3] == 1 ? (psll1001?.image = #imageLiteral(resourceName: "red")) : (psll1001?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            statusArrValues[4] == 1 ? (psll1003?.image = #imageLiteral(resourceName: "red")) : (psll1003?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            statusArrValues[5] == 1 ? (psll1004?.image = #imageLiteral(resourceName: "red")) : (psll1004?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            statusArrValues[6] == 1 ? (psll1005?.image = #imageLiteral(resourceName: "red")) : (psll1005?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            statusArrValues[7] == 1 ? (psll1006?.image = #imageLiteral(resourceName: "red")) : (psll1006?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            
+            if statusArrValues[3] == 1 || statusArrValues[4] == 1 || statusArrValues[5] == 1 || statusArrValues[6] == 1 || statusArrValues[7] == 1 {
+                self.cleanStrainerIndicator.isHidden = false
+            } else {
+                self.cleanStrainerIndicator.isHidden = true
+            }
         })
     }
     
@@ -489,8 +282,8 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
      * Comment  :  The frequency background frame will change its size according to the frequency value we got from the PLC
      ***************************************************************************/
     
-    private func readCurrentFiltrationSpeed(response:[AnyObject]?) {
-        self.frequency = Int(truncating: response![1] as! NSNumber)
+    private func readCurrentFiltrationSpeed(response:Int) {
+        self.frequency = response
         
         if let frequency = frequency {
             let integer = frequency / 10
@@ -513,12 +306,10 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
      * Comment  :  The frequency indicator frame and frequency text will move its y coordinate according to the frequency value we got from the PLC
      ***************************************************************************/
     
-    private func readCurrentManualSpeed(response:[AnyObject]?) {
-        if  readManualSpeedPLC || !readManualSpeedOncePLC {
-            readManualSpeedPLC = false
-            
+    private func readCurrentManualSpeed(response:Int) {
+        
             frequencyIndicatorValue.textColor = GREEN_COLOR
-            self.manualSpeed = Int(truncating: response![0] as! NSNumber)
+            self.manualSpeed = response
             
             if let manualSpeed = manualSpeed {
                 let integer = manualSpeed / 10
@@ -536,72 +327,7 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
                     readManualSpeedOncePLC = true
                 }
             }
-        }
     }
-    
-    
-    
-    /***************************************************************************
-     * Function :  Read Back Wash Speed
-     * Input    :  none
-     * Output   :  none
-     * Comment  :  The back wash indicator frame and frequency label will move its y-coordinate according to the frequency value we got from the PLC.
-     ***************************************************************************/
-    
-    private func readCurrentBackwashSpeed(response:[AnyObject]?){
-        
-        let backWash = Int(truncating: response![9] as! NSNumber)
-        let integer = backWash / 10
-        let decimal = backWash % 10
-        let indicatorLocation = 445 - (Double(integer) * FILTRATION_PIXEL_PER_BACKWASH)
-        
-        if !readBackWashSpeedOnce {
-            bwashSpeedIndicatorValue.textColor = BABY_BLUE_COLOR
-            
-            if integer > Int(MAX_FILTRATION_BACKWASH_SPEED) {
-                readBackWashSpeedOnce = true
-                bwashSpeedIndicator.frame = CGRect(x: 524, y: 190, width: 86, height: 23)
-                bwashSpeedIndicatorValue.text = "\(MAX_FILTRATION_BACKWASH_SPEED)"
-                
-            }else{
-                readBackWashSpeedOnce = true
-                bwashSpeedIndicator.frame = CGRect(x: 524, y: Int(indicatorLocation), width: 86, height: 23)
-                bwashSpeedIndicatorValue.text = "\(integer).\(decimal)"
-            }
-        }
-        
-    }
-    
-    
-    /***************************************************************************
-     * Function :  Read Back Wash Running Bit
-     * Input    :  none
-     * Output   :  none
-     * Comment  :  Check whether the back wash is running or not.
-     If back wash is running we cannot play a show.
-     ***************************************************************************/
-    
-    private func readBackWashRunning(){
-        CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(FILTRATION_BWASH_RUNNING_BIT), completion: { (success, response) in
-            
-            guard success == true else { return }
-            
-            let running = Int(truncating: response![0] as! NSNumber)
-            self.bwashRunning = running
-            
-            if running == 1{
-                self.manualBwashButton.setImage(#imageLiteral(resourceName: "bwashRunning"), for: .normal)
-                UserDefaults.standard.set(1, forKey: "backWashRunningStat")
-            } else {
-                self.manualBwashButton.setImage(#imageLiteral(resourceName: "bwashIcon"), for: .normal)
-                UserDefaults.standard.set(0, forKey: "backWashRunningStat")
-            }
-        })
-        
-    }
-    
-    
-    
     /***************************************************************************
      * Function :  Change Pump's Frequency
      * Input    :  none
@@ -653,393 +379,12 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate, UI
             
             
             if sender.state == .ended {
-                if iPadNumber == 1{
-                    if convertedFrequency < 10{
-                        CENTRAL_SYSTEM?.writeRegister(register: 2, value: 0)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            self.readManualSpeedPLC = true
-                        }
-                    }else{
-                        CENTRAL_SYSTEM?.writeRegister(register: 2, value: convertedFrequency)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            self.readManualSpeedPLC = true
-                        }
-                    }
-                    
-                }else{
-                    if convertedFrequency < 10{
-                        CENTRAL_SYSTEM?.writeRegister(register: 22, value: 0)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            self.readManualSpeedPLC = true
-                        }
-                    }else{
-                        CENTRAL_SYSTEM?.writeRegister(register: 22, value: convertedFrequency)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            self.readManualSpeedPLC = true
-                        }
-                    }
-                    
-                }
-            }
-       
-        }
-    }
-    
-    
-    
-    /***************************************************************************
-     * Function :  Change Backwash Frequency
-     * Input    :  none
-     * Output   :  none
-     * Comment  :  Calculations are set.
-     Note: We multiply the hertz by 10 because PLC expects 3 digit number
-     ***************************************************************************/
-    
-    @objc func changeBackWashFrequency(sender: UIPanGestureRecognizer){
-        bwashSpeedIndicatorValue.textColor = DEFAULT_GRAY
-        var touchLocation:CGPoint = sender.location(in: self.view)
-        if touchLocation.y  < 196 {
-            touchLocation.y = 196
-        }
-        if touchLocation.y  > 461 {
-            touchLocation.y = 461
-        }
-        
-        //This is set.
-        if touchLocation.y >= 196 && touchLocation.y <= 461 {
-            print(touchLocation.y)
-            //Make sure that we don't go more than pump flow limit
-            sender.view?.center.y = touchLocation.y
-            
-            
-            let flowRange = 460.0 - touchLocation.y
-            let hertz = Float(flowRange) * CONVERTED_FILTRATION_PIXEL_PER_BW!
-            
-            
-            var convertedBWFrequency = Int(hertz * 10)
-            let BWfrequencyValue = convertedBWFrequency / 10
-            var BWfrequencyRemainder = convertedBWFrequency % 10
-            
-            if BWfrequencyValue == 50 && BWfrequencyRemainder > 0 {
-                BWfrequencyRemainder = 0
-            }
-            
-            if BWfrequencyValue == 0 && BWfrequencyRemainder < 0 {
-                BWfrequencyRemainder = 0
-            }
-            
-            bwashSpeedIndicatorValue.text = "\(BWfrequencyValue).\(BWfrequencyRemainder)"
-            
-            if convertedBWFrequency > CONVERTED_BW_SPEED_LIMIT {
-                convertedBWFrequency = CONVERTED_BW_SPEED_LIMIT
-            } else if convertedBWFrequency < 0 {
-                convertedBWFrequency = 0
-            }
-            
-            
-            if sender.state == .ended {
-                if iPadNumber == 1{
-                    if convertedBWFrequency < 10{
-                        CENTRAL_SYSTEM?.writeRegister(register: 11, value: 0)
-                    }else{
-                        CENTRAL_SYSTEM?.writeRegister(register: 11, value: convertedBWFrequency)
-                    }
-                    
-                    readBackWashSpeedOnce = false
-                }else{
-                    
-                    if convertedBWFrequency < 10{
-                        CENTRAL_SYSTEM?.writeRegister(register: 31, value: 0)
-                    }else{
-                        CENTRAL_SYSTEM?.writeRegister(register: 31, value: convertedBWFrequency)
-                    }
-                    
-                    readBackWashSpeedOnce = false
-                }
-            }
-       
-        }
-    }
-    
-    
-    /***************************************************************************
-     * Function :  Read Manual Back Wash
-     * Input    :  none
-     * Output   :  none
-     * Comment  :  It reads from the server. Show/hide label.
-     ***************************************************************************/
-    
-    private func readManualBwash(){
-        
-        self.httpComm.httpGetResponseFromPath(url: READ_BACKWASH_PATH){ (response) in
-            
-            guard let responseDictionary = response as? NSDictionary else { return }
-            
-            let backwash = Int(truncating: responseDictionary.object(forKey: "manBWcanRun") as! NSNumber)
-            
-            if backwash == 1{
-                
-                self.manualBwashButton.isHidden = false
-                self.cannotRunBwashLbl.isHidden = true
-                
-            }else{
-                
-                self.manualBwashButton.isHidden = true
-                self.cannotRunBwashLbl.isHidden = false
-                
+                CENTRAL_SYSTEM?.writeRegister(register: pumpCmdReg.setFreqSP, value: Int(convertedFrequency))
+                self.readOnce = 0
             }
         }
     }
-    
-    
-    /***************************************************************************
-     * Function :  e Manual Back Wash Button
-     * Input    :  none
-     * Output   :  none
-     * Comment  :  Pulsates the Filtration toggle backwash bit. Write 1 then write 0 after 1 sec.
-     ***************************************************************************/
-    
-    @IBAction func toggleManualBackwash(_ sender: Any){
-        CENTRAL_SYSTEM?.writeBit(bit: FILTRATION_TOGGLE_BWASH_BIT, value: 1)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-            CENTRAL_SYSTEM?.writeBit(bit: FILTRATION_TOGGLE_BWASH_BIT, value: 0)
-            
-        }
-    }
-    
-    
-    /***************************************************************************
-     * Function :  Construct Back Wash Scheduler
-     * Input    :  none
-     * Output   :  none
-     * Comment  :  Construct Picker View. These are all set. No need to configure
-     Change time to 12 or 24 hours according to the user's date and time setting
-     ***************************************************************************/
-    
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        if is24hours {
-            return 3
-        } else {
-            return 4
-        }
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        
-        
-        if component == 0{
-            
-            return 7
-            
-        } else if component == 1{
-            
-            if is24hours {
-                return 24
-            } else {
-                return 12
-            }
-            
-        } else if component == 2{
-            
-            return 60
-            
-        } else {
-            
-            return 2
-            
-        }
-        
-        
-    }
-    
-    
-    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-        if is24hours {
-            if component == 0 {
-                return 175
-            } else if component == 1 {
-                return 50
-            } else {
-                return 80
-            }
-        } else if !is24hours {
-            if component == 0 {
-                return 150
-            } else {
-                return 50
-            }
-        } else {
-            return 0
-        }
-        
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        var pickerLabel: UILabel? = (view as? UILabel)
-        
-        if pickerLabel == nil {
-            pickerLabel = UILabel()
-            pickerLabel?.textColor = .white
-            pickerLabel?.font = UIFont(name: ".SFUIDisplay", size: 20)
-            pickerLabel?.textAlignment = .left
-            
-            
-            switch component {
-                
-            case 0:
-                pickerLabel?.text = DAY_PICKER_DATA_SOURCE[row]
-                
-            case 1:
-                pickerLabel?.textAlignment = .right
-                
-                if is24hours {
-                    let formattedHour = String(format: "%02i", row)
-                    pickerLabel?.text = "\(formattedHour)"
-                } else {
-                    pickerLabel?.text = "\(row + 1)"
-                }
-                
-            case 2:
-                let formattedMinutes = String(format: "%02i", row)
-                pickerLabel?.text = ": \(formattedMinutes)"
-                
-            case 3:
-                pickerLabel?.text = AM_PM_PICKER_DATA_SOURCE[row]
-                
-            default:
-                pickerLabel?.text = "Error"
-            }
-            
-        }
-        
-        
-        return pickerLabel!
-    }
-    
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int){
-        
-        //Selected Day
-        if component == 0 {
-            
-            selectedDay = row + 1
-            UserDefaults.standard.set(selectedDay, forKey: "SelectedDay")
-            component0AlreadySelected = true
-        } else {
-            if !component0AlreadySelected {
-                let defaultDay = UserDefaults.standard.integer(forKey: "Day")
-                UserDefaults.standard.set(defaultDay, forKey: "SelectedDay")
-            }
-        }
-        
-        if component == 1 {
-            if is24hours {
-                selectedHour = row
-            } else {
-                selectedHour = row + 1
-            }
-            
-            UserDefaults.standard.set(selectedHour, forKey: "SelectedHour")
-            component1AlreadySelected = true
-        } else {
-            if !component1AlreadySelected {
-                let hour = UserDefaults.standard.integer(forKey: "Hour")
-                
-                if is24hours {
-                    UserDefaults.standard.set(hour, forKey: "SelectedHour")
-                } else {
-                    UserDefaults.standard.set(hour + 1, forKey: "SelectedHour")
-                }
-            }
-        }
-        
-        if component == 2 {
-            
-            selectedMinute = row
-            UserDefaults.standard.set(selectedMinute, forKey: "SelectedMinute")
-            component2AlreadySelected = true
-        } else {
-            if !component2AlreadySelected {
-                let minute = UserDefaults.standard.integer(forKey: "Minute")
-                UserDefaults.standard.set(minute, forKey: "SelectedMinute")
-            }
-        }
-        
-        if component == 3 {
-            if !is24hours {
-                if row == 0 {
-                    selectedTimeOfDay = 0
-                } else {
-                    selectedTimeOfDay = 12
-                }
-            } else {
-                selectedTimeOfDay = 0
-            }
-            
-            UserDefaults.standard.set(selectedTimeOfDay, forKey: "SelectedTimeOfDay")
-            component3AlreadySelected = true
-        } else {
-            if !component3AlreadySelected {
-                let day = UserDefaults.standard.integer(forKey: "TimeOfDay")
-                UserDefaults.standard.set(day, forKey: "SelectedTimeOfDay")
-            }
-        }
-        
-    }
-    
     //MARK: - Set Backwash Scheduler
-    
-    @IBAction func setBackwashScheduler(_ sender: Any) {
-        let hour = UserDefaults.standard.integer(forKey: "SelectedHour")
-        let minute = UserDefaults.standard.integer(forKey: "SelectedMinute")
-        let day = UserDefaults.standard.integer(forKey: "SelectedDay")
-        let timeOfDay =  UserDefaults.standard.integer(forKey: "SelectedTimeOfDay")
-        
-        var time = 0
-        //Converting hour and minute to 4 digit
-        
-        if is24hours {
-            time = (hour * 100) + minute
-        } else {
-            time = ((hour + timeOfDay) * 100)
-            
-            if time == 1200 {
-                //12 AM
-                time = (time * 0) + minute
-            } else if time == 2400 {
-                //12 PM
-                time = (time - 1200) + minute
-            } else {
-                time += minute
-            }
-        }
-        
-        httpComm.httpGetResponseFromPath(url: "\(WRITE_BACKWASH_PATH)[\(day),\(time)]"){ (response) in
-            self.loadedScheduler = 0
-        }
-        
-        //NOTE: The Data Structure be [DAY,TIME]
-        
-        
-    }
-    
-    
-    /***************************************************************************
-     * Function :  Load Back Wash Duration
-     * Input    :  none
-     * Output   :  none
-     * Comment  :
-     ***************************************************************************/
-    
-    private func loadBWDuration(){
-        CENTRAL_SYSTEM?.readRegister(length: 1, startingRegister: Int32(FILTRATION_BW_DURATION_REGISTER), completion: { (success, response) in
-            
-            guard success == true else { return }
-            
-            let bwDuration = Int(truncating: response![0] as! NSNumber)
-            self.backwashDuration.text = "\(bwDuration) m"
-        })
-    }
     
     @IBAction func redirectToPumpDetail(_ sender: UIButton) {
         let storyBoard : UIStoryboard = UIStoryboard(name: "pumps", bundle:nil)

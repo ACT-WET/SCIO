@@ -560,6 +560,7 @@ public struct DC_POWER_VALUES{
 
 let BLOSSOM_PLUME_MAX_SP = (startAddr: 1006, count: 12)
 let BLOSSOM_DELAYTIMERS  = (startAddr: 8511, count: 7)
+let FILTRATION_DELAYTIMERS  = (startAddr: 8510, count: 4)
 
 let BLOSSOM_PSL10034_WARNING_TIMER = 8511
 let BLOSSOM_PSL10056_WARNING_TIMER = 8512
@@ -567,6 +568,8 @@ let BLOSSOM_PSL1003_FAULT_TIMER    = 8514
 let BLOSSOM_PSL1004_FAULT_TIMER    = 8515
 let BLOSSOM_PSL1005_FAULT_TIMER    = 8516
 let BLOSSOM_PSL1006_FAULT_TIMER    = 8517
+let FILTRATION_PSL1001_FAULT_TIMER = 8510
+let FILTRATION_PSLL1001_FAULT_TIMER = 8513
 
 public struct VFD_VALUES{
     
@@ -637,14 +640,14 @@ var VFD_107_DATAREGISTER = (startAddr: 1300, count: 19)
 var VFD_108_DATAREGISTER = (startAddr: 1350, count: 19)
 var VFD_109_DATAREGISTER = (startAddr: 1400, count: 19)
 
-var VFD101_CMD_REG = (setHand:1050, setOff:1051, setAuto:1052, setHandStart:1053, setHandStop:1054, faultReset:1055, warningReset:1056, enableAutoReset:1057, setFreqSP:1066)
-var VFD103_CMD_REG = (setHand:1100, setOff:1101, setAuto:1102, setHandStart:1103, setHandStop:1104, faultReset:1105, warningReset:1106, enableAutoReset:1107, setFreqSP:1116)
-var VFD104_CMD_REG = (setHand:1150, setOff:1151, setAuto:1152, setHandStart:1153, setHandStop:1154, faultReset:1155, warningReset:1156, enableAutoReset:1157, setFreqSP:1166)
-var VFD105_CMD_REG = (setHand:1200, setOff:1201, setAuto:1202, setHandStart:1203, setHandStop:1204, faultReset:1205, warningReset:1206, enableAutoReset:1207, setFreqSP:1216)
-var VFD106_CMD_REG = (setHand:1250, setOff:1251, setAuto:1252, setHandStart:1253, setHandStop:1254, faultReset:1255, warningReset:1256, enableAutoReset:1257, setFreqSP:1266)
-var VFD107_CMD_REG = (setHand:1300, setOff:1301, setAuto:1302, setHandStart:1303, setHandStop:1304, faultReset:1305, warningReset:1306, enableAutoReset:1307, setFreqSP:1316)
-var VFD108_CMD_REG = (setHand:1350, setOff:1351, setAuto:1352, setHandStart:1353, setHandStop:1354, faultReset:1355, warningReset:1356, enableAutoReset:1357, setFreqSP:1366)
-var VFD109_CMD_REG = (setHand:1400, setOff:1401, setAuto:1402, setHandStart:1403, setHandStop:1404, faultReset:1405, warningReset:1406, enableAutoReset:1407, setFreqSP:1416)
+var VFD101_CMD_REG = (setHand:1050, setOff:1051, setAuto:1052, setHandStart:1053, setHandStop:1054, faultReset:1055, warningReset:1056, enableAutoReset:1057, setFreqSP:1066, setBWSP:1067)
+var VFD103_CMD_REG = (setHand:1100, setOff:1101, setAuto:1102, setHandStart:1103, setHandStop:1104, faultReset:1105, warningReset:1106, enableAutoReset:1107, setFreqSP:1116, setBWSP:0)
+var VFD104_CMD_REG = (setHand:1150, setOff:1151, setAuto:1152, setHandStart:1153, setHandStop:1154, faultReset:1155, warningReset:1156, enableAutoReset:1157, setFreqSP:1166, setBWSP:0)
+var VFD105_CMD_REG = (setHand:1200, setOff:1201, setAuto:1202, setHandStart:1203, setHandStop:1204, faultReset:1205, warningReset:1206, enableAutoReset:1207, setFreqSP:1216, setBWSP:0)
+var VFD106_CMD_REG = (setHand:1250, setOff:1251, setAuto:1252, setHandStart:1253, setHandStop:1254, faultReset:1255, warningReset:1256, enableAutoReset:1257, setFreqSP:1266, setBWSP:0)
+var VFD107_CMD_REG = (setHand:1300, setOff:1301, setAuto:1302, setHandStart:1303, setHandStop:1304, faultReset:1305, warningReset:1306, enableAutoReset:1307, setFreqSP:1316, setBWSP:0)
+var VFD108_CMD_REG = (setHand:1350, setOff:1351, setAuto:1352, setHandStart:1353, setHandStop:1354, faultReset:1355, warningReset:1356, enableAutoReset:1357, setFreqSP:1366, setBWSP:0)
+var VFD109_CMD_REG = (setHand:1400, setOff:1401, setAuto:1402, setHandStart:1403, setHandStop:1404, faultReset:1405, warningReset:1406, enableAutoReset:1407, setFreqSP:1416, setBWSP:0)
 
 var VFD101_CFG_DELAYTIMER = 1068
 var VFD103_CFG_DELAYTIMER = 1018
@@ -655,3 +658,4 @@ var VFD107_CFG_DELAYTIMER = 1318
 var VFD108_CFG_DELAYTIMER = 1368
 var VFD109_CFG_DELAYTIMER = 1418
 
+var SYSTEM_PRESSURE = (startAddr: 1030, count: 1)

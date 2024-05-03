@@ -23,12 +23,6 @@ import UIKit
 class WindViewController: UIViewController{
 
         @IBOutlet weak var windStat: UIImageView!
-        
-        @IBOutlet weak var highWindMde: UIButton!
-        @IBOutlet weak var medWindMde: UIButton!
-        @IBOutlet weak var loWindMde: UIButton!
-        @IBOutlet weak var noWindMde: UIButton!
-        @IBOutlet weak var autoBtn: UIButton!
         @IBOutlet weak var noConnectionView: UIView!
         @IBOutlet weak var noConnectionErrorLbl: UILabel!
 
@@ -40,11 +34,7 @@ class WindViewController: UIViewController{
         //MARK: - Data Structures
         
         private var langData = Dictionary<String, String>()
-        private var windModel:Wind?
-        private let wind_sensor_1   = WIND_SENSOR_1()  //If there are more wind sensors, this variable needs to be duplicated and number incremented
-        
-        private var wind_sensors:Array<Any>?
-        private var wind_sensors2:Array<Any>?
+        private var wind_sensor_1   = WEATHER_SYSTEM_SENSOR_VALUES()  //If there are more wind sensors, this variable needs to be duplicated and number incremented
         
         private var sensorNumber    = 0
         private var counter         = 0
@@ -63,8 +53,6 @@ class WindViewController: UIViewController{
         override func viewDidLoad(){
             
             super.viewDidLoad()
-            
-            wind_sensors  = [wind_sensor_1]
        
         }
         
@@ -77,13 +65,7 @@ class WindViewController: UIViewController{
 
         override func viewWillAppear(_ animated: Bool){
             //Get Wind Parameters From Local Storage
-            getWindParameters()
             
-            //Configure Wind  Screen
-            constructWindSensorMeters()
-            
-            //Configure Wind Screen Text Content Based On Device Language
-            configureScreenTextContent()
             NotificationCenter.default.addObserver(self, selector: #selector(checkSystemStat), name: NSNotification.Name(rawValue: "updateSystemStat"), object: nil)
             //Add notification observer to get system stat
 
@@ -120,7 +102,6 @@ class WindViewController: UIViewController{
                 
                 //Now that the connection is established, run functions
                 readWindSensorData()
-                getChannelFaults()
                 
             } else {
                 noConnectionView.alpha = 1
@@ -133,76 +114,6 @@ class WindViewController: UIViewController{
                 }
             }
         }
-        
-        
-        /***************************************************************************
-         * Function :  getWindParameters
-         * Input    :  none
-         * Output   :  none
-         * Comment  :
-         ***************************************************************************/
-             
-        private func getWindParameters(){
-            
-            //Fetch Wind Settings From Local Core Data Storage
-            let wind = Wind.all() as! [Wind]
-            
-            self.logger.logData(data: "WIND - MODEL COUNT -> \(wind.count)")
-            
-            guard wind.count != 0 else{
-                return
-            }
-            
-            windModel = wind[0] as Wind
-        
-        }
-
-        /***************************************************************************
-         * Function :  configureScreenTextContent
-         * Input    :  none
-         * Output   :  none
-         * Comment  :
-         ***************************************************************************/
-
-        private func configureScreenTextContent(){
-            
-            langData = self.helper.getLanguageSettigns(screenName: WIND_SCREEN_LANGUAGE_DATA_PARAM)
-            
-            guard windModel != nil else{
-                
-                self.logger.logData(data: "WIND: WIND MODEL EMPTY")
-                
-                //If the wind model is empty, put default parameters to avoid system crash
-                self.navigationItem.title = langData["WIND"]!
-                
-                return
-                
-            }
-            
-            self.navigationItem.title = langData["WIND"]!
-        }
-
-        /***************************************************************************
-         * Function :  constructWindSensorMeters
-         * Input    :  none
-         * Output   :  none
-         * Comment  :
-         ***************************************************************************/
-
-        private func constructWindSensorMeters(){
-            
-            guard windModel != nil else{
-                return
-            }
-        
-            //Set Speed Unit Of Measure
-            //self.setWindSpeedUnitOfMeasure(metric: windModel!.metric, labelTag: WIND_SPEED_MEASURE_UNIT_1_UI_TAG)
-
-            //Enable Disable Setpoint Button
-            //self.enableDisableSetPoints(setPointEnabled: self.windModel!.enableSetPoints, buttonTag: WIND_SET_POINT_ENABLE_BTN_1_UI_TAG)
-
-        }
-        
         /***************************************************************************
          * Function :  setWindSpeedUnitOfMeasure
          * Input    :  metric yes/no, ui label tag
@@ -257,169 +168,58 @@ class WindViewController: UIViewController{
          ***************************************************************************/
         
         private func readWindSensorData(){
-            
-                self.readWindSpeed(register: self.wind_sensor_1.SPEED_SCALED_VALUE.register, labelTag: WIND_SPEED_1_UI_TAG)
-                //Read wind direction for all wind sensors
-                self.readWindDirection(register: self.wind_sensor_1.DIRECTION_SCALED_VALUE.register, directionTag: WIND_DIRECTION_1_UI_TAG)
                 
-                CENTRAL_SYSTEM?.readRegister(length: 1, startingRegister: Int32(WIND_SPM_HAND_MODE), completion:{ (success, response) in
+            CENTRAL_SYSTEM?.readRegister(length: Int32(WEATHER_SYSTEM_DATA.count), startingRegister: Int32(WEATHER_SYSTEM_DATA.startAddr), completion:{ (success, response) in
                     
                    guard success == true else { return }
-                   let autoW = self.view.viewWithTag(890) as? UIButton
-                   let nW = self.view.viewWithTag(891) as? UIButton
-                   let lW = self.view.viewWithTag(892) as? UIButton
-                   let mW = self.view.viewWithTag(893) as? UIButton
-                   let hW = self.view.viewWithTag(894) as? UIButton
-                    
-                   let frceWindState = Int(truncating: response![0] as! NSNumber)
-                    if frceWindState == 0{
-                        autoW?.setTitleColor(GREEN_COLOR, for: .normal)
-                        nW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        lW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        mW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        hW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                    }
-                    if frceWindState == 1{
-                        autoW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        nW?.setTitleColor(GREEN_COLOR, for: .normal)
-                        lW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        mW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        hW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                    }
-                    if frceWindState == 2{
-                        autoW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        nW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        lW?.setTitleColor(GREEN_COLOR, for: .normal)
-                        mW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        hW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                    }
-                    if frceWindState == 3{
-                        autoW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        nW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        lW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        mW?.setTitleColor(GREEN_COLOR, for: .normal)
-                        hW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                    }
-                    if frceWindState == 4{
-                        autoW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        nW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        lW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        mW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        hW?.setTitleColor(GREEN_COLOR, for: .normal)
-                    }
-                    if frceWindState == 5{
-                        autoW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        nW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        lW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        mW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                        hW?.setTitleColor(DEFAULT_GRAY, for: .normal)
-                    }
-                })
-            
-        }
-        
-        /***************************************************************************
-         * Function :  getChannelFaults
-         * Input    :  none
-         * Output   :  none
-         * Comment  :  might include few wind sensor readings
-         ***************************************************************************/
-
-        private func getChannelFaults(){
-            
-            self.readChannelFault(register: self.wind_sensor_1.DIRECTION_CHANNEL_FAULT.register)
-            self.readChannelFault(register: self.wind_sensor_1.SPEED_CHANNEL_FAULT.register)
-            
-            if windChannelFaults.contains(1) {
-                windStat.image = #imageLiteral(resourceName: "windicon")
                 
-            } else {
-                windStat.image = #imageLiteral(resourceName: "wind_icon")
-            }
-
-        }
-        
-        /***************************************************************************
-         * Function :  readChannelFault
-         * Input    :  channel fault PLC Address
-         * Output   :  none
-         * Comment  :
-         ***************************************************************************/
-
-        private func readChannelFault(register: Int){
-            
-            CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(register), completion:{ (success, response) in
-            
-                guard success == true else { return }
+                   self.wind_sensor_1.measuredSpeed = Int(truncating: response![0] as! NSNumber)
+                   self.wind_sensor_1.correctedSpeed = Int(truncating: response![1] as! NSNumber)
+                   self.wind_sensor_1.measuredDirection = Int(truncating: response![2] as! NSNumber)
+                   self.wind_sensor_1.correctedDirection = Int(truncating: response![3] as! NSNumber)
+                   self.wind_sensor_1.temperatureinC = Int(truncating: response![4] as! NSNumber)
+                   self.wind_sensor_1.temperatureinF = Int(truncating: response![5] as! NSNumber)
+                   self.wind_sensor_1.dewPointinC = Int(truncating: response![6] as! NSNumber)
+                   self.wind_sensor_1.dewPointinF = Int(truncating: response![7] as! NSNumber)
+                   self.wind_sensor_1.precipitation = Int(truncating: response![8] as! NSNumber)
+                   self.wind_sensor_1.precipIntensity = Int(truncating: response![9] as! NSNumber)
+                   self.wind_sensor_1.atmosPressure = Int(truncating: response![10] as! NSNumber)
+                   self.wind_sensor_1.humidity = Int(truncating: response![11] as! NSNumber)
+                   self.wind_sensor_1.solarRadiation = Int(truncating: response![12] as! NSNumber)
+                   self.wind_sensor_1.gpsLatitude = Int(truncating: response![13] as! NSNumber)
+                   self.wind_sensor_1.gpsLogitude = Int(truncating: response![14] as! NSNumber)
+                   self.wind_sensor_1.gpsHeightAbvSea = Int(truncating: response![15] as! NSNumber)
                 
-                if self.windChannelFaults.count == 2 {
-                    self.windChannelFaults.removeAll()
-                    
-                }
+                   self.readWindDirection(response: self.wind_sensor_1.correctedDirection, directionTag: 104)
                 
-                let channelFault = Int(truncating: response![0] as! NSNumber)
-                
-                self.windChannelFaults.append(channelFault)
-                
+                   let speed = self.view.viewWithTag(1) as? UILabel
+                   let tempC = self.view.viewWithTag(2) as? UILabel
+                   let tempF = self.view.viewWithTag(3) as? UILabel
+                   let dewC = self.view.viewWithTag(4) as? UILabel
+                   let dewF = self.view.viewWithTag(5) as? UILabel
+                   let precip = self.view.viewWithTag(6) as? UILabel
+                   let precipInt = self.view.viewWithTag(7) as? UILabel
+                   let atmos = self.view.viewWithTag(8) as? UILabel
+                   let humid = self.view.viewWithTag(9) as? UILabel
+                   let solar = self.view.viewWithTag(10) as? UILabel
+                   let gpsLat = self.view.viewWithTag(11) as? UILabel
+                   let gpsLong = self.view.viewWithTag(12) as? UILabel
+                   let gpsHeight = self.view.viewWithTag(13) as? UILabel
+                 
+                   speed?.text = String(format: "%.1f", Float(self.wind_sensor_1.measuredSpeed)/10.0)
+                   tempC?.text = String(format: "%.1f", Float(self.wind_sensor_1.temperatureinC)/10.0)
+                   tempF?.text = String(format: "%.1f", Float(self.wind_sensor_1.temperatureinF)/10.0)
+                   dewC?.text = String(format: "%.1f", Float(self.wind_sensor_1.dewPointinC)/10.0)
+                   dewF?.text = String(format: "%.1f", Float(self.wind_sensor_1.dewPointinF)/10.0)
+                   precip?.text = String(format: "%.1f", Float(self.wind_sensor_1.precipitation)/10.0)
+                   precipInt?.text = String(format: "%.1f", Float(self.wind_sensor_1.precipIntensity)/10.0)
+                   atmos?.text = String(format: "%.1f", Float(self.wind_sensor_1.atmosPressure)/10.0)
+                   humid?.text = String(format: "%.1f", Float(self.wind_sensor_1.humidity)/10.0)
+                   solar?.text = String(format: "%.1f", Float(self.wind_sensor_1.solarRadiation)/10.0)
+                   gpsLat?.text = String(format: "%.1f", Float(self.wind_sensor_1.gpsLatitude)/10.0)
+                   gpsLong?.text = String(format: "%.1f", Float(self.wind_sensor_1.gpsLogitude)/10.0)
+                   gpsHeight?.text = String(format: "%.1f", Float(self.wind_sensor_1.gpsHeightAbvSea)/10.0)
             })
-        }
-        
-        /***************************************************************************
-         * Function :  readWindSpeed
-         * Input    :  speed plc address, speed label ui tag
-         * Output   :  none
-         * Comment  :
-         ***************************************************************************/
-
-        private func readWindSpeed(register:Int, labelTag:Int){
-            
-            guard windModel != nil else{
-                return
-            }
-            
-            
-                CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(self.wind_sensor_1.SPEED_ABOVE_HIGH.register), completion:{ (success, response) in
-                    
-                    guard success == true else{return}
-                    let aboveHighValue = Int(truncating: response![0] as! NSNumber)
-                    self.aboveHigh = aboveHighValue
-                    
-                })
-                
-                CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(self.wind_sensor_1.SPEED_BELOW_LOW.register), completion:{ (success, response) in
-                    
-                    guard success == true else{return}
-                    let belowLowValue = Int(truncating: response![0] as! NSNumber)
-                    self.belowLow = belowLowValue
-                    
-                })
-            
-            
-            CENTRAL_SYSTEM!.readRealRegister(register: register, length: 2){ (success, response)  in
-                
-                //We want to make sure the PLC read was successfull and we did not get empty response
-                
-                guard success == true else{
-                    return
-                }
-                
-                let windSpeedLbl = self.view.viewWithTag(labelTag) as! UILabel
-
-                if self.windModel!.metric == true{
-
-                    let metricValue  = Float(response)! * 1.609344
-                    windSpeedLbl.text = "\(round(10 * metricValue)/10)"
-
-                }else{
-
-                    windSpeedLbl.text = "\(round(10*(Float(response)!))/10)"
-
-                }
-                
-                self.changeWindSpeedColor(labelTag: labelTag)
-                
-            }
-            
             
         }
         
@@ -451,67 +251,16 @@ class WindViewController: UIViewController{
          * Comment  :
          ***************************************************************************/
 
-        private func readWindDirection(register:Int, directionTag:Int){
-            
-            CENTRAL_SYSTEM!.readRealRegister(register: register, length: 2){ (success, response)  in
-                
-                //We want to make sure the PLC read was successfull and we did not get empty response
-                guard success == true else{
-                    return
-                }
-            
-                self.logger.logData(data: "RECIEVING  DIRECTION : \(response)")
-            
-                //Calculate wind speed direction
-                let rotationAngle = (Float(response)! * 0.0174533)
-            
-                let directionImage = self.view.viewWithTag(directionTag) as! UIImageView
-                directionImage.transform = CGAffineTransform(rotationAngle: CGFloat(rotationAngle))
-                
-            }
+        private func readWindDirection(response:Int, directionTag:Int){
+       
+           //Calculate wind speed direction
+           let rotationAngle = (Float(response) * 0.0174533)
+       
+           let directionImage = self.view.viewWithTag(directionTag) as! UIImageView
+           directionImage.transform = CGAffineTransform(rotationAngle: CGFloat(rotationAngle))
         }
-
-        /***************************************************************************
-         * Function :  showSetpoints
-         * Input    :  none
-         * Output   :  none
-         * Comment  :  This function constructs the popup view for wind setpoins
-         ***************************************************************************/
-
-        @IBAction func showSetpoints(_ sender: UIButton){
-                let storyboard = UIStoryboard(name: "wind", bundle: nil)
-                let popoverContent = storyboard.instantiateViewController(withIdentifier: "windDetails") as! WindAnemometerViewController
-                popoverContent.sensorNumber = sender.tag
-                popoverContent.wind_sensors = wind_sensors
-                let nav = UINavigationController(rootViewController: popoverContent)
-                nav.modalPresentationStyle = .popover
-                nav.isNavigationBarHidden = true
-                let popover = nav.popoverPresentationController
-                popover?.permittedArrowDirections = .up
-                popoverContent.preferredContentSize = CGSize(width: 470, height: 550)
-                popover?.sourceView = sender
-                
-                self.present(nav, animated: true, completion: nil)
-        }
+    
         @IBAction func showAlertSettings(_ sender: UIButton) {
             self.addAlertAction(button: sender)
-        }
-        
-        @IBAction func frceSPMMode(_ sender: UIButton) {
-            if sender.tag == 890{
-                CENTRAL_SYSTEM!.writeRegister(register: WIND_SPM_HAND_MODE, value: 0)
-            }
-            if sender.tag == 891{
-                CENTRAL_SYSTEM!.writeRegister(register: WIND_SPM_HAND_MODE, value: 1)
-            }
-            if sender.tag == 892{
-                CENTRAL_SYSTEM!.writeRegister(register: WIND_SPM_HAND_MODE, value: 2)
-            }
-            if sender.tag == 893{
-                CENTRAL_SYSTEM!.writeRegister(register: WIND_SPM_HAND_MODE, value: 3)
-            }
-            if sender.tag == 894{
-                CENTRAL_SYSTEM!.writeRegister(register: WIND_SPM_HAND_MODE, value: 4)
-            }
         }
     }
