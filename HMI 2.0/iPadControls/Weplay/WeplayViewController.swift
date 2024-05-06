@@ -922,13 +922,13 @@ class WeplayViewController: UIViewController,UITableViewDelegate, UITableViewDat
         var pickerLabel: UILabel? = (view as? UILabel)
         if pickerView.tag == 15{
             pickerLabel = UILabel()
-            pickerLabel?.textColor = .white
+            pickerLabel?.textColor = .black
             pickerLabel?.textAlignment = .center
             pickerLabel?.text = list[row]
         } else {
             if pickerLabel == nil {
                 pickerLabel = UILabel()
-                pickerLabel?.textColor = .white
+                pickerLabel?.textColor = .black
                 pickerLabel?.font = UIFont(name: ".SFUIDisplay", size: 20)
                 pickerLabel?.textAlignment = .left
                 
