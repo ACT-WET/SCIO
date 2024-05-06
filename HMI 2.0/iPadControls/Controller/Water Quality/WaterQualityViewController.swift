@@ -130,4 +130,15 @@ class WaterQualityViewController: UIViewController{
         sensorDetVC.sensorNumber = sender.tag
         navigationController?.pushViewController(sensorDetVC, animated: true)
     }
+    
+    @IBAction func redirectToBrSensorDetail(_ sender: UIButton) {
+        let sensorDetVC = UIStoryboard.init(name: "WQMultiple", bundle: nil).instantiateViewController(withIdentifier: "brDetail") as! BromineDetailViewController
+        navigationController?.pushViewController(sensorDetVC, animated: true)
+    }
+    
+    @IBAction func redirectToDumpValveDetail(_ sender: UIButton) {
+        let sensorDetVC = UIStoryboard.init(name: "WQMultiple", bundle: nil).instantiateViewController(withIdentifier: "dumpDetail") as! DumpValveDetailViewController
+        navigationController?.pushViewController(sensorDetVC, animated: true)
+    }
+
 }

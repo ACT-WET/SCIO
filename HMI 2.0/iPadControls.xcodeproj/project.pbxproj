@@ -120,6 +120,7 @@
 		BB37240729CB7B97002BE775 /* SupervisorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3723F429CB7B97002BE775 /* SupervisorySpecs.swift */; };
 		BB37240829CB7B97002BE775 /* SupervisoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3723F529CB7B97002BE775 /* SupervisoryViewController.swift */; };
 		BB37240D29CE17C1002BE775 /* ShowScheduleListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB37240C29CE17C1002BE775 /* ShowScheduleListViewController.swift */; };
+		BB3CCD142BE835D6004D8900 /* BromineSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3CCD132BE835D6004D8900 /* BromineSettingsViewController.swift */; };
 		BB4093A225E35D07008A110A /* lights.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB40939F25E35D07008A110A /* lights.storyboard */; };
 		BB4093A325E35D07008A110A /* LightsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4093A025E35D07008A110A /* LightsViewController.swift */; };
 		BB4093A425E35D07008A110A /* LightsSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4093A125E35D07008A110A /* LightsSpecs.swift */; };
@@ -150,6 +151,8 @@
 		BBB411442BE5874800B36E93 /* WQDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411432BE5874800B36E93 /* WQDetailViewController.swift */; };
 		BBB411462BE59AA400B36E93 /* WaterQualitySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411452BE59AA400B36E93 /* WaterQualitySettingsViewController.swift */; };
 		BBB411482BE5AC7000B36E93 /* WQSettingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */; };
+		BBB4114A2BE6FE1100B36E93 /* BromineDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411492BE6FE1100B36E93 /* BromineDetailViewController.swift */; };
+		BBB4114C2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4114B2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift */; };
 		BBCC80F8291583B200AF0683 /* FillerShowsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */; };
 		BBCC80F9291583B200AF0683 /* fillerShows.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBCC80F7291583B200AF0683 /* fillerShows.storyboard */; };
 		BBEB6E8626F11840003F23B4 /* saltfill.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBEB6E8326F11840003F23B4 /* saltfill.storyboard */; };
@@ -327,6 +330,7 @@
 		BB3723F429CB7B97002BE775 /* SupervisorySpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupervisorySpecs.swift; sourceTree = "<group>"; };
 		BB3723F529CB7B97002BE775 /* SupervisoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupervisoryViewController.swift; sourceTree = "<group>"; };
 		BB37240C29CE17C1002BE775 /* ShowScheduleListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowScheduleListViewController.swift; sourceTree = "<group>"; };
+		BB3CCD132BE835D6004D8900 /* BromineSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BromineSettingsViewController.swift; sourceTree = "<group>"; };
 		BB40939F25E35D07008A110A /* lights.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = lights.storyboard; sourceTree = "<group>"; };
 		BB4093A025E35D07008A110A /* LightsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightsViewController.swift; sourceTree = "<group>"; };
 		BB4093A125E35D07008A110A /* LightsSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightsSpecs.swift; sourceTree = "<group>"; };
@@ -366,6 +370,8 @@
 		BBB411432BE5874800B36E93 /* WQDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WQDetailViewController.swift; sourceTree = "<group>"; };
 		BBB411452BE59AA400B36E93 /* WaterQualitySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterQualitySettingsViewController.swift; sourceTree = "<group>"; };
 		BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WQSettingsDetailViewController.swift; sourceTree = "<group>"; };
+		BBB411492BE6FE1100B36E93 /* BromineDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BromineDetailViewController.swift; sourceTree = "<group>"; };
+		BBB4114B2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DumpValveDetailViewController.swift; sourceTree = "<group>"; };
 		BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillerShowsViewController.swift; sourceTree = "<group>"; };
 		BBCC80F7291583B200AF0683 /* fillerShows.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = fillerShows.storyboard; sourceTree = "<group>"; };
 		BBEB6E8326F11840003F23B4 /* saltfill.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = saltfill.storyboard; sourceTree = "<group>"; };
@@ -577,6 +583,9 @@
 				9B4E1075218265B700604006 /* WaterQualityViewController.swift */,
 				BBB411432BE5874800B36E93 /* WQDetailViewController.swift */,
 				9B4E107A218265B700604006 /* WQMultiple.storyboard */,
+				BB3CCD132BE835D6004D8900 /* BromineSettingsViewController.swift */,
+				BBB411492BE6FE1100B36E93 /* BromineDetailViewController.swift */,
+				BBB4114B2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift */,
 				BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */,
 				BBB411452BE59AA400B36E93 /* WaterQualitySettingsViewController.swift */,
 				9B4E1073218265B700604006 /* WaterQualitySpecs.swift */,
@@ -1149,6 +1158,7 @@
 				9B5F3FAB20DC5AF400D3CFDF /* ACTSchedulerTimePickerViewController.m in Sources */,
 				BBCC80F8291583B200AF0683 /* FillerShowsViewController.swift in Sources */,
 				9B5F3F8220DC5AD900D3CFDF /* modbus-data.c in Sources */,
+				BBB4114A2BE6FE1100B36E93 /* BromineDetailViewController.swift in Sources */,
 				9B725D7E214775BD008886A2 /* PumpsSpecs.swift in Sources */,
 				BB2479DC2710B3D700C94588 /* SaltPurgeSettingsViewController.swift in Sources */,
 				9B5F401C20DC5B1200D3CFDF /* SettingsViewController.swift in Sources */,
@@ -1178,6 +1188,7 @@
 				9BC042B92267C265001E2F49 /* FogViewController.swift in Sources */,
 				9B5F3F7120DC5AD900D3CFDF /* UIAlertView+AFNetworking.m in Sources */,
 				BBF0F95A240D911700886076 /* FiltrationViewController.swift in Sources */,
+				BB3CCD142BE835D6004D8900 /* BromineSettingsViewController.swift in Sources */,
 				9B5F3F9020DC5AD900D3CFDF /* RDVCalendarViewController.m in Sources */,
 				BBB4113E2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift in Sources */,
 				9B5F401920DC5B1200D3CFDF /* HomeViewController.swift in Sources */,
@@ -1238,6 +1249,7 @@
 				BBEB6E8C26F15503003F23B4 /* SaltFillSetSelectViewController.swift in Sources */,
 				9B5F3F2420DC5AB400D3CFDF /* IntrusionError+CoreDataProperties.swift in Sources */,
 				BBF9B8E123F4B6F900DF67A1 /* StatusLogSpecs.swift in Sources */,
+				BBB4114C2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift in Sources */,
 				9B5F3F1C20DC5AB400D3CFDF /* Show+CoreDataProperties.swift in Sources */,
 				BB629E0026E0126F0005D4CB /* ACTCalendarScheduleViewController.m in Sources */,
 				BBF0F96F240D9A3800886076 /* WindViewController.swift in Sources */,
