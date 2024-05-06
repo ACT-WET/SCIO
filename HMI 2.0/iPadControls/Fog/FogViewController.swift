@@ -618,6 +618,12 @@ class FogViewController: UIViewController{
         
     }
     
+    @IBAction func redirectToPumpDetailsScheduler(_ sender: UIButton) {
+        let pumpDetVC = UIStoryboard.init(name: "pumps", bundle: nil).instantiateViewController(withIdentifier: "autoPumpDetail") as! AutoPumpDetailViewController
+        pumpDetVC.pumpNumber = sender.tag
+        navigationController?.pushViewController(pumpDetVC, animated: true)
+    }
+    
     @IBAction func showSettingsButton(_ sender: UIButton) {
          self.addAlertAction(button: sender)
     }

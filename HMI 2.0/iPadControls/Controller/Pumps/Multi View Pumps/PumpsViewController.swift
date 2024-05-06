@@ -152,17 +152,6 @@ class PumpsViewController: UIViewController{
         
         
     }
-    @IBAction func redirectToShooterDetails(_ sender: UIButton) {
-        let shootDetVC = UIStoryboard.init(name: "pumps", bundle: nil).instantiateViewController(withIdentifier: "shooterDetail") as! ShooterDetailViewController
-        shootDetVC.shooterNum = sender.tag
-        navigationController?.pushViewController(shootDetVC, animated: true)
-    }
-    @IBAction func redirectToDCPowerDetails(_ sender: UIButton) {
-        let dcPowDetVC = UIStoryboard.init(name: "pumps", bundle: nil).instantiateViewController(withIdentifier: "dcDetail") as! DCPowerDetailViewController
-        dcPowDetVC.dcNum = sender.tag
-        navigationController?.pushViewController(dcPowDetVC, animated: true)
-    }
-    
     @IBAction func redirectToPumpDetailsScheduler(_ sender: UIButton) {
         let pumpDetVC = UIStoryboard.init(name: "pumps", bundle: nil).instantiateViewController(withIdentifier: "autoPumpDetail") as! AutoPumpDetailViewController
         pumpDetVC.pumpNumber = sender.tag

@@ -160,27 +160,35 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             case 101: vfdNumber.text = "VFD - 101"
                       pumpRegister = VFD_101_DATAREGISTER.startAddr
                       pumpCmdReg = VFD101_CMD_REG
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
             case 103: vfdNumber.text = "VFD - 103"
                       pumpRegister = VFD_103_DATAREGISTER.startAddr
                       pumpCmdReg = VFD103_CMD_REG
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
             case 104: vfdNumber.text = "VFD - 104"
                       pumpRegister = VFD_104_DATAREGISTER.startAddr
                       pumpCmdReg = VFD104_CMD_REG
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
             case 105: vfdNumber.text = "VFD - 105"
                       pumpRegister = VFD_105_DATAREGISTER.startAddr
                       pumpCmdReg = VFD105_CMD_REG
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
             case 106: vfdNumber.text = "VFD - 106"
                       pumpRegister = VFD_106_DATAREGISTER.startAddr
                       pumpCmdReg = VFD106_CMD_REG
-            case 107: vfdNumber.text = "VFD - 107"
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
+            case 107: vfdNumber.text = "MS - 107"
                       pumpRegister = VFD_107_DATAREGISTER.startAddr
                       pumpCmdReg = VFD107_CMD_REG
-            case 108: vfdNumber.text = "VFD - 108"
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "fog"), for: .normal)
+            case 108: vfdNumber.text = "MS - 108"
                       pumpRegister = VFD_108_DATAREGISTER.startAddr
                       pumpCmdReg = VFD108_CMD_REG
-            case 109: vfdNumber.text = "VFD - 109"
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "fog"), for: .normal)
+            case 109: vfdNumber.text = "MS - 109"
                       pumpRegister = VFD_109_DATAREGISTER.startAddr
                       pumpCmdReg = VFD109_CMD_REG
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "fog"), for: .normal)
         default:
             print("FAULT TAG")
         }
@@ -671,7 +679,6 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.frequencyIndicator.isHidden = false
             self.setFrequencyHandle.isHidden = true
             playStopButtonIcon.isHidden = true
-            self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps_on"), for: .normal)
             
         }else if inOFF == 1{
             
@@ -684,7 +691,6 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.frequencyIndicator.isHidden = true
             self.setFrequencyHandle.isHidden = true
             playStopButtonIcon.isHidden = true
-            self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
             
         } else if inHand == 1{
             
@@ -698,7 +704,6 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.frequencyIndicator.isHidden = false
             self.setFrequencyHandle.isHidden = false
             playStopButtonIcon.isHidden = false
-            self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps_on"), for: .normal)
             
         }
     }

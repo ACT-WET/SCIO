@@ -11,15 +11,10 @@ import NMSSH
 
 class SettingsViewController: UIViewController{
     
-    @IBOutlet weak var ipad1button:          UIButton!
-    @IBOutlet weak var ipad2button:          UIButton!
     @IBOutlet weak var viewForWebView:       UIView!
-    @IBOutlet weak var ipadDesignatedAs:     UILabel!
     @IBOutlet weak var ipadDateLbl:          UILabel!
     @IBOutlet weak var syncTimeStateLbl:     UILabel!
     @IBOutlet weak var rebootMsg: UILabel!
-    @IBOutlet weak var warningbtn: UIButton!
-    @IBOutlet weak var faultBtn: UIButton!
     @IBOutlet weak var resetBtn: UIButton!
     
     let helper      = Helper()
@@ -40,8 +35,6 @@ class SettingsViewController: UIViewController{
     override func viewDidLoad(){
         
         super.viewDidLoad()
-        self.configureScreenTextContent()
-
         
     }
     
@@ -56,7 +49,6 @@ class SettingsViewController: UIViewController{
         
         
         //Get Current iPad Number That Was Previously Selected
-        getCurrentIpadNumber()
         
         //Add notification observer to get system stat
         NotificationCenter.default.addObserver(self, selector: #selector(checkSystemStat), name: NSNotification.Name(rawValue: "updateSystemStat"), object: nil)
@@ -85,10 +77,7 @@ class SettingsViewController: UIViewController{
     override func viewWillDisappear(_ animated: Bool){
         NotificationCenter.default.removeObserver(self)
         
-        ipad1button          = nil
-        ipad2button          = nil
         viewForWebView       = nil
-        ipadDesignatedAs     = nil
         langData.removeAll(keepingCapacity: false)
         
     }
@@ -100,26 +89,13 @@ class SettingsViewController: UIViewController{
      * Comment  :
      ***************************************************************************/
     
-    @IBAction func chooseNumber1(sender: AnyObject){
-        
-        self.highlighIpadNumber(button: ipad1button, number: 1)
-        self.dehilightIpadNumber(button: ipad2button)
-        
-    }
-    
     /***************************************************************************
      * Function :  chooseNumber2
      * Input    :  none
      * Output   :  none
      * Comment  :
      ***************************************************************************/
-    
-    @IBAction func chooseNumber2(sender: AnyObject){
-        
-        self.highlighIpadNumber(button: ipad2button, number: 2)
-        self.dehilightIpadNumber(button: ipad1button)
-        
-    }
+
     
     /***************************************************************************
      * Function :  highlighIpadNumber
@@ -160,48 +136,12 @@ class SettingsViewController: UIViewController{
      * Output   :  none
      * Comment  :  Configure Screen Text Content Based On Device Language
      ***************************************************************************/
-    
-    private func configureScreenTextContent(){
-        
-        langData = self.helper.getLanguageSettigns(screenName: "help")
-        ipadDesignatedAs.text = langData["THIS IPAD IS DESIGNATED AS"]!
-        ipad1button.setTitle(langData["iPad 1"]!, for: .normal)
-        ipad2button.setTitle(langData["iPad 2"]!, for: .normal)
-        self.navigationItem.title = "SETTINGS"
-        
-    }
-    
     /***************************************************************************
      * Function :  getCurrentIpadNumber
      * Input    :  none
      * Output   :  none
      * Comment  :  Get The Current iPad Number
      ***************************************************************************/
-    
-    private func getCurrentIpadNumber(){
-        
-        var iPadNumber = UserDefaults.standard.object(forKey: IPAD_NUMBER_USER_DEFAULTS_NAME) as? Int
-        
-        //We wnat to make sure the iPad number parameter exists in the local defaults storage
-        
-        if iPadNumber == nil {
-            iPadNumber = 1
-        }
-        
-        if iPadNumber == 1{
-            
-            self.highlighIpadNumber(button: ipad1button, number: 1)
-            self.dehilightIpadNumber(button: ipad2button)
-            
-        }else{
-            
-            self.highlighIpadNumber(button: ipad2button, number: 2)
-            self.dehilightIpadNumber(button: ipad1button)
-            
-        }
-        
-    }
-    
     
     /***************************************************************************
      * Function :  syncServerTimer
@@ -371,29 +311,6 @@ class SettingsViewController: UIViewController{
             }
         }
         
-    }
-    
-    @IBAction func faultResetBtnPushed(_ sender: Any) {
-        
-        CENTRAL_SYSTEM?.writeBit(bit: FAULT_RESET_REGISTER, value: 1)
-        self.faultBtn.isUserInteractionEnabled = false
-        self.faultBtn.isEnabled = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute:{
-            CENTRAL_SYSTEM?.writeBit(bit: FAULT_RESET_REGISTER, value: 0)
-            self.faultBtn.isUserInteractionEnabled = true
-            self.faultBtn.isEnabled = true
-        })
-    }
-    
-    @IBAction func warningResetBtnPushed(_ sender: Any) {
-        CENTRAL_SYSTEM?.writeBit(bit: WARNING_RESET_REGISTER, value: 1)
-        self.warningbtn.isUserInteractionEnabled = false
-        self.warningbtn.isEnabled = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute:{
-            CENTRAL_SYSTEM?.writeBit(bit: WARNING_RESET_REGISTER, value: 0)
-            self.warningbtn.isUserInteractionEnabled = true
-            self.warningbtn.isEnabled = true
-        })
     }
 }
 

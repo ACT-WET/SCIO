@@ -18,7 +18,7 @@ class DCSettingsSelectViewController: UIViewController {
     }
     
     @IBAction func redirectToDCPowerSettingsDetails(_ sender: UIButton) {
-        let dcPowDetVC = UIStoryboard.init(name: "pumps", bundle: nil).instantiateViewController(withIdentifier: "dcSetting") as! DCSettingsViewController
+        let dcPowDetVC = UIStoryboard.init(name: "DCPower", bundle: nil).instantiateViewController(withIdentifier: "dcSetting") as! DCSettingsViewController
         dcPowDetVC.dcNum = sender.tag
         navigationController?.pushViewController(dcPowDetVC, animated: true)
     }

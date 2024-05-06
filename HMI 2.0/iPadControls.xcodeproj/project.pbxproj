@@ -113,6 +113,10 @@
 		9BC042B92267C265001E2F49 /* FogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC042B52267C265001E2F49 /* FogViewController.swift */; };
 		9BC042BA2267C265001E2F49 /* FogSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC042B62267C265001E2F49 /* FogSettingsViewController.swift */; };
 		9BF5679D20DC69DE001AFD30 /* iPadControls-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9BF5679C20DC69DE001AFD30 /* iPadControls-Info.plist */; };
+		BB00B5552BE9496300F8649D /* DCPower.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB00B5542BE9496300F8649D /* DCPower.storyboard */; };
+		BB00B5572BE94A8B00F8649D /* DCPowerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00B5562BE94A8B00F8649D /* DCPowerViewController.swift */; };
+		BB00B5592BE94D2B00F8649D /* Shooters.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB00B5582BE94D2B00F8649D /* Shooters.storyboard */; };
+		BB00B55B2BE94E4200F8649D /* ShootersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00B55A2BE94E4200F8649D /* ShootersViewController.swift */; };
 		BB2479DA270F778900C94588 /* SaltPurgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2479D9270F778900C94588 /* SaltPurgeViewController.swift */; };
 		BB2479DC2710B3D700C94588 /* SaltPurgeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2479DB2710B3D700C94588 /* SaltPurgeSettingsViewController.swift */; };
 		BB3723FC29CB7B97002BE775 /* SupervisorySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3723E929CB7B97002BE775 /* SupervisorySettingsViewController.swift */; };
@@ -323,6 +327,10 @@
 		9BC042B52267C265001E2F49 /* FogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FogViewController.swift; sourceTree = "<group>"; };
 		9BC042B62267C265001E2F49 /* FogSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FogSettingsViewController.swift; sourceTree = "<group>"; };
 		9BF5679C20DC69DE001AFD30 /* iPadControls-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "iPadControls-Info.plist"; path = "Resources/iPadControls-Info.plist"; sourceTree = "<group>"; };
+		BB00B5542BE9496300F8649D /* DCPower.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DCPower.storyboard; sourceTree = "<group>"; };
+		BB00B5562BE94A8B00F8649D /* DCPowerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCPowerViewController.swift; sourceTree = "<group>"; };
+		BB00B5582BE94D2B00F8649D /* Shooters.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Shooters.storyboard; sourceTree = "<group>"; };
+		BB00B55A2BE94E4200F8649D /* ShootersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShootersViewController.swift; sourceTree = "<group>"; };
 		BB2479D9270F778900C94588 /* SaltPurgeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaltPurgeViewController.swift; sourceTree = "<group>"; };
 		BB2479DB2710B3D700C94588 /* SaltPurgeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaltPurgeSettingsViewController.swift; sourceTree = "<group>"; };
 		BB3723E929CB7B97002BE775 /* SupervisorySettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupervisorySettingsViewController.swift; sourceTree = "<group>"; };
@@ -487,6 +495,8 @@
 				BB629DF326E0126E0005D4CB /* Scheduler */,
 				BBF9B8DB23F4B6F900DF67A1 /* DeviceStatus */,
 				9B3F410D2146CC22000B4701 /* Multi View Pumps */,
+				BB00B54F2BE947EC00F8649D /* DCPower */,
+				BB00B5502BE9480800F8649D /* Shooters */,
 				9B4E1072218265B700604006 /* Water Quality */,
 				9B006229212C7E600066CC9B /* Week Scheduler */,
 				9B5F3FE420DC5B1200D3CFDF /* Operation Manual */,
@@ -563,11 +573,6 @@
 			children = (
 				9B725D79214775BD008886A2 /* PumpsSpecs.swift */,
 				9B725D78214775BC008886A2 /* pumps.storyboard */,
-				BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */,
-				BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */,
-				BBB411392BE157E300B36E93 /* DCPowerDetailViewController.swift */,
-				BBB4113B2BE157F700B36E93 /* ShooterDetailViewController.swift */,
-				BBB411412BE2C1AC00B36E93 /* ShooterSettingsViewController.swift */,
 				9B725D7A214775BD008886A2 /* PumpSettingsViewController.swift */,
 				9B725D7C214775BD008886A2 /* AutoPumpDetailViewController.swift */,
 				9B725D7B214775BD008886A2 /* PumpsViewController.swift */,
@@ -832,6 +837,29 @@
 			path = iPadControls/Fog;
 			sourceTree = SOURCE_ROOT;
 		};
+		BB00B54F2BE947EC00F8649D /* DCPower */ = {
+			isa = PBXGroup;
+			children = (
+				BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */,
+				BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */,
+				BBB411392BE157E300B36E93 /* DCPowerDetailViewController.swift */,
+				BB00B5542BE9496300F8649D /* DCPower.storyboard */,
+				BB00B5562BE94A8B00F8649D /* DCPowerViewController.swift */,
+			);
+			path = DCPower;
+			sourceTree = "<group>";
+		};
+		BB00B5502BE9480800F8649D /* Shooters */ = {
+			isa = PBXGroup;
+			children = (
+				BBB4113B2BE157F700B36E93 /* ShooterDetailViewController.swift */,
+				BB00B55A2BE94E4200F8649D /* ShootersViewController.swift */,
+				BBB411412BE2C1AC00B36E93 /* ShooterSettingsViewController.swift */,
+				BB00B5582BE94D2B00F8649D /* Shooters.storyboard */,
+			);
+			path = Shooters;
+			sourceTree = "<group>";
+		};
 		BB3723E529CB7B97002BE775 /* Supervisory Station */ = {
 			isa = PBXGroup;
 			children = (
@@ -1069,6 +1097,7 @@
 				9B5F404920DC5B1200D3CFDF /* waterLevel.storyboard in Resources */,
 				9BC042B72267C265001E2F49 /* fog.storyboard in Resources */,
 				9B5F3F7020DC5AD900D3CFDF /* README.md in Resources */,
+				BB00B5592BE94D2B00F8649D /* Shooters.storyboard in Resources */,
 				9B5F3F0D20DC5AA000D3CFDF /* Assets.xcassets in Resources */,
 				BB8FD1BC2BCDA3FE00D09321 /* weplay.storyboard in Resources */,
 				BB59252323E35A6400F49039 /* EStop.png in Resources */,
@@ -1082,6 +1111,7 @@
 				9B5F403C20DC5B1200D3CFDF /* showStopperRATmode.png in Resources */,
 				BB629DE326E012500005D4CB /* showList.storyboard in Resources */,
 				9B5F403E20DC5B1200D3CFDF /* showStopperTemp.png in Resources */,
+				BB00B5552BE9496300F8649D /* DCPower.storyboard in Resources */,
 				9B5F404120DC5B1200D3CFDF /* intrusionsystem_button.png in Resources */,
 				9B5F3F8820DC5AD900D3CFDF /* NEWS in Resources */,
 				9B5F404220DC5B1200D3CFDF /* alarm_fog.png in Resources */,
@@ -1200,6 +1230,7 @@
 				BBB4113C2BE157F700B36E93 /* ShooterDetailViewController.swift in Sources */,
 				9B5F3F8420DC5AD900D3CFDF /* modbus.c in Sources */,
 				BBB411442BE5874800B36E93 /* WQDetailViewController.swift in Sources */,
+				BB00B5572BE94A8B00F8649D /* DCPowerViewController.swift in Sources */,
 				9B725D7F214775BD008886A2 /* PumpSettingsViewController.swift in Sources */,
 				9B5F3F8520DC5AD900D3CFDF /* modbus-tcp.c in Sources */,
 				9B5F3F8020DC5AD900D3CFDF /* AFNetworkReachabilityManager.m in Sources */,
@@ -1230,6 +1261,7 @@
 				BB37240729CB7B97002BE775 /* SupervisorySpecs.swift in Sources */,
 				BB629E0D26E013670005D4CB /* ACTSelectShowViewController.m in Sources */,
 				BB4093A425E35D07008A110A /* LightsSpecs.swift in Sources */,
+				BB00B55B2BE94E4200F8649D /* ShootersViewController.swift in Sources */,
 				9BC042BA2267C265001E2F49 /* FogSettingsViewController.swift in Sources */,
 				9B5F3F2220DC5AB400D3CFDF /* Pump+CoreDataClass.swift in Sources */,
 				9B5F3F7C20DC5AD900D3CFDF /* AFURLSessionManager.m in Sources */,
