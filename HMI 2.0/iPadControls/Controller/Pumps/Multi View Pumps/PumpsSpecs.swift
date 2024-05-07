@@ -659,3 +659,31 @@ var VFD108_CFG_DELAYTIMER = 1368
 var VFD109_CFG_DELAYTIMER = 1418
 
 var SYSTEM_PRESSURE = (startAddr: 1030, count: 1)
+
+public struct AO_VALUES{
+    
+    var faulted              = 0
+    var inAuto               = 0
+    var inHand               = 0
+    var scalingFault         = 0
+    var outputmoduleFault    = 0
+    var estop                = 0
+    var outputEnabled        = 0
+    var outputActive         = 0
+    
+    var cmd_SetHandMode      = 0
+    var cmd_Disable          = 0
+    var cmd_frceOn           = 0
+    var cmd_faultReset       = 0
+    
+    var cfg_autoSP           = 0
+    var cfg_outPutVal        = 0
+    var cfg_precision        = 0
+    var cfg_scaleMax         = 0
+    var cfg_scaleMin         = 0
+    var cfg_handModeSP       = 0
+
+}
+
+let APC_SHOOTER = (startAddr: 2050, count: 10)
+var APC_SHOOTER_CMD_REG = (setHandAuto:2050, disableOut:2051, frceOut:2052, faultReset:2053, handModeSP:2059)

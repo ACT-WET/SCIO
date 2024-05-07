@@ -39,6 +39,10 @@ class WeplayViewController: UIViewController,UITableViewDelegate, UITableViewDat
     @IBOutlet weak var weekDayTableView: UITableView!
     @IBOutlet weak var addRowView: UIView!
     
+    @IBOutlet weak var wweplaySwtch: UISwitch!
+    @IBOutlet weak var weplaySwtch: UISwitch!
+    @IBOutlet weak var fillerSwtch: UISwitch!
+    @IBOutlet weak var wfillerSwtch: UISwitch!
     @IBOutlet weak var fstartTimePicker: UIPickerView!
     @IBOutlet weak var fendTimePicker: UIPickerView!
     @IBOutlet weak var fendTimeTxt: UITextField!
@@ -74,6 +78,8 @@ class WeplayViewController: UIViewController,UITableViewDelegate, UITableViewDat
     var currentFillerShowNumber = 0
     var wcurrentFillerShowState  = 0
     var wcurrentFillerShowNumber = 0
+    var currentWeplayState  = 0
+    var currentWWeplayState  = 0
     private var fillerShowStatus: Int = 0
     var showNumberRead          = 0
     var wshowNumberRead          = 0
@@ -83,6 +89,7 @@ class WeplayViewController: UIViewController,UITableViewDelegate, UITableViewDat
     var weekorweekendSelected = 0
     var weekorweekendFiller = 0
     var clickedOn = 0
+    var readOnce = 0
     
     private var shows: [Any]? = nil
     var list:[String] = []
@@ -1315,33 +1322,32 @@ class WeplayViewController: UIViewController,UITableViewDelegate, UITableViewDat
     
     @IBAction func enableDisableFillerShows(_ sender: UISwitch){
         
-        var setState = 0
-        
-        if(currentFillerShowState == 1){
-            setState = 0
-        }else if(currentFillerShowState == 0){
-            setState = 1
+        if sender.tag == 111{
+            if(currentFillerShowState == 1){
+                currentFillerShowState = 0
+            }else if(currentFillerShowState == 0){
+                currentFillerShowState = 1
+            }
+        } else if sender.tag == 221{
+            if(wcurrentFillerShowState == 1){
+                wcurrentFillerShowState = 0
+            }else if(wcurrentFillerShowState == 0){
+                wcurrentFillerShowState = 1
+            }
+        } else if sender.tag == 112{
+            if(currentWeplayState == 1){
+                currentWeplayState = 0
+            }else if(currentWeplayState == 0){
+                currentWeplayState = 1
+            }
+        } else if sender.tag == 222{
+            if(currentWWeplayState == 1){
+                currentWWeplayState = 0
+            }else if(currentWWeplayState == 0){
+                currentWWeplayState = 1
+            }
         }
-        
-        let sendData = [
-            "FillerShow_Enable" : setState,
-            "FillerShow_Number" : currentFillerShowNumber
-        ]
-        
-        let jsonData: Data? = try? JSONSerialization.data(withJSONObject: sendData, options: .prettyPrinted)
-        var jsonString: String? = nil
-        
-        if let aData = jsonData{
-            jsonString = String(data: aData, encoding: .utf8)
-        }
-        
-        let escapedString = jsonString!.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
-        let strURL = "\(SET_FILLER_SHOW_STATE_HTTP_PATH)?\(String(describing: escapedString))"
-        
-        self.httpComm.httpGetResponseFromPath(url: strURL) { (response) in
-            
-        }
-
+        writeToServer()
     }
     
     func readShowFile() {
@@ -1390,6 +1396,8 @@ class WeplayViewController: UIViewController,UITableViewDelegate, UITableViewDat
             
             let dictionary  = response as! NSDictionary
             let enabledDisabled    = dictionary.object(forKey: "FillerShow_Enable") as? Int
+            let weplayDisabled    = dictionary.object(forKey: "Weplay_Enable") as? Int
+            let wweplayDisabled    = dictionary.object(forKey: "WWeplay_Enable") as? Int
             let fillerShowNumber   = dictionary.object(forKey: "FillerShow_Number") as? Int
             let wenabledDisabled    = dictionary.object(forKey: "WFillerShow_Enable") as? Int
             let wfillerShowNumber   = dictionary.object(forKey: "WFillerShow_Number") as? Int
@@ -1417,6 +1425,36 @@ class WeplayViewController: UIViewController,UITableViewDelegate, UITableViewDat
 
             self.currentFillerShowState = enabledDisabled!
             self.wcurrentFillerShowState = wenabledDisabled!
+            self.currentWeplayState = weplayDisabled!
+            self.currentWWeplayState = wweplayDisabled!
+            
+            if self.readOnce == 0{
+                if self.currentFillerShowState == 1{
+                    self.fillerSwtch.isOn = true
+                } else {
+                    self.fillerSwtch.isOn = false
+                }
+                
+                if self.currentWeplayState == 1{
+                    self.weplaySwtch.isOn = true
+                } else {
+                    self.weplaySwtch.isOn = false
+                }
+                
+                if self.currentWWeplayState == 1{
+                    self.wweplaySwtch.isOn = true
+                } else {
+                    self.wweplaySwtch.isOn = false
+                }
+                
+                if self.wcurrentFillerShowState == 1{
+                    self.wfillerSwtch.isOn = true
+                } else {
+                    self.wfillerSwtch.isOn = false
+                }
+                self.readOnce = 1
+            }
+            
             self.readWeekendBtnStatus()
         }
     }
@@ -1433,6 +1471,8 @@ class WeplayViewController: UIViewController,UITableViewDelegate, UITableViewDat
         let sendData = [
             "FillerShow_Enable" : currentFillerShowState,
             "FillerShow_Number" : showNumber!,
+            "Weplay_Enable" : currentWeplayState,
+            "WWeplay_Enable" : currentWWeplayState,
             "WFillerShow_Enable" : wcurrentFillerShowState,
             "WFillerShow_Number" : wshowNumber!,
             "Sunday" : self.weekendBtnHighlighted[0],

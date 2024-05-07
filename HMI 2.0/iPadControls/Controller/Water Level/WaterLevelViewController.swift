@@ -37,11 +37,8 @@ class WaterLevelViewController: UIViewController{
     @IBOutlet weak var noConnectionErrorLbl:                UILabel!
     
     @IBOutlet weak var autoHandModeImgView: UIImageView!
-    @IBOutlet weak var stopBtn: UIButton!
-    @IBOutlet weak var startBtn: UIButton!
-    @IBOutlet weak var handModeView: UIView!
+    @IBOutlet weak var autoHandBtn: UIButton!
     //MARK: - Water Level Sensors Faults
-    @IBOutlet weak var lt1001View: UIView!
     @IBOutlet weak var fillTimeout:                         UIImageView!
     
     //MARK: - Class Reference Objects -- Dependencies
@@ -50,6 +47,7 @@ class WaterLevelViewController: UIViewController{
     private let helper          =          Helper()
     private let utility         =         Utilits()
     private let operationManual = OperationManual()
+    var readOnce = 0
     
     //MARK: - Data Structures
     
@@ -87,7 +85,6 @@ class WaterLevelViewController: UIViewController{
         
         //Configure Water Level Screen
         configureWaterLevel()
-        self.handModeView.isHidden = true
         //Configure WaterLeveScreen Text Content Based On Device Language
         configureScreenTextContent()
 
@@ -205,9 +202,99 @@ class WaterLevelViewController: UIViewController{
             self.ls1001liveSensorValues.cmd_overrideFrceDosing = cmdArrValues[4]
             self.ls1001liveSensorValues.cmd_deviceFaultReset = cmdArrValues[5]
             
+            let faulted = self.view.viewWithTag(2005) as? UILabel
+            let timeOut = self.view.viewWithTag(2006) as? UILabel
+            let malfunction = self.view.viewWithTag(2007) as? UILabel
+            let eStop = self.view.viewWithTag(2008) as? UILabel
+            
+           if self.ls1001liveSensorValues.faulted == 1
+           {
+               faulted?.isHidden = false
+            self.waterLevelIcon.image = #imageLiteral(resourceName: "waterlevel_outline-red")
+           } else {
+               faulted?.isHidden = true
+            self.waterLevelIcon.image = #imageLiteral(resourceName: "waterlevel_outline-gray")
+           }
+    
+           if self.ls1001liveSensorValues.waterMakeupTimeout == 1 {
+               timeOut?.isHidden = false
+            self.fillTimeout.isHidden = false
+           } else {
+               timeOut?.isHidden = true
+            self.fillTimeout.isHidden = true
+           }
+           
+           if self.ls1001liveSensorValues.malfunction == 1 {
+               malfunction?.isHidden = false
+           } else {
+               malfunction?.isHidden = true
+           }
+         
+           if self.ls1001liveSensorValues.eStop == 1 {
+               eStop?.isHidden = false
+           } else {
+               eStop?.isHidden = true
+           }
+        
+           
+    
+           
+            
+            if self.readOnce == 0{
+                self.parseLV1001Data()
+                self.readOnce = 1
+            }
                 
             //print(statusArrValues)
-            self.parseLV1001Data()
+
+        })
+        
+        CENTRAL_SYSTEM?.readBits(length: 4, startingRegister: 700, completion: { (success, response) in
+            
+            guard success == true else { return }
+            
+            let wabvH = Int(truncating: response![0] as! NSNumber)
+            let wblwL = Int(truncating: response![1] as! NSNumber)
+            let wblwLL = Int(truncating: response![2] as! NSNumber)
+            let wblwLLL = Int(truncating: response![3] as! NSNumber)
+            
+            self.ls1001liveSensorValues.above_High = wabvH
+            self.ls1001liveSensorValues.below_l = wblwL
+            self.ls1001liveSensorValues.below_ll = wblwLL
+            self.ls1001liveSensorValues.below_lll = wblwLLL
+            
+            let abvH = self.view.viewWithTag(2001) as? UIImageView
+            let blwL = self.view.viewWithTag(2002) as? UIImageView
+            let blwLL = self.view.viewWithTag(2003) as? UIImageView
+            let blwLLL = self.view.viewWithTag(2004) as? UIImageView
+            
+                   if self.ls1001liveSensorValues.above_High == 1
+                   {
+                       abvH?.image = #imageLiteral(resourceName: "red")
+                   } else {
+                       abvH?.image = #imageLiteral(resourceName: "background")
+                   }
+                   
+                   if self.ls1001liveSensorValues.below_l == 1
+                   {
+                       blwL?.image = #imageLiteral(resourceName: "red")
+                   } else {
+                       blwL?.image = #imageLiteral(resourceName: "background")
+                   }
+                   
+                   if self.ls1001liveSensorValues.below_ll == 1
+                   {
+                       blwLL?.image = #imageLiteral(resourceName: "red")
+                   } else {
+                       blwLL?.image = #imageLiteral(resourceName: "background")
+                   }
+            
+                   if self.ls1001liveSensorValues.below_lll == 1
+                   {
+                       blwLLL?.image = #imageLiteral(resourceName: "red")
+                   } else {
+                       blwLLL?.image = #imageLiteral(resourceName: "background")
+                   }
         })
     }
     
@@ -222,132 +309,47 @@ class WaterLevelViewController: UIViewController{
      ***************************************************************************/
     
     func parseLV1001Data(){
-        
-               let abvH = self.lt1001View.viewWithTag(2001) as? UIImageView
-               let blwL = self.lt1001View.viewWithTag(2002) as? UIImageView
-               let blwLL = self.lt1001View.viewWithTag(2003) as? UIImageView
-               let blwLLL = self.lt1001View.viewWithTag(2004) as? UIImageView
-               let valveStatus = self.lt1001View.viewWithTag(2005) as? UILabel
-               let startCmdActive = self.lt1001View.viewWithTag(2006) as? UIImageView
-               let stopCmdActive = self.lt1001View.viewWithTag(2007) as? UIImageView
-               let faulted = self.lt1001View.viewWithTag(2008) as? UIImageView
-               let timeOut = self.lt1001View.viewWithTag(2009) as? UIImageView
-               let malfunction = self.lt1001View.viewWithTag(2010) as? UIImageView
-               let eStop = self.lt1001View.viewWithTag(2011) as? UIImageView
-        
-            
-               if self.ls1001liveSensorValues.above_High == 1
-               {
-                   abvH?.image = #imageLiteral(resourceName: "red")
-               } else {
-                   abvH?.image = #imageLiteral(resourceName: "green")
-               }
-               
-               if self.ls1001liveSensorValues.below_l == 1
-               {
-                   blwL?.image = #imageLiteral(resourceName: "red")
-               } else {
-                   blwL?.image = #imageLiteral(resourceName: "green")
-               }
-               
-               if self.ls1001liveSensorValues.below_ll == 1
-               {
-                   blwLL?.image = #imageLiteral(resourceName: "red")
-               } else {
-                   blwLL?.image = #imageLiteral(resourceName: "green")
-               }
-        
-               if self.ls1001liveSensorValues.below_lll == 1
-               {
-                   blwLLL?.image = #imageLiteral(resourceName: "red")
-               } else {
-                   blwLLL?.image = #imageLiteral(resourceName: "green")
-               }
-        
-               if self.ls1001liveSensorValues.faulted == 1
-               {
-                   faulted?.image = #imageLiteral(resourceName: "red")
-                   waterLevelIcon.image = #imageLiteral(resourceName: "waterlevel_outline-red")
-               } else {
-                   faulted?.image = #imageLiteral(resourceName: "green")
-                   waterLevelIcon.image = #imageLiteral(resourceName: "waterlevel_outline-gray")
-               }
-        
-               if self.ls1001liveSensorValues.waterMakeupTimeout == 1 {
-                   timeOut?.image = #imageLiteral(resourceName: "red")
-                   fillTimeout.isHidden = false
-               } else {
-                   timeOut?.image = #imageLiteral(resourceName: "green")
-                   fillTimeout.isHidden = true
-               }
-               
-               if self.ls1001liveSensorValues.malfunction == 1 {
-                   malfunction?.image = #imageLiteral(resourceName: "red")
-               } else {
-                   malfunction?.image = #imageLiteral(resourceName: "green")
-               }
-             
-               if self.ls1001liveSensorValues.eStop == 1 {
-                   eStop?.image = #imageLiteral(resourceName: "red")
-               } else {
-                   eStop?.image = #imageLiteral(resourceName: "green")
-               }
-               
-               if self.ls1001liveSensorValues.startCmdActive == 1 {
-                   startCmdActive?.image = #imageLiteral(resourceName: "green")
-               } else {
-                   startCmdActive?.image = #imageLiteral(resourceName: "blank_icon_on")
-               }
-        
-               if self.ls1001liveSensorValues.stopCmdActive == 1 {
-                   stopCmdActive?.image = #imageLiteral(resourceName: "green")
-               } else {
-                   stopCmdActive?.image = #imageLiteral(resourceName: "blank_icon_on")
-               }
-               
-               if self.ls1001liveSensorValues.valveOpen == 1 {
-                   valveStatus?.text = "OPEN"
-               } else {
-                   valveStatus?.text = "CLOSE"
-               }
-        
-               if self.ls1001liveSensorValues.cmd_HandStart == 1 {
-                  startBtn.isEnabled = false
-               } else {
-                  startBtn.isEnabled = true
-               }
-        
-               if self.ls1001liveSensorValues.cmd_HandStop == 1 {
-                  stopBtn.isEnabled = false
-               } else {
-                  stopBtn.isEnabled = true
-               }
-        
-               if self.ls1001liveSensorValues.inAuto == 1 {
-                  autoHandModeImgView.image = #imageLiteral(resourceName: "autoMode")
-                  autoHandModeImgView.rotate360Degrees(animate: true)
-                  self.handModeView.isHidden = true
-               }
-        
-               if self.ls1001liveSensorValues.inHand == 1 {
-                   autoHandModeImgView.rotate360Degrees(animate: false)
-                   autoHandModeImgView.image = #imageLiteral(resourceName: "handMode")
-                   self.handModeView.isHidden = false
-               }
+       if self.ls1001liveSensorValues.valveOpen == 1{
+           autoHandBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
+           autoHandBtn.setImage(#imageLiteral(resourceName: "valve-green"), for: .normal)
+       }
+       if self.ls1001liveSensorValues.valveOpen == 0{
+           autoHandBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
+           autoHandBtn.setImage(#imageLiteral(resourceName: "valve-red"), for: .normal)
+       }
+
+       if self.ls1001liveSensorValues.inAuto == 1 {
+          autoHandModeImgView.image = #imageLiteral(resourceName: "autoMode")
+          autoHandModeImgView.rotate360Degrees(animate: true)
+          self.autoHandBtn.isUserInteractionEnabled = false
+       }
+
+       if self.ls1001liveSensorValues.inHand == 1 {
+           autoHandModeImgView.rotate360Degrees(animate: false)
+           autoHandModeImgView.image = #imageLiteral(resourceName: "handMode")
+           self.autoHandBtn.isUserInteractionEnabled = true
+       }
     }
-    @IBAction func sendStartCmd(_ sender: UIButton) {
-      CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDSTART, value: 1)
+    @IBAction func sendValveOpenCloseCmd(_ sender: UIButton) {
+      if self.ls1001liveSensorValues.valveOpen == 1{
+          CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDSTOP, value: 1)
+      } else {
+          CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDSTART, value: 1)
+      }
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+          self.readOnce = 0
+      }
     }
     
-    @IBAction func sendStopCmd(_ sender: UIButton) {
-      CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDSTOP, value: 1)
-    }
     @IBAction func sendAutoHandCmd(_ sender: UIButton) {
         if self.ls1001liveSensorValues.inAuto == 1{
             CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDMODE, value: 1)
         }
         if self.ls1001liveSensorValues.inHand == 1{
             CENTRAL_SYSTEM?.writeBit(bit: CMD_HANDMODE, value: 0)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+            self.readOnce = 0
         }
     }
     @IBAction func sendFaultResetCmd(_ sender: UIButton) {

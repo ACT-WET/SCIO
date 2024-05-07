@@ -180,15 +180,18 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             case 107: vfdNumber.text = "MS - 107"
                       pumpRegister = VFD_107_DATAREGISTER.startAddr
                       pumpCmdReg = VFD107_CMD_REG
-                      self.autoManualButton.setImage(#imageLiteral(resourceName: "fog"), for: .normal)
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "plume"), for: .normal)
+                      self.autoManualButton.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
             case 108: vfdNumber.text = "MS - 108"
                       pumpRegister = VFD_108_DATAREGISTER.startAddr
                       pumpCmdReg = VFD108_CMD_REG
-                      self.autoManualButton.setImage(#imageLiteral(resourceName: "fog"), for: .normal)
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "plume"), for: .normal)
+                      self.autoManualButton.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
             case 109: vfdNumber.text = "MS - 109"
                       pumpRegister = VFD_109_DATAREGISTER.startAddr
                       pumpCmdReg = VFD109_CMD_REG
-                      self.autoManualButton.setImage(#imageLiteral(resourceName: "fog"), for: .normal)
+                      self.autoManualButton.setImage(#imageLiteral(resourceName: "plume"), for: .normal)
+                      self.autoManualButton.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         default:
             print("FAULT TAG")
         }

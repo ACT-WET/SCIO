@@ -346,9 +346,12 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lM1-WJ-if9">
+                            <switch opaque="NO" tag="112" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lM1-WJ-if9">
                                 <rect key="frame" x="69" y="331" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="enableDisableFillerShows:" destination="ch0-NF-uTZ" eventType="valueChanged" id="0q3-8L-tro"/>
+                                </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="SELECT SHOW" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EuT-LI-nvu">
                                 <rect key="frame" x="17" y="639" width="111" height="20"/>
@@ -398,7 +401,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5ux-9M-TIZ">
+                            <switch opaque="NO" tag="111" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5ux-9M-TIZ">
                                 <rect key="frame" x="69" y="584" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
@@ -590,7 +593,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n1M-l0-PAw">
+                            <switch opaque="NO" tag="221" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n1M-l0-PAw">
                                 <rect key="frame" x="599" y="584" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
@@ -969,9 +972,12 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h9t-DU-Syh">
+                            <switch opaque="NO" tag="222" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h9t-DU-Syh">
                                 <rect key="frame" x="599" y="335" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="enableDisableFillerShows:" destination="ch0-NF-uTZ" eventType="valueChanged" id="AYl-U3-2K0"/>
+                                </connections>
                             </switch>
                         </subviews>
                         <color key="backgroundColor" red="0.13725490200000001" green="0.13725490200000001" blue="0.13725490200000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -987,6 +993,7 @@
                         <outlet property="fendTimePicker" destination="pgz-Rj-rpS" id="WXJ-cP-918"/>
                         <outlet property="fendTimeTxt" destination="OUQ-JB-3N7" id="DIO-FG-g3x"/>
                         <outlet property="fillerShowNumberTxt" destination="JlM-qj-A0P" id="J7w-7A-v8W"/>
+                        <outlet property="fillerSwtch" destination="5ux-9M-TIZ" id="Fl8-sJ-6T7"/>
                         <outlet property="fstartTimePicker" destination="ZBc-zN-ked" id="N0H-Wm-ZIm"/>
                         <outlet property="fstartTimeTxt" destination="RU6-6j-NBq" id="ncU-GF-qUi"/>
                         <outlet property="fweekDayTableView" destination="Quq-gG-tV3" id="tEC-kl-M8A"/>
@@ -997,8 +1004,11 @@
                         <outlet property="weekDayTableView" destination="068-8p-ie8" id="v3o-0f-TXc"/>
                         <outlet property="weekendSelectView" destination="Bap-wZ-4on" id="gpi-xd-Z2V"/>
                         <outlet property="weekendTableView" destination="GPn-NB-eYZ" id="DJC-q7-kjV"/>
+                        <outlet property="weplaySwtch" destination="lM1-WJ-if9" id="DIc-YY-SnI"/>
                         <outlet property="wfillerShowNumberTxt" destination="inw-us-3ck" id="KQF-tV-rBp"/>
+                        <outlet property="wfillerSwtch" destination="n1M-l0-PAw" id="hQX-gs-awg"/>
                         <outlet property="wscheduleView" destination="yAu-08-BtZ" id="Oo0-N2-yno"/>
+                        <outlet property="wweplaySwtch" destination="h9t-DU-Syh" id="LOF-5v-dJl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MGr-z6-khy" userLabel="First Responder" sceneMemberID="firstResponder"/>

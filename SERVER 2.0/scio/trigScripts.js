@@ -9,6 +9,7 @@ var timeKeeper_timer = require("./timeKeeper.js");
 var timedWatchDog_timer = require("./TimedWatchDog.js");
 var statusLog_timer = require("./statusLog.js");
 
+var weplay_timer = require("./sch_wePlay.js");
 var backwash_timer = require("./backwash.js");
 var runnel_timer = require("./sch_runnel.js");
 var lights_timer = require("./sch_lights.js");
@@ -36,6 +37,7 @@ if (isBetween(msec,250,500)){
 		//watchDog.eventLog('Hey! Execute BW');
 		backwash_timer();
 		filter_timer();
+		weplay_timer();
 		//surge_timer();
 		timerCount[1] = sec;
 	}

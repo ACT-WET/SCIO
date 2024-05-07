@@ -465,38 +465,23 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="107" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gvM-Bg-2HX">
-                                <rect key="frame" x="335" y="429" width="60" height="60"/>
+                                <rect key="frame" x="335" y="424" width="70" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="fog"/>
+                                <state key="normal" image="plume" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToPumpDetailsScheduler:" destination="epe-4O-YQC" eventType="touchUpInside" id="sKU-lK-vhL"/>
                                 </connections>
                             </button>
                             <button opaque="NO" tag="109" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FFm-Vh-nob">
-                                <rect key="frame" x="673" y="429" width="60" height="60"/>
+                                <rect key="frame" x="673" y="424" width="70" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="fog"/>
+                                <state key="normal" image="plume" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToPumpDetailsScheduler:" destination="epe-4O-YQC" eventType="touchUpInside" id="ZFJ-VI-DG3"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="108" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Nd-iX-IZt">
-                                <rect key="frame" x="1010" y="429" width="60" height="60"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="fog"/>
-                                <connections>
-                                    <action selector="redirectToPumpDetailsScheduler:" destination="epe-4O-YQC" eventType="touchUpInside" id="NqD-5b-uIc"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" tag="7" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="MS - 107" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZXA-WT-0Rx">
-                                <rect key="frame" x="331" y="497" width="69" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" tag="8" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="MS - 108" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t9j-jd-1Tl">
-                                <rect key="frame" x="668" y="497" width="70" height="21"/>
+                                <rect key="frame" x="336" y="498" width="69" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -509,6 +494,21 @@
                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" tag="8" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="MS - 108" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t9j-jd-1Tl">
+                                <rect key="frame" x="676" y="497" width="70" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" tag="108" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Nd-iX-IZt">
+                                <rect key="frame" x="1005" y="424" width="70" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="plume" backgroundImage="background"/>
+                                <connections>
+                                    <action selector="redirectToPumpDetailsScheduler:" destination="epe-4O-YQC" eventType="touchUpInside" id="NqD-5b-uIc"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.13725490200000001" green="0.13725490200000001" blue="0.13725490200000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="VjE-SY-sag"/>
@@ -1796,12 +1796,14 @@
     <resources>
         <image name="WETLogo" width="138" height="36"/>
         <image name="autoMode" width="48" height="44"/>
+        <image name="background" width="313" height="313"/>
         <image name="button_background" width="542" height="125"/>
         <image name="fog" width="500" height="500"/>
         <image name="green" width="89" height="89"/>
         <image name="ios_settings_icon" width="512" height="512"/>
         <image name="outOfRange" width="1105" height="781"/>
         <image name="playButton" width="521" height="521"/>
+        <image name="plume" width="50" height="50"/>
         <image name="red" width="89" height="89"/>
     </resources>
 </document>

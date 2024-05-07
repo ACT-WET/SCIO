@@ -280,10 +280,10 @@
                                     <action selector="sendCmdFaultReset:" destination="Lnv-b5-mOO" eventType="touchUpInside" id="083-sQ-N8u"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="18" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zN1-ec-pqq">
+                            <button opaque="NO" tag="18" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zN1-ec-pqq">
                                 <rect key="frame" x="106" y="252" width="70" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" backgroundImage="fog">
+                                <state key="normal" image="dcPower" backgroundImage="background">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -380,7 +380,6 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.13723513479999999" green="0.13726624849999999" blue="0.13723316790000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <viewLayoutGuide key="safeArea" id="wTI-eJ-ocA"/>
                     </view>
                     <navigationItem key="navigationItem" title="SHOOTER DETAILS" id="Vdc-HI-drG" userLabel="DC POWER DETAILS"/>
                     <size key="freeformSize" width="1080" height="810"/>
@@ -419,7 +418,7 @@
                             <button opaque="NO" tag="151" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GXg-rK-kJG">
                                 <rect key="frame" x="283" y="358" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerSettingsDetails:" destination="9FX-W2-r8c" eventType="touchUpInside" id="RwZ-Xr-YEX"/>
                                 </connections>
@@ -434,7 +433,7 @@
                             <button opaque="NO" tag="152" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wfh-hJ-xGz">
                                 <rect key="frame" x="405" y="358" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerSettingsDetails:" destination="9FX-W2-r8c" eventType="touchUpInside" id="Zcl-tS-dJ4"/>
                                 </connections>
@@ -449,7 +448,7 @@
                             <button opaque="NO" tag="153" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OfY-BM-XyE">
                                 <rect key="frame" x="519" y="358" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerSettingsDetails:" destination="9FX-W2-r8c" eventType="touchUpInside" id="VKR-W1-Xsh"/>
                                 </connections>
@@ -464,7 +463,7 @@
                             <button opaque="NO" tag="154" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="55h-zw-gA4">
                                 <rect key="frame" x="628" y="359" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerSettingsDetails:" destination="9FX-W2-r8c" eventType="touchUpInside" id="W9p-5e-T6f"/>
                                 </connections>
@@ -479,7 +478,7 @@
                             <button opaque="NO" tag="155" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6wf-Q8-bEa">
                                 <rect key="frame" x="737" y="358" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerSettingsDetails:" destination="9FX-W2-r8c" eventType="touchUpInside" id="vBb-x8-jpX"/>
                                 </connections>
@@ -822,7 +821,7 @@
                             <button opaque="NO" tag="151" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YBc-bb-iKS">
                                 <rect key="frame" x="283" y="358" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerDetails:" destination="d4z-vd-BE0" eventType="touchUpInside" id="ADC-kL-dV3"/>
                                 </connections>
@@ -837,7 +836,7 @@
                             <button opaque="NO" tag="152" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4le-8m-u64">
                                 <rect key="frame" x="405" y="358" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerDetails:" destination="d4z-vd-BE0" eventType="touchUpInside" id="Y8x-TB-Ylr"/>
                                 </connections>
@@ -852,7 +851,7 @@
                             <button opaque="NO" tag="153" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2dd-zh-s0m">
                                 <rect key="frame" x="519" y="358" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerDetails:" destination="d4z-vd-BE0" eventType="touchUpInside" id="L1s-cG-H4g"/>
                                 </connections>
@@ -867,7 +866,7 @@
                             <button opaque="NO" tag="154" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="COO-53-CY8">
                                 <rect key="frame" x="628" y="359" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerDetails:" destination="d4z-vd-BE0" eventType="touchUpInside" id="pS7-XO-icU"/>
                                 </connections>
@@ -882,7 +881,7 @@
                             <button opaque="NO" tag="155" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M3G-xP-QLn">
                                 <rect key="frame" x="737" y="358" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button" image="pumps"/>
+                                <state key="normal" image="dcPower" backgroundImage="background"/>
                                 <connections>
                                     <action selector="redirectToDCPowerDetails:" destination="d4z-vd-BE0" eventType="touchUpInside" id="IOO-lb-xFn"/>
                                 </connections>
@@ -915,6 +914,7 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.13723513479999999" green="0.13726624849999999" blue="0.13723316790000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="c67-08-cYr"/>
                     </view>
                     <navigationItem key="navigationItem" title="DC POWER" id="NNh-7O-3tz" userLabel="DC POWER"/>
                     <size key="freeformSize" width="1080" height="810"/>
@@ -931,13 +931,13 @@
     <resources>
         <image name="WETLogo" width="138" height="36"/>
         <image name="autoMode" width="48" height="44"/>
+        <image name="background" width="313" height="313"/>
         <image name="button_background" width="542" height="125"/>
-        <image name="fog" width="500" height="500"/>
+        <image name="dcPower" width="50" height="50"/>
         <image name="green" width="89" height="89"/>
         <image name="ios_settings_icon" width="512" height="512"/>
         <image name="outOfRange" width="1105" height="781"/>
         <image name="playButton" width="521" height="521"/>
-        <image name="pumps" width="500" height="500"/>
         <image name="red" width="89" height="89"/>
     </resources>
 </document>
