@@ -18,16 +18,17 @@ class ShootersViewController: UIViewController,UIGestureRecognizerDelegate {
       @IBOutlet weak var shooter2PlayStopBtn: UIButton!
       @IBOutlet weak var shooter3autoHandImg: UIImageView!
       @IBOutlet weak var shooter3PlayStopBtn: UIButton!
-      @IBOutlet weak var airPressScaleMax: UILabel!
-      @IBOutlet weak var airPressScaleMin: UILabel!
       @IBOutlet weak var airPressCurrVal: UILabel!
-      @IBOutlet weak var airPressCurrView: UIView!
       @IBOutlet weak var airPressHandSPVal: UILabel!
       @IBOutlet weak var airPressHandView: UIView!
       @IBOutlet weak var airPressautoHandImg: UIImageView!
       @IBOutlet weak var airPressBackgnd: UIView!
      
-      var manualAirGesture: UIPanGestureRecognizer!
+    @IBOutlet weak var yv1001ResetBtn: UIButton!
+    @IBOutlet weak var yv1002ResetBtn: UIButton!
+    @IBOutlet weak var yv1003ResetBtn: UIButton!
+    @IBOutlet weak var acp101ResetBtn: UIButton!
+    var manualAirGesture: UIPanGestureRecognizer!
       var pixelPerPress = 550/10.0
       var readOnce = 0
       var readAOnce = 0
@@ -123,6 +124,12 @@ class ShootersViewController: UIViewController,UIGestureRecognizerDelegate {
             self.airPressValues.cfg_scaleMax = Int(truncating: response![8] as! NSNumber)
             self.airPressValues.cfg_handModeSP = Int(truncating: response![9] as! NSNumber)
             
+            if self.airPressValues.faulted == 1{
+              self.acp101ResetBtn.isHidden = false
+            } else {
+              self.acp101ResetBtn.isHidden = true
+            }
+            
             let faulted = self.view.viewWithTag(31) as? UILabel
             let scalingFault = self.view.viewWithTag(32) as? UILabel
             let outFault = self.view.viewWithTag(33) as? UILabel
@@ -135,16 +142,13 @@ class ShootersViewController: UIViewController,UIGestureRecognizerDelegate {
             
             let divisor = pow(10,self.airPressValues.cfg_precision)
             let scaledMin = Float(self.airPressValues.cfg_scaleMin) / Float(truncating: divisor as NSNumber)
-            self.airPressScaleMin.text = String(format: "%.1f", scaledMin)
             
             let scaledMax = Float(self.airPressValues.cfg_scaleMax) / Float(truncating: divisor as NSNumber)
-            self.airPressScaleMax.text = String(format: "%.1f", scaledMax)
             self.pixelPerPress = Double(450.0/scaledMax)
             
             if self.airPressValues.inAuto == 1{
                 let outputVal = Float(self.airPressValues.cfg_autoSP) / Float(truncating: divisor as NSNumber)
                 let indicatorLocation = abs(outputVal * Float(self.pixelPerPress))
-                self.airPressCurrView.frame = CGRect(x: 387 + Int(indicatorLocation), y: 617, width: 62, height: 39)
                 self.airPressBackgnd.frame = CGRect(x: 0, y: 0, width: Int(indicatorLocation), height: 25)
                 self.airPressCurrVal.text = String(format: "%.1f", outputVal)
             }
@@ -166,7 +170,6 @@ class ShootersViewController: UIViewController,UIGestureRecognizerDelegate {
                    let indicatorLocation = abs(outputVal * Float(self.pixelPerPress))
                    
                    self.airPressHandView.frame = CGRect(x: 387 + Int(indicatorLocation), y: 681, width: 62, height: 39)
-                   self.airPressCurrView.frame = CGRect(x: 387 + Int(indicatorLocation), y: 617, width: 62, height: 39)
                    self.airPressBackgnd.frame = CGRect(x: 0, y: 0, width: Int(indicatorLocation), height: 25)
                    
                    self.airPressCurrVal.text = String(format: "%.1f", outputVal)
@@ -203,7 +206,11 @@ class ShootersViewController: UIViewController,UIGestureRecognizerDelegate {
               let fToClose = self.view.viewWithTag(3) as? UILabel
               let eStop = self.view.viewWithTag(4) as? UILabel
                
-              
+              if self.shooterValues.faulted == 1{
+                self.yv1001ResetBtn.isHidden = false
+              } else {
+                self.yv1001ResetBtn.isHidden = true
+              }
               self.shooterValues.faulted == 1 ? (faulted?.isHidden = false) : (faulted?.isHidden = true)
               self.shooterValues.failToOpen == 1 ? ( fToOpen?.isHidden = false) : (fToOpen?.isHidden = true)
               self.shooterValues.failToClose == 1 ? ( fToClose?.isHidden = false) : (fToClose?.isHidden = true)
@@ -233,7 +240,12 @@ class ShootersViewController: UIViewController,UIGestureRecognizerDelegate {
                   let fToOpen2 = self.view.viewWithTag(12) as? UILabel
                   let fToClose2 = self.view.viewWithTag(13) as? UILabel
                   let eStop2 = self.view.viewWithTag(14) as? UILabel
-                   
+                  
+                  if self.shooter2Values.faulted == 1{
+                    self.yv1002ResetBtn.isHidden = false
+                  } else {
+                    self.yv1002ResetBtn.isHidden = true
+                  }
                   
                   self.shooter2Values.faulted == 1 ? (faulted2?.isHidden = false) : (faulted2?.isHidden = true)
                   self.shooter2Values.failToOpen == 1 ? ( fToOpen2?.isHidden = false) : (fToOpen2?.isHidden = true)
@@ -264,7 +276,12 @@ class ShootersViewController: UIViewController,UIGestureRecognizerDelegate {
                       let fToOpen3 = self.view.viewWithTag(22) as? UILabel
                       let fToClose3 = self.view.viewWithTag(23) as? UILabel
                       let eStop3 = self.view.viewWithTag(24) as? UILabel
-                       
+                      
+                      if self.shooter3Values.faulted == 1{
+                        self.yv1003ResetBtn.isHidden = false
+                      } else {
+                        self.yv1003ResetBtn.isHidden = true
+                      }
                       
                       self.shooter3Values.faulted == 1 ? (faulted3?.isHidden = false) : (faulted3?.isHidden = true)
                       self.shooter3Values.failToOpen == 1 ? ( fToOpen3?.isHidden = false) : (fToOpen3?.isHidden = true)

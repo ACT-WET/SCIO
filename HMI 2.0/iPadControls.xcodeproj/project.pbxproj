@@ -147,7 +147,6 @@
 		BB8FD1BA2BCDA3E800D09321 /* WeplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8FD1B92BCDA3E800D09321 /* WeplayViewController.swift */; };
 		BB8FD1BC2BCDA3FE00D09321 /* weplay.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB8FD1BB2BCDA3FE00D09321 /* weplay.storyboard */; };
 		BBB411382BE03F5900B36E93 /* FogDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411372BE03F5900B36E93 /* FogDetailsViewController.swift */; };
-		BBB4113A2BE157E300B36E93 /* DCPowerDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411392BE157E300B36E93 /* DCPowerDetailViewController.swift */; };
 		BBB4113C2BE157F700B36E93 /* ShooterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4113B2BE157F700B36E93 /* ShooterDetailViewController.swift */; };
 		BBB4113E2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */; };
 		BBB411402BE18F4800B36E93 /* DCSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */; };
@@ -155,8 +154,6 @@
 		BBB411442BE5874800B36E93 /* WQDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411432BE5874800B36E93 /* WQDetailViewController.swift */; };
 		BBB411462BE59AA400B36E93 /* WaterQualitySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411452BE59AA400B36E93 /* WaterQualitySettingsViewController.swift */; };
 		BBB411482BE5AC7000B36E93 /* WQSettingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */; };
-		BBB4114A2BE6FE1100B36E93 /* BromineDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411492BE6FE1100B36E93 /* BromineDetailViewController.swift */; };
-		BBB4114C2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB4114B2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift */; };
 		BBCC80F8291583B200AF0683 /* FillerShowsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */; };
 		BBCC80F9291583B200AF0683 /* fillerShows.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBCC80F7291583B200AF0683 /* fillerShows.storyboard */; };
 		BBEB6E8626F11840003F23B4 /* saltfill.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBEB6E8326F11840003F23B4 /* saltfill.storyboard */; };
@@ -370,7 +367,6 @@
 		BB8FD1B92BCDA3E800D09321 /* WeplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeplayViewController.swift; sourceTree = "<group>"; };
 		BB8FD1BB2BCDA3FE00D09321 /* weplay.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = weplay.storyboard; sourceTree = "<group>"; };
 		BBB411372BE03F5900B36E93 /* FogDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FogDetailsViewController.swift; sourceTree = "<group>"; };
-		BBB411392BE157E300B36E93 /* DCPowerDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCPowerDetailViewController.swift; sourceTree = "<group>"; };
 		BBB4113B2BE157F700B36E93 /* ShooterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShooterDetailViewController.swift; sourceTree = "<group>"; };
 		BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCSettingsSelectViewController.swift; sourceTree = "<group>"; };
 		BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCSettingsViewController.swift; sourceTree = "<group>"; };
@@ -378,8 +374,6 @@
 		BBB411432BE5874800B36E93 /* WQDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WQDetailViewController.swift; sourceTree = "<group>"; };
 		BBB411452BE59AA400B36E93 /* WaterQualitySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterQualitySettingsViewController.swift; sourceTree = "<group>"; };
 		BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WQSettingsDetailViewController.swift; sourceTree = "<group>"; };
-		BBB411492BE6FE1100B36E93 /* BromineDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BromineDetailViewController.swift; sourceTree = "<group>"; };
-		BBB4114B2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DumpValveDetailViewController.swift; sourceTree = "<group>"; };
 		BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillerShowsViewController.swift; sourceTree = "<group>"; };
 		BBCC80F7291583B200AF0683 /* fillerShows.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = fillerShows.storyboard; sourceTree = "<group>"; };
 		BBEB6E8326F11840003F23B4 /* saltfill.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = saltfill.storyboard; sourceTree = "<group>"; };
@@ -589,8 +583,6 @@
 				BBB411432BE5874800B36E93 /* WQDetailViewController.swift */,
 				9B4E107A218265B700604006 /* WQMultiple.storyboard */,
 				BB3CCD132BE835D6004D8900 /* BromineSettingsViewController.swift */,
-				BBB411492BE6FE1100B36E93 /* BromineDetailViewController.swift */,
-				BBB4114B2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift */,
 				BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */,
 				BBB411452BE59AA400B36E93 /* WaterQualitySettingsViewController.swift */,
 				9B4E1073218265B700604006 /* WaterQualitySpecs.swift */,
@@ -842,7 +834,6 @@
 			children = (
 				BBB4113D2BE18ECE00B36E93 /* DCSettingsSelectViewController.swift */,
 				BBB4113F2BE18F4800B36E93 /* DCSettingsViewController.swift */,
-				BBB411392BE157E300B36E93 /* DCPowerDetailViewController.swift */,
 				BB00B5542BE9496300F8649D /* DCPower.storyboard */,
 				BB00B5562BE94A8B00F8649D /* DCPowerViewController.swift */,
 			);
@@ -1177,7 +1168,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B5F3F2520DC5AB400D3CFDF /* Network+CoreDataProperties.swift in Sources */,
-				BBB4113A2BE157E300B36E93 /* DCPowerDetailViewController.swift in Sources */,
 				BB629E0E26E013670005D4CB /* ACTPlaylistViewController.m in Sources */,
 				BB629E0126E0126F0005D4CB /* ACTMoveDeleteShowPlaylistViewController.m in Sources */,
 				BB629DE426E012500005D4CB /* ShowlistSettingsViewController.swift in Sources */,
@@ -1188,7 +1178,6 @@
 				9B5F3FAB20DC5AF400D3CFDF /* ACTSchedulerTimePickerViewController.m in Sources */,
 				BBCC80F8291583B200AF0683 /* FillerShowsViewController.swift in Sources */,
 				9B5F3F8220DC5AD900D3CFDF /* modbus-data.c in Sources */,
-				BBB4114A2BE6FE1100B36E93 /* BromineDetailViewController.swift in Sources */,
 				9B725D7E214775BD008886A2 /* PumpsSpecs.swift in Sources */,
 				BB2479DC2710B3D700C94588 /* SaltPurgeSettingsViewController.swift in Sources */,
 				9B5F401C20DC5B1200D3CFDF /* SettingsViewController.swift in Sources */,
@@ -1281,7 +1270,6 @@
 				BBEB6E8C26F15503003F23B4 /* SaltFillSetSelectViewController.swift in Sources */,
 				9B5F3F2420DC5AB400D3CFDF /* IntrusionError+CoreDataProperties.swift in Sources */,
 				BBF9B8E123F4B6F900DF67A1 /* StatusLogSpecs.swift in Sources */,
-				BBB4114C2BE6FE4E00B36E93 /* DumpValveDetailViewController.swift in Sources */,
 				9B5F3F1C20DC5AB400D3CFDF /* Show+CoreDataProperties.swift in Sources */,
 				BB629E0026E0126F0005D4CB /* ACTCalendarScheduleViewController.m in Sources */,
 				BBF0F96F240D9A3800886076 /* WindViewController.swift in Sources */,

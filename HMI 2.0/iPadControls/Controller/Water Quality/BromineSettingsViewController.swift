@@ -61,7 +61,7 @@ class BromineSettingsViewController: UIViewController {
     }
     
     func setupWQLabel(){
-        self.navigationItem.title = "TV100X KV1001 DETAILS"
+        self.navigationItem.title = "TV1001 TV1002 KV1001 DETAILS"
     }
     
     private func constructSaveButton(){

@@ -22,6 +22,7 @@ let HELP_SCREEN_GRAY               = UIColor(red:150/255, green: 150/255, blue: 
 let PICKER_VIEW_BG_COLOR           = UIColor(red:60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
 let ORANGE_COLOR                   = UIColor(red:255.0/255.0, green:140.0/255.0, blue:0.0/255.0, alpha:1.0)
 let WEEKEND_SELECTED_COLOR         = UIColor(red:0/255.0, green:170.0/255.0, blue:255.0/255.0, alpha: 1.0)
+let YELLOW_COLOR                   = UIColor(red:255.0/255.0, green:251.0/255.0, blue: 0.0/255.0, alpha:1.0)
 
 
 /***************************************************************************
