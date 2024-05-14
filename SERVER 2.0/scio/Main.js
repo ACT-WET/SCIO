@@ -52,6 +52,7 @@ serviceRequired = 0;
 weeknweekD = [0,0,0,0,0,0,0];
 cmdFlag=0;
 mirrorPos = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+wePlayRunning = 0;
 
 dayMode=0;
 dayModeStatus=0;

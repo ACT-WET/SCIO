@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option optimize_for = SPEED;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package show;
+
+// The greeting service definition.
+service ShowService {
+  // Sends a greeting
+  rpc Init(google.protobuf.Empty) returns (InitResponse) {}
+  rpc StartShow(StartShowRequest) returns (StartShowResponse) {}
+  rpc StopShow(StopShowRequst) returns (StopShowResponse) {}
+}
+
+message StartShowRequest {
+  string show_id = 1;
+  uint32 frame = 2;
+}
+
+message StartShowResponse {
+  oneof disco {
+    string session_id = 1;
+    string error = 2;
+  }
+}
+
+message StopShowRequst {
+  string session_id = 1;
+}
+
+message StopShowResponse {
+  optional string error = 2;
+}
+
+message ShowInfo {
+  string show_id = 1 [default="0.1.0"];
+  string name = 2 [default="0.1.0"];
+  uint32 frame_count = 3 [default=2];
+  google.protobuf.Timestamp mtime = 4 [default=45];
+}
+
+message InitResponse {
+  repeated ShowInfo shows = 1;
+}

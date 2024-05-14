@@ -258,7 +258,7 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.getTemperatureReading(response: self.pumpData.status_OutputTemperature)
             self.getFrequencyReading(response: self.pumpData.status_OutputFrequency)
             
-            self.checkForAutoManMode(auto:self.pumpData.inAutoMode, hand:self.pumpData.inHandMode, off:self.pumpData.inOffMode)
+           
             
             let estop = self.view.viewWithTag(200) as? UILabel
             let pressFault = self.view.viewWithTag(201) as? UILabel
@@ -279,7 +279,10 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.pumpData.pumpFaulted == 1 ? (pumpFault?.isHidden = false) : (pumpFault?.isHidden = true)
             
             if self.readOnce == 0{
+                self.readCurrentPumpDetailsSpecs()
                 self.parseFaultsDataFromPLC()
+                self.readPlayStopBit()
+                self.checkForAutoManMode(auto:self.pumpData.inAutoMode, hand:self.pumpData.inHandMode, off:self.pumpData.inOffMode)
                 self.readOnce = 1
             }
             
@@ -301,7 +304,7 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             
             //Now that the connection is established, run functions
             readCurrentPumpData()
-            readCurrentPumpDetailsSpecs()
+            //readCurrentPumpDetailsSpecs()
             
         } else {
             noConnectionView.alpha = 1
@@ -676,8 +679,6 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.pumpState = 0
             self.pumpPreviosMode = 0
             self.changeAutManModeIndicatorRotation(autoMode: true)
-            self.autoModeIndicator.alpha = 1
-            self.handModeIndicator.alpha = 0
             self.manualSpeedView.alpha = 0
             self.frequencyIndicator.isHidden = false
             self.setFrequencyHandle.isHidden = true
@@ -687,7 +688,6 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             
             //Pump is in off mode
             self.pumpState = 1
-            self.changeAutManModeIndicatorRotation(autoMode: false)
             self.autoModeIndicator.alpha = 0
             self.handModeIndicator.alpha = 0
             self.manualSpeedView.alpha = 0
@@ -701,8 +701,6 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             self.pumpState = 2
             self.pumpPreviosMode = 1
             self.changeAutManModeIndicatorRotation(autoMode: false)
-            self.autoModeIndicator.alpha = 0
-            self.handModeIndicator.alpha = 1
             self.manualSpeedView.alpha = 1
             self.frequencyIndicator.isHidden = false
             self.setFrequencyHandle.isHidden = false
@@ -733,6 +731,9 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             //Turn Hand
             CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.setHand, value: 1)
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+            self.readOnce = 0
+        }
     }
     
     
@@ -758,7 +759,7 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             CENTRAL_SYSTEM?.writeBit(bit: pumpCmdReg.setHandStart, value: 1)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-            self.readPlayStopBit()
+            self.readOnce = 0
         }
     }
     
@@ -782,8 +783,8 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
             
         }else{
             
-            self.autoModeIndicator.alpha = 1
-            self.handModeIndicator.alpha = 0
+            self.autoModeIndicator.alpha = 0
+            self.handModeIndicator.alpha = 1
             
         }
         

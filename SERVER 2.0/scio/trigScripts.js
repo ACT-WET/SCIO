@@ -17,6 +17,7 @@ var lights_timer = require("./sch_lights.js");
 var waterQuality_timer = require("./waterQualityReadings.js");
 
 var filler_timer = require("./sch_FillerShows.js");
+//var sgs_timer = require("./sgsClient.js");
 var filter_timer = require("./sch_filter.js");
 
 if ((isBetween(msec,0,250)) || (isBetween(msec,250,500)) || (isBetween(msec,500,750)) || (isBetween(msec,750,999))){
@@ -86,6 +87,7 @@ if ( (sec%2 === 0) && (isBetween(msec,250,500)) ){
 		//watchDog.eventLog('Hey! Execute Lights');
 		if (sysStatus.length != 0){
 			filler_timer();
+			//sgs_timer();
 			timerCount[5] = sec;
 		}
 	}
