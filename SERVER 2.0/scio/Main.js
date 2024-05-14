@@ -68,8 +68,6 @@ tempflameSp6=0;
 
 animValvePos = [];
 
-vfd1_faultCode = [];
-
 jumpToStep_auto=0;       //auto mode case 
 jumpToStep_manual=0;     //man mode case
 autoTimeout=0;           //timekeeper code to reset jumpToStep variables   

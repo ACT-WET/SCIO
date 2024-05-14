@@ -51,7 +51,7 @@ if (isBetween(msec,500,750)){
 	if (timerCount[2] != sec){
 		//watchDog.eventLog('Hey! Execute WQ');
 		waterQuality_timer();
-		runnel_timer();
+		//runnel_timer();
 		lights_timer();
 		timerCount[2] = sec;
 	}

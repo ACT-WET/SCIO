@@ -169,11 +169,11 @@ class DCPowerViewController: UIViewController {
                     self.dcp101fanStartStpBtn.isUserInteractionEnabled = true
                 }
                 
-                if self.dc1Values.cmd_HandStartStop == 1{
+                if self.dc1Values.coolingFanOn == 1{
                     self.dcp101fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanGreen"), for: .normal)
                     self.dcp101fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
-                if self.dc1Values.cmd_HandStartStop == 0{
+                if self.dc1Values.coolingFanOn == 0{
                     self.dcp101fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanRed"), for: .normal)
                     self.dcp101fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
@@ -258,11 +258,11 @@ class DCPowerViewController: UIViewController {
                     self.dcp102fanStartStpBtn.isUserInteractionEnabled = true
                 }
                 
-                if self.dc2Values.cmd_HandStartStop == 1{
+                if self.dc2Values.coolingFanOn == 1{
                     self.dcp102fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanGreen"), for: .normal)
                     self.dcp102fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
-                if self.dc2Values.cmd_HandStartStop == 0{
+                if self.dc2Values.coolingFanOn == 0{
                     self.dcp102fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanRed"), for: .normal)
                     self.dcp102fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
@@ -347,11 +347,11 @@ class DCPowerViewController: UIViewController {
                     self.dcp103fanStartStpBtn.isUserInteractionEnabled = true
                 }
                 
-                if self.dc3Values.cmd_HandStartStop == 1{
+                if self.dc3Values.coolingFanOn == 1{
                     self.dcp103fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanGreen"), for: .normal)
                     self.dcp103fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
-                if self.dc3Values.cmd_HandStartStop == 0{
+                if self.dc3Values.coolingFanOn == 0{
                     self.dcp103fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanRed"), for: .normal)
                     self.dcp103fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
@@ -436,11 +436,11 @@ class DCPowerViewController: UIViewController {
                     self.dcp104fanStartStpBtn.isUserInteractionEnabled = true
                 }
                 
-                if self.dc4Values.cmd_HandStartStop == 1{
+                if self.dc4Values.coolingFanOn == 1{
                     self.dcp104fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanGreen"), for: .normal)
                     self.dcp104fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
-                if self.dc4Values.cmd_HandStartStop == 0{
+                if self.dc4Values.coolingFanOn == 0{
                     self.dcp104fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanRed"), for: .normal)
                     self.dcp104fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
@@ -525,11 +525,11 @@ class DCPowerViewController: UIViewController {
                     self.dcp105fanStartStpBtn.isUserInteractionEnabled = true
                 }
                 
-                if self.dc5Values.cmd_HandStartStop == 1{
+                if self.dc5Values.coolingFanOn == 1{
                     self.dcp105fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanGreen"), for: .normal)
                     self.dcp105fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
-                if self.dc5Values.cmd_HandStartStop == 0{
+                if self.dc5Values.coolingFanOn == 0{
                     self.dcp105fanStartStpBtn.setImage(#imageLiteral(resourceName: "fanRed"), for: .normal)
                     self.dcp105fanStartStpBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
                 }
@@ -558,47 +558,55 @@ class DCPowerViewController: UIViewController {
     
     @IBAction func sendStartStopCmd(_ sender: UIButton){
         if sender.tag == 1{
-            if dc1Values.cmd_HandStartStop == 1{
+            if dc1Values.coolingFanOn == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP101_POWER_CMD_HANDCMD, value: 0)
             } else {
                 CENTRAL_SYSTEM?.writeBit(bit: DCP101_POWER_CMD_HANDCMD, value: 1)
             }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.readOnce = 0
+            }
        }
-       if sender.tag == 2{
-            if dc2Values.cmd_HandStartStop == 1{
+       if sender.tag == 11{
+            if dc2Values.coolingFanOn == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP102_POWER_CMD_HANDCMD, value: 0)
             } else {
                 CENTRAL_SYSTEM?.writeBit(bit: DCP102_POWER_CMD_HANDCMD, value: 1)
             }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.read2Once = 0
+            }
        }
-       if sender.tag == 3{
-            if dc3Values.cmd_HandStartStop == 1{
+       if sender.tag == 21{
+            if dc3Values.coolingFanOn == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP103_POWER_CMD_HANDCMD, value: 0)
             } else {
                 CENTRAL_SYSTEM?.writeBit(bit: DCP103_POWER_CMD_HANDCMD, value: 1)
             }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.read3Once = 0
+            }
        }
-       if sender.tag == 4{
-            if dc4Values.cmd_HandStartStop == 1{
+       if sender.tag == 31{
+            if dc4Values.coolingFanOn == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP104_POWER_CMD_HANDCMD, value: 0)
             } else {
                 CENTRAL_SYSTEM?.writeBit(bit: DCP104_POWER_CMD_HANDCMD, value: 1)
             }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.read4Once = 0
+            }
        }
-       if sender.tag == 5{
-            if dc5Values.cmd_HandStartStop == 1{
+       if sender.tag == 41{
+            if dc5Values.coolingFanOn == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP105_POWER_CMD_HANDCMD, value: 0)
             } else {
                 CENTRAL_SYSTEM?.writeBit(bit: DCP105_POWER_CMD_HANDCMD, value: 1)
             }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.read5Once = 0
+            }
        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-            self.readOnce = 0
-            self.read2Once = 0
-            self.read3Once = 0
-            self.read4Once = 0
-            self.read5Once = 0
-        }
     }
     
     @IBAction func sendAutoHandCmd(_ sender: UIButton){
@@ -609,6 +617,9 @@ class DCPowerViewController: UIViewController {
             if dc1Values.inHand == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP101_POWER_CMD_HANDMODE, value: 0)
             }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.readOnce = 0
+            }
         }
         if sender.tag == 152{
             if dc2Values.inAuto == 1{
@@ -616,6 +627,9 @@ class DCPowerViewController: UIViewController {
             }
             if dc2Values.inHand == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP102_POWER_CMD_HANDMODE, value: 0)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.read2Once = 0
             }
         }
         if sender.tag == 153{
@@ -625,6 +639,9 @@ class DCPowerViewController: UIViewController {
             if dc3Values.inHand == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP103_POWER_CMD_HANDMODE, value: 0)
             }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.read3Once = 0
+            }
         }
         if sender.tag == 154{
             if dc4Values.inAuto == 1{
@@ -632,6 +649,9 @@ class DCPowerViewController: UIViewController {
             }
             if dc4Values.inHand == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP104_POWER_CMD_HANDMODE, value: 0)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.read4Once = 0
             }
         }
         if sender.tag == 155{
@@ -641,13 +661,9 @@ class DCPowerViewController: UIViewController {
             if dc5Values.inHand == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: DCP105_POWER_CMD_HANDMODE, value: 0)
             }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-            self.readOnce = 0
-            self.read2Once = 0
-            self.read3Once = 0
-            self.read4Once = 0
-            self.read5Once = 0
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                self.read5Once = 0
+            }
         }
     }
     

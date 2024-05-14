@@ -11,140 +11,222 @@ function statusLogWrapper(){
     var fault_PUMPS = [];
     var status_WaterLevel = [];
     var status_WaterQuality = [];
-    var status_LIGHTS = [];
     var fault_ESTOP = [];
     var fault_INTRUSION = [];
     var fault_FOG = [];
     var status_AirPressure = [];
     var status_Ethernet = [];
+    var status_WarningFaults = [];
     var fault_ShowStoppers = [];
     var status_GasPressure = [];
 
     
 if (PLCConnected){
 
-     plc_client.readHoldingRegister(1006,57,function(resp){
-      if (resp != undefined && resp != null){
-        
-        //P201
-        if(checkUpdatedValue(vfd1_faultCode[0],resp.register[0],201)){
-           vfd1_faultCode[0] = resp.register[0];
-        }
-
-        //P202
-        if(checkUpdatedValue(vfd1_faultCode[1],resp.register[14],202)){
-           vfd1_faultCode[1] = resp.register[14];
-        }
-
-        //P203
-        if(checkUpdatedValue(vfd1_faultCode[2],resp.register[28],203)){
-           vfd1_faultCode[2] = resp.register[28];
-        }
-
-        //P204
-        if(checkUpdatedValue(vfd1_faultCode[3],resp.register[42],204)){
-           vfd1_faultCode[3] = resp.register[42];
-        }
-
-        //P205
-        if(checkUpdatedValue(vfd1_faultCode[4],resp.register[56],205)){
-           vfd1_faultCode[4] = resp.register[56];
-        }
-      }      
-    });
-
-    plc_client.readCoils(3520,1,function(resp){
-
-        if (resp != undefined && resp != null){
-            //Disable Lights Group - scio - 1
-            status_LIGHTS.push(resp.coils[0] ? resp.coils[0] : 0); //Reflecting Pool Lights
-            
-        }
-    });//end of first PLC modbus call
-
-    plc_client.readCoils(0,9,function(resp1){
+    plc_client.readHoldingRegister(50,1,function(resp1){
         
         if (resp1 != undefined && resp1 != null){  
             // Show Stoppers - atho
-            fault_ShowStoppers.push(resp1.coils[5] ? resp1.coils[5] : 0); // System Estop
-            fault_ShowStoppers.push(resp1.coils[6] ? resp1.coils[6] : 0); // ST2001 Abort
-            fault_ShowStoppers.push(resp1.coils[7] ? resp1.coils[7] : 0); // LT2001 Below LL 
-            fault_ShowStoppers.push(resp1.coils[8] ? resp1.coils[8] : 0); // LS2201 Overflow Abort
-            fault_ShowStoppers.push(resp1.coils[8] ? resp1.coils[8] : 0); // LS2301 Overflow Abort
+            fault_ESTOP.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0); // CP-101 Estop
+            fault_ESTOP.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0); // DCP-101 Estop
+            fault_ESTOP.push(nthBit(resp.register[0],2) ? nthBit(resp.register[0],2) : 0); // DCP-102 Estop
+            fault_ESTOP.push(nthBit(resp.register[0],3) ? nthBit(resp.register[0],3) : 0); // DCP-103 Estop
+            fault_ESTOP.push(nthBit(resp.register[0],4) ? nthBit(resp.register[0],4) : 0); // DCP-104 Estop
+            fault_ESTOP.push(nthBit(resp.register[0],5) ? nthBit(resp.register[0],5) : 0); // DCP-105 Estop
+            fault_ESTOP.push(nthBit(resp.register[0],6) ? nthBit(resp.register[0],6) : 0); // MCC-101 Estop
+            fault_ESTOP.push(nthBit(resp.register[0],7) ? nthBit(resp.register[0],7) : 0); // MCC-102 Estop
         }
     });//end of first PLC modbus call  
 
-    plc_client.readHoldingRegister(70,6,function(resp){
+    plc_client.readHoldingRegister(55,1,function(resp1){
+        
+        if (resp1 != undefined && resp1 != null){  
+            // Show Stoppers - atho
+            fault_ShowStoppers.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0); // ShowStopper Estop Active
+        }
+    });//end of first PLC modbus call  
+
+    plc_client.readHoldingRegister(60,1,function(resp1){
+        
+        if (resp1 != undefined && resp1 != null){  
+            // Show Stoppers - atho
+            status_Ethernet.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0);   // VFD-101 Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],2) ? nthBit(resp.register[0],2) : 0);   // VFD-103 Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],3) ? nthBit(resp.register[0],3) : 0);   // VFD-104 Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],4) ? nthBit(resp.register[0],4) : 0);   // VFD-105 Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],5) ? nthBit(resp.register[0],5) : 0);   // VFD-106 Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],6) ? nthBit(resp.register[0],6) : 0);   // VFD-107 Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],7) ? nthBit(resp.register[0],7) : 0);   // VFD-108 Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],8) ? nthBit(resp.register[0],8) : 0);   // VFD-109 Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],9) ? nthBit(resp.register[0],9) : 0);   // MCC-102 REMIO Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],10) ? nthBit(resp.register[0],10) : 0); // MCC-102 GFCI Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],11) ? nthBit(resp.register[0],11) : 0); // Water Quality Communication OK
+            status_Ethernet.push(nthBit(resp.register[0],12) ? nthBit(resp.register[0],12) : 0); // Weather Station Communication OK
+        }
+    });//end of first PLC modbus call 
+
+    plc_client.readHoldingRegister(65,1,function(resp1){
+        
+        if (resp1 != undefined && resp1 != null){  
+            // Show Stoppers - atho
+            status_WarningFaults.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0);   // WaterQuality Warning
+            status_WarningFaults.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0);   // Basin LL WaterLevel Warning
+            status_WarningFaults.push(nthBit(resp.register[0],2) ? nthBit(resp.register[0],2) : 0);   // Weather Station Warning
+            status_WarningFaults.push(nthBit(resp.register[0],3) ? nthBit(resp.register[0],3) : 0);   // CleanStrainer Warning
+            status_WarningFaults.push(nthBit(resp.register[0],4) ? nthBit(resp.register[0],4) : 0);   // VFD/Pump Warning
+            status_WarningFaults.push(nthBit(resp.register[0],5) ? nthBit(resp.register[0],5) : 0);   // DC Power Warning
+        }
+    });//end of first PLC modbus call 
+
+    plc_client.readHoldingRegister(70,1,function(resp1){
+        
+        if (resp1 != undefined && resp1 != null){  
+            // Show Stoppers - atho
+            status_WarningFaults.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0);   // Estop Fault
+            status_WarningFaults.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0);   // Network Fault 
+            status_WarningFaults.push(nthBit(resp.register[0],2) ? nthBit(resp.register[0],2) : 0);   // Water Qulaity Fault
+            status_WarningFaults.push(nthBit(resp.register[0],3) ? nthBit(resp.register[0],3) : 0);   // Water Level Fault
+            status_WarningFaults.push(nthBit(resp.register[0],4) ? nthBit(resp.register[0],4) : 0);   // Basin Below LLL Fault
+            status_WarningFaults.push(nthBit(resp.register[0],5) ? nthBit(resp.register[0],5) : 0);   // Weather Station Fault
+            status_WarningFaults.push(nthBit(resp.register[0],6) ? nthBit(resp.register[0],6) : 0);   // Low Pressure Fault
+            status_WarningFaults.push(nthBit(resp.register[0],7) ? nthBit(resp.register[0],7) : 0);   // Pump Fault
+            status_WarningFaults.push(nthBit(resp.register[0],8) ? nthBit(resp.register[0],8) : 0);   // Fog Fault
+            status_WarningFaults.push(nthBit(resp.register[0],9) ? nthBit(resp.register[0],9) : 0);   // DC Power Fault
+        }
+    });//end of first PLC modbus call 
+
+    plc_client.readHoldingRegister(75,12,function(resp){
       if (resp != undefined && resp != null){
         
-        //Estop
-        fault_ESTOP.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0); // ACP201 Estop
-        fault_ESTOP.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0); // MCC201 Estop
-
-        fault_ESTOP.push(nthBit(resp.register[0],4) ? nthBit(resp.register[0],4) : 0); // One/More System Warning Alarm 
-        fault_ESTOP.push(nthBit(resp.register[0],5) ? nthBit(resp.register[0],5) : 0); // One/More System Fault Alarm 
-
-        fault_ESTOP.push(nthBit(resp.register[0],8) ? nthBit(resp.register[0],8) : 0); //RAT Mode
-        fault_ESTOP.push(nthBit(resp.register[0],9) ? nthBit(resp.register[0],9) : 0); //Show Playing
+        //System Status
+        fault_ESTOP.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0);   // Show Stop Active
+        fault_ESTOP.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0);   // System Normal State
+        fault_ESTOP.push(nthBit(resp.register[0],2) ? nthBit(resp.register[0],2) : 0);   // System Warning State
+        fault_ESTOP.push(nthBit(resp.register[0],3) ? nthBit(resp.register[0],3) : 0);   // System Fault State
+        fault_ESTOP.push(nthBit(resp.register[0],12) ? nthBit(resp.register[0],12) : 0); // BMS Warning Output
+        fault_ESTOP.push(nthBit(resp.register[0],13) ? nthBit(resp.register[0],13) : 0); // BMS Fault Output
 
         //WaterQuality
-        status_WaterQuality.push(nthBit(resp.register[1],0) ? nthBit(resp.register[1],0) : 0);   // PH Above Hi
-        status_WaterQuality.push(nthBit(resp.register[1],1) ? nthBit(resp.register[1],1) : 0);   // PH Below Low
-        status_WaterQuality.push(nthBit(resp.register[1],2) ? nthBit(resp.register[1],2) : 0);   // ORP Above Hi 
-        status_WaterQuality.push(nthBit(resp.register[1],3) ? nthBit(resp.register[1],3) : 0);   // ORP Below Low
-        status_WaterQuality.push(nthBit(resp.register[1],4) ? nthBit(resp.register[1],4) : 0);   // TDS Above Hi
-        status_WaterQuality.push(nthBit(resp.register[1],5) ? nthBit(resp.register[1],5) : 0);   // pH Channel Fault
-        status_WaterQuality.push(nthBit(resp.register[1],6) ? nthBit(resp.register[1],6) : 0);   // ORP Channel Fault
-        status_WaterQuality.push(nthBit(resp.register[1],7) ? nthBit(resp.register[1],7) : 0);   // TDS Channel Fault
-        status_WaterQuality.push(nthBit(resp.register[1],8) ? nthBit(resp.register[1],8) : 0);   // Br Dosing Active
-        status_WaterQuality.push(nthBit(resp.register[1],9) ? nthBit(resp.register[1],9) : 0);   // Br Dosing Timeout
+        status_WaterQuality.push(nthBit(resp.register[1],0) ? nthBit(resp.register[1],0) : 0);     // PH Above Hi
+        status_WaterQuality.push(nthBit(resp.register[1],1) ? nthBit(resp.register[1],1) : 0);     // PH Below Low
+        status_WaterQuality.push(nthBit(resp.register[1],2) ? nthBit(resp.register[1],2) : 0);     // ORP Above Hi 
+        status_WaterQuality.push(nthBit(resp.register[1],3) ? nthBit(resp.register[1],3) : 0);     // ORP Below Low
+        status_WaterQuality.push(nthBit(resp.register[1],4) ? nthBit(resp.register[1],4) : 0);     // Conductivity Above Hi
+        status_WaterQuality.push(nthBit(resp.register[1],5) ? nthBit(resp.register[1],5) : 0);     // Conductivity Below Low
+        status_WaterQuality.push(nthBit(resp.register[1],6) ? nthBit(resp.register[1],6) : 0);     // Bromine Above Hi
+        status_WaterQuality.push(nthBit(resp.register[1],7) ? nthBit(resp.register[1],7) : 0);     // Bromine Below Low
+        status_WaterQuality.push(nthBit(resp.register[1],8) ? nthBit(resp.register[1],8) : 0);     // Filtration Temp Above Hi
+        status_WaterQuality.push(nthBit(resp.register[1],9) ? nthBit(resp.register[1],9) : 0);     // Filtration Temp Below Low
+        status_WaterQuality.push(nthBit(resp.register[1],10) ? nthBit(resp.register[1],10) : 0);   // Basin Return Temp Below Low
+        status_WaterQuality.push(nthBit(resp.register[1],11) ? nthBit(resp.register[1],11) : 0);   // Basin Temp Below Low
+        status_WaterQuality.push(nthBit(resp.register[1],12) ? nthBit(resp.register[1],12) : 0);   // Bromine Timeout
 
-        //Wind
-        status_windSensor.push(nthBit(resp.register[2],0) ? nthBit(resp.register[2],0) : 0); // ST2001_Abort Show
-        status_windSensor.push(nthBit(resp.register[2],1) ? nthBit(resp.register[2],1) : 0); // ST2001_Above_Hi
-        status_windSensor.push(nthBit(resp.register[2],2) ? nthBit(resp.register[2],2) : 0); // ST2001_Above_Medium
-        status_windSensor.push(nthBit(resp.register[2],3) ? nthBit(resp.register[2],3) : 0); // ST2001_Above_Low
-        status_windSensor.push(nthBit(resp.register[2],4) ? nthBit(resp.register[2],4) : 0); // ST2001_No_Wind
-        status_windSensor.push(nthBit(resp.register[2],6) ? nthBit(resp.register[2],6) : 0); // ST2001_Speed_Channel_Fault
-        status_windSensor.push(nthBit(resp.register[2],7) ? nthBit(resp.register[2],7) : 0); // ST2001_Drctn_Channel_Fault 
+        status_WaterQuality.push(nthBit(resp.register[2],0) ? nthBit(resp.register[2],0) : 0);     // DCM512 Communication Fault
+        status_WaterQuality.push(nthBit(resp.register[2],1) ? nthBit(resp.register[2],1) : 0);     // PH Sensor Fault
+        status_WaterQuality.push(nthBit(resp.register[2],2) ? nthBit(resp.register[2],2) : 0);     // ORP Sensor Fault 
+        status_WaterQuality.push(nthBit(resp.register[2],3) ? nthBit(resp.register[2],3) : 0);     // Conductivity Sensor Fault
+        status_WaterQuality.push(nthBit(resp.register[2],4) ? nthBit(resp.register[2],4) : 0);     // Bromine Sensor Fault 
+        status_WaterQuality.push(nthBit(resp.register[2],5) ? nthBit(resp.register[2],5) : 0);     // Filtration Temp Sensor Fault
+        status_WaterQuality.push(nthBit(resp.register[2],6) ? nthBit(resp.register[2],6) : 0);     // Basin Return Temp Sensor Fault
+        status_WaterQuality.push(nthBit(resp.register[2],7) ? nthBit(resp.register[2],7) : 0);     // Basin Temp Sensor Fault
+        status_WaterQuality.push(nthBit(resp.register[2],8) ? nthBit(resp.register[2],8) : 0);     // Basin Return Temp Below LL 
+        status_WaterQuality.push(nthBit(resp.register[2],9) ? nthBit(resp.register[2],9) : 0);     // Basin Temp Below LL
+        status_WaterQuality.push(nthBit(resp.register[2],12) ? nthBit(resp.register[2],12) : 0);   // Bromine Dosing ON
+        status_WaterQuality.push(nthBit(resp.register[2],13) ? nthBit(resp.register[2],13) : 0);   // Freeze Dump Valves Open
 
-        windHi = status_windSensor[1];
-        windMed = status_windSensor[2];
-        windLo = status_windSensor[3];
-        windNo = status_windSensor[4];
+        //WaterLevel 
+        status_WaterLevel.push(nthBit(resp.register[3],0) ? nthBit(resp.register[3],0) : 0);   // WaterLevel Above Hi
+        status_WaterLevel.push(nthBit(resp.register[3],1) ? nthBit(resp.register[3],1) : 0);   // WaterLevel Below L
+        status_WaterLevel.push(nthBit(resp.register[3],2) ? nthBit(resp.register[3],2) : 0);   // WaterLevel Below LL
+        status_WaterLevel.push(nthBit(resp.register[3],3) ? nthBit(resp.register[3],3) : 0);   // WaterLevel Below LLL
+        status_WaterLevel.push(nthBit(resp.register[3],4) ? nthBit(resp.register[3],4) : 0);   // WaterLevel Fault
+        status_WaterLevel.push(nthBit(resp.register[3],5) ? nthBit(resp.register[3],5) : 0);   // WaterMakeup Active
+
+        //System Pressure 
+        status_AirPressure.push(nthBit(resp.register[4],0) ? nthBit(resp.register[4],0) : 0);     // PSL-1001 Clean Strainer Warning
+        status_AirPressure.push(nthBit(resp.register[4],1) ? nthBit(resp.register[4],1) : 0);     // PSL-1003 Clean Strainer Warning
+        status_AirPressure.push(nthBit(resp.register[4],2) ? nthBit(resp.register[4],2) : 0);     // PSL-1005 Clean Strainer Warning
+        status_AirPressure.push(nthBit(resp.register[4],7) ? nthBit(resp.register[4],7) : 0);     // PSLL-1001 Pressure Fault
+        status_AirPressure.push(nthBit(resp.register[4],8) ? nthBit(resp.register[4],8) : 0);     // PSLL-1003 Pressure Fault
+        status_AirPressure.push(nthBit(resp.register[4],9) ? nthBit(resp.register[4],9) : 0);     // PSLL-1004 Pressure Fault
+        status_AirPressure.push(nthBit(resp.register[4],10) ? nthBit(resp.register[4],10) : 0);   // PSLL-1005 Pressure Fault
+        status_AirPressure.push(nthBit(resp.register[4],11) ? nthBit(resp.register[4],11) : 0);   // PSLL-1006 Pressure Fault
 
         //Pumps
-        fault_PUMPS.push(nthBit(resp.register[2],10) ? nthBit(resp.register[2],10) : 0); // VFD 201 StrainerWarning (Filter Pump)
-        fault_PUMPS.push(nthBit(resp.register[2],11) ? nthBit(resp.register[2],11) : 0); // VFD 202 StrainerWarning (Refelcting Pool Pump)
-        fault_PUMPS.push(nthBit(resp.register[2],12) ? nthBit(resp.register[2],12) : 0); // VFD 203 StrainerWarning (Level 2 Pendant Dropper Pump)
-        fault_PUMPS.push(nthBit(resp.register[2],13) ? nthBit(resp.register[2],13) : 0); // VFD 204 StrainerWarning (Level 3 Pendant Dropper Pump)
-        fault_PUMPS.push(nthBit(resp.register[2],14) ? nthBit(resp.register[2],14) : 0); // VFD 205 StrainerWarning (Level 4 Pendant Dropper Pump)
+        fault_PUMPS.push(nthBit(resp.register[5],0) ? nthBit(resp.register[5],0) : 0); // VFD 101 Hand Mode (Filter Pump)
+        fault_PUMPS.push(nthBit(resp.register[5],1) ? nthBit(resp.register[5],1) : 0); // VFD 101 Off Mode  (Filter Pump)
+        fault_PUMPS.push(nthBit(resp.register[5],2) ? nthBit(resp.register[5],2) : 0); // VFD 101 Auto Mode (Filter Pump)
+        fault_PUMPS.push(nthBit(resp.register[5],3) ? nthBit(resp.register[5],3) : 0); // VFD 101 Pump Running (Filter Pump)
+        fault_PUMPS.push(nthBit(resp.register[5],4) ? nthBit(resp.register[5],4) : 0); // VFD 101 Pump Warning (Filter Pump)
+        fault_PUMPS.push(nthBit(resp.register[5],5) ? nthBit(resp.register[5],5) : 0); // VFD 101 Pump Fault (Filter Pump)
 
-        fault_PUMPS.push(nthBit(resp.register[3],0) ? nthBit(resp.register[3],0) : 0); // VFD 201 PressureFault (Filter Pump)
-        fault_PUMPS.push(nthBit(resp.register[3],1) ? nthBit(resp.register[3],1) : 0); // VFD 202 PressureFault (Refelcting Pool Pump)
-        fault_PUMPS.push(nthBit(resp.register[3],2) ? nthBit(resp.register[3],2) : 0); // VFD 203 PressureFault (Level 2 Pendant Dropper Pump)
-        fault_PUMPS.push(nthBit(resp.register[3],3) ? nthBit(resp.register[3],3) : 0); // VFD 204 PressureFault (Level 3 Pendant Dropper Pump)
-        fault_PUMPS.push(nthBit(resp.register[3],4) ? nthBit(resp.register[3],4) : 0); // VFD 205 PressureFault (Level 4 Pendant Dropper Pump)
+        fault_PUMPS.push(nthBit(resp.register[5],6) ? nthBit(resp.register[5],6) : 0);   // Ozone Hand Mode 
+        fault_PUMPS.push(nthBit(resp.register[5],7) ? nthBit(resp.register[5],7) : 0);   // Ozone Auto Mode  
+        fault_PUMPS.push(nthBit(resp.register[5],8) ? nthBit(resp.register[5],8) : 0);   // Ozone Enabled 
+        fault_PUMPS.push(nthBit(resp.register[5],9) ? nthBit(resp.register[5],9) : 0);   // Ozone Pump Running 
+        fault_PUMPS.push(nthBit(resp.register[5],10) ? nthBit(resp.register[5],10) : 0); // Ozone Pump Fault 
+        fault_PUMPS.push(nthBit(resp.register[5],11) ? nthBit(resp.register[5],11) : 0); // Ozone Generator Active 
+        fault_PUMPS.push(nthBit(resp.register[5],12) ? nthBit(resp.register[5],12) : 0); // Ozone Destruct Active 
+
+        fault_PUMPS.push(nthBit(resp.register[6],0) ? nthBit(resp.register[6],0) : 0); // VFD 103 Hand Mode (Blossom Pump1)
+        fault_PUMPS.push(nthBit(resp.register[6],1) ? nthBit(resp.register[6],1) : 0); // VFD 103 Off Mode  (Blossom Pump1)
+        fault_PUMPS.push(nthBit(resp.register[6],2) ? nthBit(resp.register[6],2) : 0); // VFD 103 Auto Mode (Blossom Pump1)
+        fault_PUMPS.push(nthBit(resp.register[6],3) ? nthBit(resp.register[6],3) : 0); // VFD 103 Pump Running (Blossom Pump1)
+        fault_PUMPS.push(nthBit(resp.register[6],4) ? nthBit(resp.register[6],4) : 0); // VFD 103 Pump Warning (Blossom Pump1)
+        fault_PUMPS.push(nthBit(resp.register[6],5) ? nthBit(resp.register[6],5) : 0); // VFD 103 Pump Fault (Blossom Pump1)
+
+        fault_PUMPS.push(nthBit(resp.register[6],8) ? nthBit(resp.register[6],8) : 0);   // VFD 104 Hand Mode (Blossom Pump2)
+        fault_PUMPS.push(nthBit(resp.register[6],9) ? nthBit(resp.register[6],9) : 0);   // VFD 104 Off Mode  (Blossom Pump2)
+        fault_PUMPS.push(nthBit(resp.register[6],10) ? nthBit(resp.register[6],10) : 0); // VFD 104 Auto Mode (Blossom Pump2)
+        fault_PUMPS.push(nthBit(resp.register[6],11) ? nthBit(resp.register[6],11) : 0); // VFD 104 Pump Running (Blossom Pump2)
+        fault_PUMPS.push(nthBit(resp.register[6],12) ? nthBit(resp.register[6],12) : 0); // VFD 104 Pump Warning (Blossom Pump2)
+        fault_PUMPS.push(nthBit(resp.register[6],13) ? nthBit(resp.register[6],13) : 0); // VFD 104 Pump Fault (Blossom Pump2)
+
+        fault_PUMPS.push(nthBit(resp.register[7],0) ? nthBit(resp.register[7],0) : 0); // VFD 105 Hand Mode (Blossom Pump3)
+        fault_PUMPS.push(nthBit(resp.register[7],1) ? nthBit(resp.register[7],1) : 0); // VFD 105 Off Mode  (Blossom Pump3)
+        fault_PUMPS.push(nthBit(resp.register[7],2) ? nthBit(resp.register[7],2) : 0); // VFD 105 Auto Mode (Blossom Pump3)
+        fault_PUMPS.push(nthBit(resp.register[7],3) ? nthBit(resp.register[7],3) : 0); // VFD 105 Pump Running (Blossom Pump3)
+        fault_PUMPS.push(nthBit(resp.register[7],4) ? nthBit(resp.register[7],4) : 0); // VFD 105 Pump Warning (Blossom Pump3)
+        fault_PUMPS.push(nthBit(resp.register[7],5) ? nthBit(resp.register[7],5) : 0); // VFD 105 Pump Fault (Blossom Pump3)
+
+        fault_PUMPS.push(nthBit(resp.register[7],8) ? nthBit(resp.register[7],8) : 0);   // VFD 106 Hand Mode (Blossom Pump4)
+        fault_PUMPS.push(nthBit(resp.register[7],9) ? nthBit(resp.register[7],9) : 0);   // VFD 106 Off Mode  (Blossom Pump4)
+        fault_PUMPS.push(nthBit(resp.register[7],10) ? nthBit(resp.register[7],10) : 0); // VFD 106 Auto Mode (Blossom Pump4)
+        fault_PUMPS.push(nthBit(resp.register[7],11) ? nthBit(resp.register[7],11) : 0); // VFD 106 Pump Running (Blossom Pump4)
+        fault_PUMPS.push(nthBit(resp.register[7],12) ? nthBit(resp.register[7],12) : 0); // VFD 106 Pump Warning (Blossom Pump4)
+        fault_PUMPS.push(nthBit(resp.register[7],13) ? nthBit(resp.register[7],13) : 0); // VFD 106 Pump Fault (Blossom Pump4)
+
+        fault_PUMPS.push(nthBit(resp.register[8],0) ? nthBit(resp.register[8],0) : 0); // VFD 107 Hand Mode (Fog Plume1)
+        fault_PUMPS.push(nthBit(resp.register[8],1) ? nthBit(resp.register[8],1) : 0); // VFD 107 Off Mode  (Fog Plume1)
+        fault_PUMPS.push(nthBit(resp.register[8],2) ? nthBit(resp.register[8],2) : 0); // VFD 107 Auto Mode (Fog Plume1)
+        fault_PUMPS.push(nthBit(resp.register[8],3) ? nthBit(resp.register[8],3) : 0); // VFD 107 Pump Running (Fog Plume1)
+        fault_PUMPS.push(nthBit(resp.register[8],4) ? nthBit(resp.register[8],4) : 0); // VFD 107 Pump Warning (Fog Plume1)
+        fault_PUMPS.push(nthBit(resp.register[8],5) ? nthBit(resp.register[8],5) : 0); // VFD 107 Pump Fault (Fog Plume1)
+        fault_PUMPS.push(nthBit(resp.register[8],6) ? nthBit(resp.register[8],6) : 0); // VFD 107 GFCI Tripped (Fog Plume1)
+
+        fault_PUMPS.push(nthBit(resp.register[8],8) ? nthBit(resp.register[8],8) : 0);   // VFD 108 Hand Mode (Fog Plume2)
+        fault_PUMPS.push(nthBit(resp.register[8],9) ? nthBit(resp.register[8],9) : 0);   // VFD 108 Off Mode  (Fog Plume2)
+        fault_PUMPS.push(nthBit(resp.register[8],10) ? nthBit(resp.register[8],10) : 0); // VFD 108 Auto Mode (Fog Plume2)
+        fault_PUMPS.push(nthBit(resp.register[8],11) ? nthBit(resp.register[8],11) : 0); // VFD 108 Pump Running (Fog Plume2)
+        fault_PUMPS.push(nthBit(resp.register[8],12) ? nthBit(resp.register[8],12) : 0); // VFD 108 Pump Warning (Fog Plume2)
+        fault_PUMPS.push(nthBit(resp.register[8],13) ? nthBit(resp.register[8],13) : 0); // VFD 108 Pump Fault (Fog Plume2)
+        fault_PUMPS.push(nthBit(resp.register[8],14) ? nthBit(resp.register[8],14) : 0); // VFD 108 GFCI Tripped (Fog Plume2)
+
+        fault_PUMPS.push(nthBit(resp.register[9],0) ? nthBit(resp.register[9],0) : 0); // VFD 109 Hand Mode (Fog Plume3)
+        fault_PUMPS.push(nthBit(resp.register[9],1) ? nthBit(resp.register[9],1) : 0); // VFD 109 Off Mode  (Fog Plume3)
+        fault_PUMPS.push(nthBit(resp.register[9],2) ? nthBit(resp.register[9],2) : 0); // VFD 109 Auto Mode (Fog Plume3)
+        fault_PUMPS.push(nthBit(resp.register[9],3) ? nthBit(resp.register[9],3) : 0); // VFD 109 Pump Running (Fog Plume3)
+        fault_PUMPS.push(nthBit(resp.register[9],4) ? nthBit(resp.register[9],4) : 0); // VFD 109 Pump Warning (Fog Plume3)
+        fault_PUMPS.push(nthBit(resp.register[9],5) ? nthBit(resp.register[9],5) : 0); // VFD 109 Pump Fault (Fog Plume3)
+        fault_PUMPS.push(nthBit(resp.register[9],6) ? nthBit(resp.register[9],6) : 0); // VFD 109 GFCI Tripped (Fog Plume3)
+
+
 
         fault_PUMPS.push(nthBit(resp.register[3],6) ? nthBit(resp.register[3],6) : 0);      // VFD 201 PumpFault (Filter Pump)
         fault_PUMPS.push(nthBit(resp.register[3],7) ? nthBit(resp.register[3],7) : 0);      // VFD 202 PumpFault (Refelcting Pool Pump)
         fault_PUMPS.push(nthBit(resp.register[3],8) ? nthBit(resp.register[3],8) : 0);      // VFD 203 PumpFault (Level 2 Pendant Dropper Pump)
         fault_PUMPS.push(nthBit(resp.register[3],9) ? nthBit(resp.register[3],9) : 0);      // VFD 204 PumpFault (Level 3 Pendant Dropper Pump)
         fault_PUMPS.push(nthBit(resp.register[3],10) ? nthBit(resp.register[3],10) : 0);    // VFD 205 PumpFault (Level 4 Pendant Dropper Pump)
-
-        //WaterLevel 
-        status_WaterLevel.push(nthBit(resp.register[4],0) ? nthBit(resp.register[4],0) : 0);   // Refelcting Pool Below LL
-        status_WaterLevel.push(nthBit(resp.register[4],1) ? nthBit(resp.register[4],1) : 0);   // Level 2 Water OverFlow
-        status_WaterLevel.push(nthBit(resp.register[4],2) ? nthBit(resp.register[4],2) : 0);   // Level 2 Water OverFlow Alarm
-        status_WaterLevel.push(nthBit(resp.register[4],3) ? nthBit(resp.register[4],3) : 0);   // Level 3 Water OverFlow
-        status_WaterLevel.push(nthBit(resp.register[4],4) ? nthBit(resp.register[4],4) : 0);   // Level 3 Water OverFlow Alarm
-        status_WaterLevel.push(nthBit(resp.register[4],6) ? nthBit(resp.register[4],6) : 0);   // LT2001 Above Hi Hi
-        status_WaterLevel.push(nthBit(resp.register[4],7) ? nthBit(resp.register[4],7) : 0);   // LT2001 Above Hi
-        status_WaterLevel.push(nthBit(resp.register[4],8) ? nthBit(resp.register[4],8) : 0);   // LT2001 Below L
-        status_WaterLevel.push(nthBit(resp.register[4],9) ? nthBit(resp.register[4],9) : 0);   // LT2001 Below LL
-        status_WaterLevel.push(nthBit(resp.register[4],10) ? nthBit(resp.register[4],10) : 0);   // LT2001 Sensor Fault
-        status_WaterLevel.push(nthBit(resp.register[4],12) ? nthBit(resp.register[4],12) : 0);   // LT2001 WaterMakeup Active
-        status_WaterLevel.push(nthBit(resp.register[4],13) ? nthBit(resp.register[4],13) : 0);   // LT2001 WaterMakeup Timeout
 
         //filtration
         status_filter.push(nthBit(resp.register[5],0) ? nthBit(resp.register[5],0) : 0);   // Scheduled Backwash Trigger
@@ -185,40 +267,93 @@ if (PLCConnected){
             // creates the status array that is sent to the iPad (via errorLog) AND logged to file
             sysStatus = [{
                             "***************************ESTOP STATUS**************************" : "1",
-                            "ACP-201 ESTOP": fault_ESTOP[0],
-                            "MCC-201 ESTOP": fault_ESTOP[1],
-                            "One/More System Warnings": fault_ESTOP[2],
-                            "One/More System Alarms": fault_ESTOP[3],
-                            "SPM RAT MODE : PLC": fault_ESTOP[4],
-                            "Show Playing : PLC": fault_ESTOP[5],
+                            "CP-101 ESTOP": fault_ESTOP[0],
+                            "DCP-101 ESTOP": fault_ESTOP[1],
+                            "DCP-102 ESTOP": fault_ESTOP[2],
+                            "DCP-103 ESTOP": fault_ESTOP[3],
+                            "DCP-104 ESTOP": fault_ESTOP[4],
+                            "DCP-105 ESTOP": fault_ESTOP[5],
+                            "MCC-101 ESTOP": fault_ESTOP[6],
+                            "MCC-102 ESTOP": fault_ESTOP[7],
+                            "Show Stop Active": fault_ESTOP[8],
+                            "System Normal State": fault_ESTOP[9],
+                            "System Warning Active": fault_ESTOP[10],
+                            "System Fault Active": fault_ESTOP[11],
+                            "BMS Warning Output": fault_ESTOP[12],
+                            "BMS Fault Output": fault_ESTOP[13],
                             "ShowStopper :Estop": fault_ShowStoppers[0],
-                            "ShowStopper :Wind_Abort": fault_ShowStoppers[1],
-                            "ShowStopper :LT2001 Below LL": fault_ShowStoppers[2],
-                            "ShowStopper :LS2201 OverFlow": fault_ShowStoppers[3],
-                            "ShowStopper :LS2301 OverFlow": fault_ShowStoppers[4],
-                            "***************************SHOW STATUS***************************" : "2",
-                            "Show PlayMode": autoMan,
-                            "Show PlayStatus":playing,
-                            "CurrentShow Number":show,
-                            "deflate":deflate,
-                            "NextShowTime": nxtTime,
-                            "NextShowNumber": nxtShow,
-                            "timeLastCmnd": timeLastCmnd,
-                            "SPM_RAT_Mode":Boolean(spmRATMode),
-                            "JumpToStepAuto": jumpToStep_auto,
-                            "JumpToStepManual": jumpToStep_manual,
-                            "DayMode Status":dayModeStatus,
-                            "****************************WATER QUALITY STATUS*****************" : "3",
+                            "***************************SYSTEM NETOWRK STATUS***************************" : "2",
+                            "VFD-101 Communication OK": status_Ethernet[0],
+                            "VFD-103 Communication OK": status_Ethernet[1],
+                            "VFD-104 Communication OK": status_Ethernet[2],
+                            "VFD-105 Communication OK": status_Ethernet[3],
+                            "VFD-106 Communication OK": status_Ethernet[4],
+                            "VFD-107 Communication OK": status_Ethernet[5],
+                            "VFD-108 Communication OK": status_Ethernet[6],
+                            "VFD-109 Communication OK": status_Ethernet[7],
+                            "MCC-102 REMIO Communication OK": status_Ethernet[8],
+                            "MCC-102 GFCI Communication OK": status_Ethernet[9],
+                            "Water Quality Communication OK": status_Ethernet[10],
+                            "Weather Station Communication OK": status_Ethernet[11],
+                            "***************************SYSTEM WARNING FAULT STATUS**************************" : "3",
+                            "Warning: Water Quality": status_WarningFaults[0],
+                            "Warning: Basin WaterLevel LL": status_WarningFaults[1],
+                            "Warning: Weather Station": status_WarningFaults[2],
+                            "Warning: CleanStrainer": status_WarningFaults[3],
+                            "Warning: Pump/VFD": status_WarningFaults[4],
+                            "Warning: DC Power": status_WarningFaults[5],
+                            "Fault: Estop": status_WarningFaults[6],
+                            "Fault: Network": status_WarningFaults[7],
+                            "Fault: WaterQuality": status_WarningFaults[8],
+                            "Fault: WaterLevel": status_WarningFaults[9],
+                            "Fault: Basin WaterLevel Below LLL": status_WarningFaults[10],
+                            "Fault: Weather Station": status_WarningFaults[11],
+                            "Fault: Low Pressure": status_WarningFaults[12],
+                            "Fault: VFD/Pump": status_WarningFaults[13],
+                            "Fault: Fog": status_WarningFaults[14],
+                            "Fault: DC Power": status_WarningFaults[15],
+                            "****************************WATER QUALITY STATUS*****************" : "4",
                             "PH Above Hi": status_WaterQuality[0],
                             "PH Below Low": status_WaterQuality[1],
                             "ORP Above Hi": status_WaterQuality[2],
                             "ORP Below Low": status_WaterQuality[3],
-                            "TDS Above Hi": status_WaterQuality[4],
-                            "PH ChannelFault": status_WaterQuality[5],
-                            "ORP ChannelFault": status_WaterQuality[6],
-                            "TDS ChannelFault": status_WaterQuality[7],
-                            "Bromine Dosing Active": status_WaterQuality[8],
-                            "Bromine Dosing Timeout": status_WaterQuality[9],
+                            "Conductivity Above Hi": status_WaterQuality[4],
+                            "Conductivity Below Low": status_WaterQuality[5],
+                            "Bromine Above Hi": status_WaterQuality[6],
+                            "Bromine Below Low": status_WaterQuality[7],
+                            "Filtration Temperature Above Hi": status_WaterQuality[8],
+                            "Filtration Temperature Below Low": status_WaterQuality[9],
+                            "Basin Return Temperature Below Low": status_WaterQuality[10],
+                            "Basin Temperature Below Low": status_WaterQuality[11],
+                            "Bromine Dosing Timeout": status_WaterQuality[12],
+                            "DCM512 Communication Fault": status_WaterQuality[13],
+                            "pH Sensor Fault": status_WaterQuality[14],
+                            "ORP Sensor Fault": status_WaterQuality[15],
+                            "Conductivity Sensor Fault": status_WaterQuality[16],
+                            "Bromine Sensor Fault": status_WaterQuality[17],
+                            "Filtration Temperature Sensor Fault": status_WaterQuality[18],
+                            "Basin Return Temperature Sensor Fault": status_WaterQuality[19],
+                            "Basin Temperature Sensor Fault": status_WaterQuality[20],
+                            "Basin Return Temperature Below LL": status_WaterQuality[21],
+                            "Basin Temperature Below LL": status_WaterQuality[22],
+                            "Bromine Dosing ON": status_WaterQuality[23],
+                            "Freeze Dump Valves Open": status_WaterQuality[24],
+                            "****************************WATERLEVEL STATUS********************" : "5",
+                            "WaterLevel Above_Hi":status_WaterLevel[0],
+                            "WaterLevel Below_Low":status_WaterLevel[1],
+                            "WaterLevel Below_LowLow":status_WaterLevel[2],
+                            "WaterLevel Below_LowLowLow":status_WaterLevel[3],
+                            "WaterLevel Fault":status_WaterLevel[4],
+                            "WaterMakeup On":status_WaterLevel[5],
+                            "****************************SYSTEM PRESSURE STATUS********************" : "6",
+                            "PSL1001 Clean Strainer":status_AirPressure[0],
+                            "PSL1003 Clean Strainer":status_AirPressure[1],
+                            "PSL1005 Clean Strainer":status_AirPressure[2],
+                            "PSLL1001 PressureFault":status_AirPressure[3],
+                            "PSLL1003 PressureFault":status_AirPressure[4],
+                            "PSLL1004 PressureFault":status_AirPressure[5],
+                            "PSLL1005 PressureFault":status_AirPressure[6],
+                            "PSLL1006 PressureFault":status_AirPressure[7],
                             "****************************WIND STATUS********************" : "4",   
                             "ST2001 Abort_Show": status_windSensor[0],
                             "ST2001 Above_Hi": status_windSensor[1],
@@ -228,40 +363,64 @@ if (PLCConnected){
                             "ST2001 Speed_Channel_Fault": status_windSensor[5],
                             "ST2001 Direction_Channel_Fault": status_windSensor[6],
                             "***************************PUMPS STATUS**************************" : "5",
-                            "VFD 201 Fault Code":vfd1_faultCode[0],
-                            "VFD 202 Fault Code":vfd1_faultCode[1],
-                            "VFD 203 Fault Code":vfd1_faultCode[2],
-                            "VFD 204 Fault Code":vfd1_faultCode[3],
-                            "VFD 205 Fault Code":vfd1_faultCode[4],
-                            "VFD 201 Strainer Warning":fault_PUMPS[0],
-                            "VFD 202 Strainer Warning":fault_PUMPS[1],
-                            "VFD 203 Strainer Warning":fault_PUMPS[2],
-                            "VFD 204 Strainer Warning":fault_PUMPS[3],
-                            "VFD 205 Strainer Warning":fault_PUMPS[4],
-                            "VFD 201 Pressure Fault":fault_PUMPS[5],
-                            "VFD 202 Pressure Fault":fault_PUMPS[6],
-                            "VFD 203 Pressure Fault":fault_PUMPS[7],
-                            "VFD 204 Pressure Fault":fault_PUMPS[8],
-                            "VFD 205 Pressure Fault":fault_PUMPS[9],
-                            "VFD 201 Pump Fault":fault_PUMPS[10],
-                            "VFD 202 Pump Fault":fault_PUMPS[11],
-                            "VFD 203 Pump Fault":fault_PUMPS[12],
-                            "VFD 204 Pump Fault":fault_PUMPS[13],
-                            "VFD 205 Pump Fault":fault_PUMPS[14],
-                            "****************************WATERLEVEL STATUS********************" : "6",
-                            "Reflecting Pool Below LL":status_WaterLevel[0],
-                            "Level 2 Water OverFlow":status_WaterLevel[1],
-                            "Level 2 Water OverFlow Alarm":status_WaterLevel[2],
-                            "Level 3 Water OverFlow":status_WaterLevel[3],
-                            "Level 3 Water OverFlow Alarm":status_WaterLevel[4],
-                            "LT2001 Above_Hi":status_WaterLevel[5],
-                            "LT2001 Below_Low":status_WaterLevel[6],
-                            "LT2001 Below_LowLow":status_WaterLevel[7],
-                            "LT2001 Below_LowLowLow":status_WaterLevel[8],
-                            "LT2001 ChannelFault":status_WaterLevel[9],
-                            "LT2001 WaterMakeup On":status_WaterLevel[10],
-                            "LT2001 WaterMakeup Timeout":status_WaterLevel[11],
-                            "Refelcting Pool Disable Lights": status_LIGHTS[0],
+                            "VFD 101 Hand Mode":fault_PUMPS[0],
+                            "VFD 101 OFF Mode":fault_PUMPS[1],
+                            "VFD 101 Auto Mode":fault_PUMPS[2],
+                            "VFD 101 Pump Running":fault_PUMPS[3],
+                            "VFD 101 Pump Warning":fault_PUMPS[4],
+                            "VFD 101 Pump Fault":fault_PUMPS[5],
+                            "Ozone Booster Hand Mode":fault_PUMPS[6],
+                            "Ozone Booster Auto Mode":fault_PUMPS[7],
+                            "Ozone Booster Pump Enabled":fault_PUMPS[8],
+                            "Ozone Booster Pump Running":fault_PUMPS[9],
+                            "Ozone Booster Pump Fault":fault_PUMPS[10],
+                            "Ozone Generator Active":fault_PUMPS[11],
+                            "Ozone Destruct Active":fault_PUMPS[12],
+                            "VFD 103 Hand Mode":fault_PUMPS[13],
+                            "VFD 103 OFF Mode":fault_PUMPS[14],
+                            "VFD 103 Auto Mode":fault_PUMPS[15],
+                            "VFD 103 Pump Running":fault_PUMPS[16],
+                            "VFD 103 Pump Warning":fault_PUMPS[17],
+                            "VFD 103 Pump Fault":fault_PUMPS[18],
+                            "VFD 104 Hand Mode":fault_PUMPS[19],
+                            "VFD 104 OFF Mode":fault_PUMPS[20],
+                            "VFD 104 Auto Mode":fault_PUMPS[21],
+                            "VFD 104 Pump Running":fault_PUMPS[22],
+                            "VFD 104 Pump Warning":fault_PUMPS[23],
+                            "VFD 104 Pump Fault":fault_PUMPS[24],
+                            "VFD 105 Hand Mode":fault_PUMPS[25],
+                            "VFD 105 OFF Mode":fault_PUMPS[26],
+                            "VFD 105 Auto Mode":fault_PUMPS[27],
+                            "VFD 105 Pump Running":fault_PUMPS[28],
+                            "VFD 105 Pump Warning":fault_PUMPS[29],
+                            "VFD 105 Pump Fault":fault_PUMPS[30],
+                            "VFD 106 Hand Mode":fault_PUMPS[31],
+                            "VFD 106 OFF Mode":fault_PUMPS[32],
+                            "VFD 106 Auto Mode":fault_PUMPS[33],
+                            "VFD 106 Pump Running":fault_PUMPS[34],
+                            "VFD 106 Pump Warning":fault_PUMPS[35],
+                            "VFD 106 Pump Fault":fault_PUMPS[36],
+                            "VFD 107 Hand Mode":fault_PUMPS[37],
+                            "VFD 107 OFF Mode":fault_PUMPS[38],
+                            "VFD 107 Auto Mode":fault_PUMPS[39],
+                            "VFD 107 Pump Running":fault_PUMPS[40],
+                            "VFD 107 Pump Warning":fault_PUMPS[41],
+                            "VFD 107 Pump Fault":fault_PUMPS[42],
+                            "VFD 107 GFCI Tripped":fault_PUMPS[43],
+                            "VFD 108 Hand Mode":fault_PUMPS[44],
+                            "VFD 108 OFF Mode":fault_PUMPS[45],
+                            "VFD 108 Auto Mode":fault_PUMPS[46],
+                            "VFD 108 Pump Running":fault_PUMPS[47],
+                            "VFD 108 Pump Warning":fault_PUMPS[48],
+                            "VFD 108 Pump Fault":fault_PUMPS[49],
+                            "VFD 108 GFCI Tripped":fault_PUMPS[50],
+                            "VFD 109 Hand Mode":fault_PUMPS[51],
+                            "VFD 109 OFF Mode":fault_PUMPS[52],
+                            "VFD 109 Auto Mode":fault_PUMPS[53],
+                            "VFD 109 Pump Running":fault_PUMPS[54],
+                            "VFD 109 Pump Warning":fault_PUMPS[55],
+                            "VFD 109 Pump Fault":fault_PUMPS[56],
+                            "VFD 109 GFCI Tripped":fault_PUMPS[57],
                             "***************************FILLTRATION STATUS**************************" : "7",
                             "Scheduled Backwash Trigger":status_filter[0],
                             "Backwash Running":status_filter[1],
