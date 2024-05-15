@@ -11,16 +11,19 @@ import NMSSH
 
 class SettingsViewController: UIViewController{
     
-    @IBOutlet weak var viewForWebView:       UIView!
     @IBOutlet weak var ipadDateLbl:          UILabel!
     @IBOutlet weak var syncTimeStateLbl:     UILabel!
     @IBOutlet weak var rebootMsg: UILabel!
-    @IBOutlet weak var resetBtn: UIButton!
+    @IBOutlet weak var faultBtn: UIButton!
+    @IBOutlet weak var warningbtn: UIButton!
+    @IBOutlet weak var autobtn: UIButton!
     
     let helper      = Helper()
+    private let logger =  Logger()
     var langData    = Dictionary<String, String>()
     var httpManager = HTTPComm()
     var centralsys  = CentralSystem()
+    var plcValues  = CS_DATA_VALUES()
     var session: NMSSHSession!
     var cameraViewLoaded = false
     
@@ -65,6 +68,67 @@ class SettingsViewController: UIViewController{
     
     @objc func checkSystemStat(){
       getDateTime()
+      getPLCValues()
+    }
+    
+    func getPLCValues(){
+       CENTRAL_SYSTEM?.readRegister(length:Int32(PLC_DATA.count) , startingRegister: Int32(PLC_DATA.startAddr), completion: { (sucess, response) in
+            
+            //Check points to make sure the PLC Call was successful
+            
+            guard sucess == true else{
+                self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                return
+            }
+            let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
+            //print(statusArrValues)
+            self.plcValues.status_progRunning = statusArrValues[0]
+            self.plcValues.status_coldStart = statusArrValues[1]
+            self.plcValues.status_warmStart = statusArrValues[2]
+            self.plcValues.status_IOError = statusArrValues[3]
+            self.plcValues.status_cycleTimeWarning = statusArrValues[4]
+            
+            let cmdArrValues = self.convertIntToBitArr(a: Int(truncating: response![3] as! NSNumber))
+            self.plcValues.cmd_WarningLatch = cmdArrValues[0]
+            self.plcValues.cmd_WarningReset = cmdArrValues[1]
+            
+            self.plcValues.status_CurrentCycleTime = Int(truncating: response![4] as! NSNumber)
+            self.plcValues.status_MaxCycleTime = Int(truncating: response![5] as! NSNumber)
+            self.plcValues.status_ProgramUpTimeDays = Int(truncating: response![6] as! NSNumber)
+            self.plcValues.status_ProgramUpTime = Int(truncating: response![7] as! NSNumber)
+            self.plcValues.status_ProjectVersion = Int(truncating: response![8] as! NSNumber)
+            self.plcValues.status_ProjectBuildNumber = Int(truncating: response![9] as! NSNumber)
+            self.plcValues.status_ProjectLibraryVersion = Int(truncating: response![10] as! NSNumber)
+            self.plcValues.status_ProjectBuildYear = Int(truncating: response![11] as! NSNumber)
+            self.plcValues.status_ProjectBuildDay = Int(truncating: response![12] as! NSNumber)
+            self.plcValues.status_ProjectBuildTime = Int(truncating: response![13] as! NSNumber)
+            self.plcValues.cfg_cycleWarningTimeDelayTimer = Int(truncating: response![14] as! NSNumber)
+        
+            
+            let plcTimeHr =  self.plcValues.status_ProgramUpTime / 100
+            let plcTimeMin = self.plcValues.status_ProgramUpTime % 100
+            let prjVersion =  self.plcValues.status_ProjectVersion / 100
+            let prjVersion2 = self.plcValues.status_ProjectVersion % 100
+            let prjBuildMon = self.plcValues.status_ProjectBuildDay / 100
+            let prjBuildDay = self.plcValues.status_ProjectBuildDay % 100
+            
+            let projectVersionBuild = self.view.viewWithTag(20) as? UILabel
+            projectVersionBuild?.text = String(format: "%d", prjVersion) + "." + String(format: "%02d", prjVersion2) + "." + String(format: "%d", self.plcValues.status_ProjectBuildNumber)
+        
+            let projectUpDaysTime = self.view.viewWithTag(21) as? UILabel
+            projectUpDaysTime?.text = "DAYS: " + String(format: "%d", self.plcValues.status_ProgramUpTimeDays) + "  HR: " + String(format: "%02d", plcTimeHr) + "  MIN: " + String(format: "%02d", plcTimeMin)
+        
+            let projectBuildDate = self.view.viewWithTag(22) as? UILabel
+            projectBuildDate?.text = String(format: "%02d", prjBuildMon) + "." + String(format: "%02d", prjBuildDay) + "." + String(format: "%d", self.plcValues.status_ProjectBuildYear)
+            
+            let progRun = self.view.viewWithTag(23) as? UILabel
+            let progErr = self.view.viewWithTag(24) as? UILabel
+            let progWar = self.view.viewWithTag(25) as? UILabel
+        
+            self.plcValues.status_progRunning == 1 ? (progRun?.isHidden = false) : (progRun?.isHidden = true)
+            self.plcValues.status_IOError == 1 ? (progErr?.isHidden = false) : (progErr?.isHidden = true)
+            self.plcValues.status_cycleTimeWarning == 1 ? (progWar?.isHidden = false) : (progWar?.isHidden = true)
+        })
     }
     
     /***************************************************************************
@@ -76,8 +140,6 @@ class SettingsViewController: UIViewController{
     
     override func viewWillDisappear(_ animated: Bool){
         NotificationCenter.default.removeObserver(self)
-        
-        viewForWebView       = nil
         langData.removeAll(keepingCapacity: false)
         
     }
@@ -162,65 +224,6 @@ class SettingsViewController: UIViewController{
         centralsys.reinitialize()
     }
     
-    private func syncTimeToPLC() {
-        self.syncTimeStateLbl.text = "SYNCING SERVER TIME..."
-        self.syncTimeStateLbl.textColor = DEFAULT_GRAY
-        
-        let calendar = Calendar.current
-        let currentDate = Date()
-        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: currentDate)
-        
-        CENTRAL_SYSTEM?.writeRegister(register: SYSTEM_TIME_SECOND_PLC_ADDR, value: components.second!, completion: { (success) in
-            if success == true{
-                  print("success seconds")
-                CENTRAL_SYSTEM?.writeRegister(register: SYSTEM_TIME_HOUR_MINUTE, value: Int("\((components.hour! * 100)+components.minute!)")!, completion: { (success) in
-                    if success == true{
-                        print("success hour")
-                        CENTRAL_SYSTEM?.writeRegister(register: SYSTEM_TIME_DAY_MONTH_PLC_ADDR, value: Int("\((components.month! * 100)+components.day!)")!, completion: { (success) in
-                            if success == true{
-                                  print("success month")
-                                CENTRAL_SYSTEM?.writeRegister(register: SYSTEM_TIME_YEAR_PLC_ADDR, value: components.year!, completion: { (success) in
-                                    if success == true{
-                                          print("success year")
-                                        //Trigger Time Sync
-                                        CENTRAL_SYSTEM?.writeRegister(register: SYSTEM_TIME_TRIGGER_PLC_ADDR, value: 1)
-                                        let when = DispatchTime.now() + 1
-                                        
-                                        DispatchQueue.main.asyncAfter(deadline: when){
-                                            CENTRAL_SYSTEM?.writeRegister(register: SYSTEM_TIME_TRIGGER_PLC_ADDR, value: 0)
-                                        }
-                                        
-                                        self.syncTimeStateLbl.isHidden = false
-                                        self.syncTimeStateLbl.text = "SERVER TIME SYNCHED WITH IPAD"
-                                        self.syncTimeStateLbl.textColor = GREEN_COLOR
-                                         
-                                    }else{
-                                        
-                                        self.setTimeSyncFailure()
-                                    }
-                                })
-                            }else{
-                                
-                                self.setTimeSyncFailure()
-                                
-                            }
-                        })
-                    }else{
-                        
-                        self.setTimeSyncFailure()
-                        
-                    }
-                })
-            }else{
-                
-                self.setTimeSyncFailure()
-                
-            }
-        })
-        
-    }
-    
-    
     func syncTimeToServer(){
     
      self.syncTimeStateLbl.text = "SYNCING SERVER TIME..."
@@ -297,20 +300,35 @@ class SettingsViewController: UIViewController{
         ipadDateLbl.text = SERVER_TIME
         
     }
-    
-    @IBAction func serverReset(_ sender: UIButton) {
-        self.rebootMsg.text = "REBOOTING SERVER IN 15 SEC"
-        CENTRAL_SYSTEM?.writeBit(bit: SERVER_REBOOT_BIT, value: 1)
-        self.resetBtn.isUserInteractionEnabled = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 15.0) {
-            self.rebootMsg.text = "REBOOT SUCCESS"
-            CENTRAL_SYSTEM?.writeBit(bit: SERVER_REBOOT_BIT, value: 0)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                self.rebootMsg.text = ""
-                self.resetBtn.isUserInteractionEnabled = true
-            }
-        }
+    @IBAction func faultResetBtnPushed(_ sender: UIButton) {
         
+        CENTRAL_SYSTEM?.writeBit(bit: FAULT_RESET_REGISTER, value: 1)
+        self.faultBtn.isUserInteractionEnabled = false
+        self.faultBtn.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute:{
+            self.faultBtn.isUserInteractionEnabled = true
+            self.faultBtn.isEnabled = true
+        })
+    }
+    
+    @IBAction func warningResetBtnPushed(_ sender: UIButton) {
+        CENTRAL_SYSTEM?.writeBit(bit: WARNING_RESET_REGISTER, value: 1)
+        self.warningbtn.isUserInteractionEnabled = false
+        self.warningbtn.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute:{
+            self.warningbtn.isUserInteractionEnabled = true
+            self.warningbtn.isEnabled = true
+        })
+    }
+    
+    @IBAction func setAllAutoBtnPushed(_ sender: UIButton) {
+        CENTRAL_SYSTEM?.writeBit(bit: SET_ALL_AUTO_REGISTER, value: 1)
+        self.autobtn.isUserInteractionEnabled = false
+        self.autobtn.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute:{
+            self.autobtn.isUserInteractionEnabled = true
+            self.autobtn.isEnabled = true
+        })
     }
 }
 

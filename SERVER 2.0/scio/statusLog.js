@@ -18,14 +18,14 @@ function statusLogWrapper(){
     var status_Ethernet = [];
     var status_WarningFaults = [];
     var fault_ShowStoppers = [];
-    var status_GasPressure = [];
+    var status_DcPower = [];
 
     
 if (PLCConnected){
 
-    plc_client.readHoldingRegister(50,1,function(resp1){
+    plc_client.readHoldingRegister(50,1,function(resp){
         
-        if (resp1 != undefined && resp1 != null){  
+        if (resp != undefined && resp != null){  
             // Show Stoppers - atho
             fault_ESTOP.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0); // CP-101 Estop
             fault_ESTOP.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0); // DCP-101 Estop
@@ -38,17 +38,17 @@ if (PLCConnected){
         }
     });//end of first PLC modbus call  
 
-    plc_client.readHoldingRegister(55,1,function(resp1){
+    plc_client.readHoldingRegister(55,1,function(resp){
         
-        if (resp1 != undefined && resp1 != null){  
+        if (resp != undefined && resp != null){  
             // Show Stoppers - atho
             fault_ShowStoppers.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0); // ShowStopper Estop Active
         }
     });//end of first PLC modbus call  
 
-    plc_client.readHoldingRegister(60,1,function(resp1){
+    plc_client.readHoldingRegister(60,1,function(resp){
         
-        if (resp1 != undefined && resp1 != null){  
+        if (resp != undefined && resp != null){  
             // Show Stoppers - atho
             status_Ethernet.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0);   // VFD-101 Communication OK
             status_Ethernet.push(nthBit(resp.register[0],2) ? nthBit(resp.register[0],2) : 0);   // VFD-103 Communication OK
@@ -65,9 +65,9 @@ if (PLCConnected){
         }
     });//end of first PLC modbus call 
 
-    plc_client.readHoldingRegister(65,1,function(resp1){
+    plc_client.readHoldingRegister(65,1,function(resp){
         
-        if (resp1 != undefined && resp1 != null){  
+        if (resp != undefined && resp != null){  
             // Show Stoppers - atho
             status_WarningFaults.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0);   // WaterQuality Warning
             status_WarningFaults.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0);   // Basin LL WaterLevel Warning
@@ -78,9 +78,9 @@ if (PLCConnected){
         }
     });//end of first PLC modbus call 
 
-    plc_client.readHoldingRegister(70,1,function(resp1){
+    plc_client.readHoldingRegister(70,1,function(resp){
         
-        if (resp1 != undefined && resp1 != null){  
+        if (resp != undefined && resp != null){  
             // Show Stoppers - atho
             status_WarningFaults.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0);   // Estop Fault
             status_WarningFaults.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0);   // Network Fault 
@@ -121,7 +121,7 @@ if (PLCConnected){
         status_WaterQuality.push(nthBit(resp.register[1],11) ? nthBit(resp.register[1],11) : 0);   // Basin Temp Below Low
         status_WaterQuality.push(nthBit(resp.register[1],12) ? nthBit(resp.register[1],12) : 0);   // Bromine Timeout
 
-        status_WaterQuality.push(nthBit(resp.register[2],0) ? nthBit(resp.register[2],0) : 0);     // DCM512 Communication Fault
+        status_WaterQuality.push(nthBit(resp.register[2],0) ? nthBit(resp.register[2],0) : 0);     // MW104 DCM512 Communication Fault
         status_WaterQuality.push(nthBit(resp.register[2],1) ? nthBit(resp.register[2],1) : 0);     // PH Sensor Fault
         status_WaterQuality.push(nthBit(resp.register[2],2) ? nthBit(resp.register[2],2) : 0);     // ORP Sensor Fault 
         status_WaterQuality.push(nthBit(resp.register[2],3) ? nthBit(resp.register[2],3) : 0);     // Conductivity Sensor Fault
@@ -160,13 +160,13 @@ if (PLCConnected){
         fault_PUMPS.push(nthBit(resp.register[5],4) ? nthBit(resp.register[5],4) : 0); // VFD 101 Pump Warning (Filter Pump)
         fault_PUMPS.push(nthBit(resp.register[5],5) ? nthBit(resp.register[5],5) : 0); // VFD 101 Pump Fault (Filter Pump)
 
-        fault_PUMPS.push(nthBit(resp.register[5],6) ? nthBit(resp.register[5],6) : 0);   // Ozone Hand Mode 
-        fault_PUMPS.push(nthBit(resp.register[5],7) ? nthBit(resp.register[5],7) : 0);   // Ozone Auto Mode  
-        fault_PUMPS.push(nthBit(resp.register[5],8) ? nthBit(resp.register[5],8) : 0);   // Ozone Enabled 
-        fault_PUMPS.push(nthBit(resp.register[5],9) ? nthBit(resp.register[5],9) : 0);   // Ozone Pump Running 
-        fault_PUMPS.push(nthBit(resp.register[5],10) ? nthBit(resp.register[5],10) : 0); // Ozone Pump Fault 
-        fault_PUMPS.push(nthBit(resp.register[5],11) ? nthBit(resp.register[5],11) : 0); // Ozone Generator Active 
-        fault_PUMPS.push(nthBit(resp.register[5],12) ? nthBit(resp.register[5],12) : 0); // Ozone Destruct Active 
+        fault_PUMPS.push(nthBit(resp.register[5],8) ? nthBit(resp.register[5],8) : 0);   // Ozone Hand Mode 
+        fault_PUMPS.push(nthBit(resp.register[5],9) ? nthBit(resp.register[5],9) : 0);   // Ozone Auto Mode  
+        fault_PUMPS.push(nthBit(resp.register[5],10) ? nthBit(resp.register[5],10) : 0);   // Ozone Enabled 
+        fault_PUMPS.push(nthBit(resp.register[5],11) ? nthBit(resp.register[5],11) : 0);   // Ozone Pump Running 
+        fault_PUMPS.push(nthBit(resp.register[5],12) ? nthBit(resp.register[5],12) : 0); // Ozone Pump Fault 
+        fault_PUMPS.push(nthBit(resp.register[5],13) ? nthBit(resp.register[5],13) : 0); // Ozone Generator Active 
+        fault_PUMPS.push(nthBit(resp.register[5],14) ? nthBit(resp.register[5],14) : 0); // Ozone Destruct Active 
 
         fault_PUMPS.push(nthBit(resp.register[6],0) ? nthBit(resp.register[6],0) : 0); // VFD 103 Hand Mode (Blossom Pump1)
         fault_PUMPS.push(nthBit(resp.register[6],1) ? nthBit(resp.register[6],1) : 0); // VFD 103 Off Mode  (Blossom Pump1)
@@ -220,21 +220,36 @@ if (PLCConnected){
         fault_PUMPS.push(nthBit(resp.register[9],5) ? nthBit(resp.register[9],5) : 0); // VFD 109 Pump Fault (Fog Plume3)
         fault_PUMPS.push(nthBit(resp.register[9],6) ? nthBit(resp.register[9],6) : 0); // VFD 109 GFCI Tripped (Fog Plume3)
 
+        //Fog
+        fault_FOG.push(nthBit(resp.register[10],0) ? nthBit(resp.register[10],0) : 0);     // Fog System1 Running
+        fault_FOG.push(nthBit(resp.register[10],1) ? nthBit(resp.register[10],1) : 0);     // Fog System1 Fault
+        fault_FOG.push(nthBit(resp.register[10],2) ? nthBit(resp.register[10],2) : 0);     // Fog System1 Ring Open
+        fault_FOG.push(nthBit(resp.register[10],3) ? nthBit(resp.register[10],3) : 0);     // Fog System1 Plume Open
+        fault_FOG.push(nthBit(resp.register[10],4) ? nthBit(resp.register[10],4) : 0);     // Fog System2 Running
+        fault_FOG.push(nthBit(resp.register[10],5) ? nthBit(resp.register[10],5) : 0);     // Fog System2 Fault
+        fault_FOG.push(nthBit(resp.register[10],6) ? nthBit(resp.register[10],6) : 0);     // Fog System2 Ring Open
+        fault_FOG.push(nthBit(resp.register[10],7) ? nthBit(resp.register[10],7) : 0);     // Fog System2 Plume Open
+        fault_FOG.push(nthBit(resp.register[10],8) ? nthBit(resp.register[10],8) : 0);     // Fog System3 Running
+        fault_FOG.push(nthBit(resp.register[10],9) ? nthBit(resp.register[10],9) : 0);     // Fog System3 Fault
+        fault_FOG.push(nthBit(resp.register[10],10) ? nthBit(resp.register[10],10) : 0);   // Fog System3 Ring Open
+        fault_FOG.push(nthBit(resp.register[10],11) ? nthBit(resp.register[10],11) : 0);   // Fog System3 Plume Open
 
-
-        fault_PUMPS.push(nthBit(resp.register[3],6) ? nthBit(resp.register[3],6) : 0);      // VFD 201 PumpFault (Filter Pump)
-        fault_PUMPS.push(nthBit(resp.register[3],7) ? nthBit(resp.register[3],7) : 0);      // VFD 202 PumpFault (Refelcting Pool Pump)
-        fault_PUMPS.push(nthBit(resp.register[3],8) ? nthBit(resp.register[3],8) : 0);      // VFD 203 PumpFault (Level 2 Pendant Dropper Pump)
-        fault_PUMPS.push(nthBit(resp.register[3],9) ? nthBit(resp.register[3],9) : 0);      // VFD 204 PumpFault (Level 3 Pendant Dropper Pump)
-        fault_PUMPS.push(nthBit(resp.register[3],10) ? nthBit(resp.register[3],10) : 0);    // VFD 205 PumpFault (Level 4 Pendant Dropper Pump)
-
-        //filtration
-        status_filter.push(nthBit(resp.register[5],0) ? nthBit(resp.register[5],0) : 0);   // Scheduled Backwash Trigger
-        status_filter.push(nthBit(resp.register[5],1) ? nthBit(resp.register[5],1) : 0);   // Backwash Running
-        status_filter.push(nthBit(resp.register[5],2) ? nthBit(resp.register[5],2) : 0);   // PDSH Trigger
-        status_filter.push(nthBit(resp.register[5],4) ? nthBit(resp.register[5],4) : 0);   // PT1001 Channel Fault 
-        status_filter.push(nthBit(resp.register[5],5) ? nthBit(resp.register[5],5) : 0);   // PT1002 Channel Fault 
-        status_filter.push(nthBit(resp.register[5],6) ? nthBit(resp.register[5],6) : 0);   // PT1003 Channel Fault 
+        //DC Power
+        status_DcPower.push(nthBit(resp.register[11],0) ? nthBit(resp.register[11],0) : 0);     // DCP-101 Power Enabled
+        status_DcPower.push(nthBit(resp.register[11],1) ? nthBit(resp.register[11],1) : 0);     // DCP-102 Power Enabled
+        status_DcPower.push(nthBit(resp.register[11],2) ? nthBit(resp.register[11],2) : 0);     // DCP-103 Power Enabled
+        status_DcPower.push(nthBit(resp.register[11],3) ? nthBit(resp.register[11],3) : 0);     // DCP-104 Power Enabled
+        status_DcPower.push(nthBit(resp.register[11],4) ? nthBit(resp.register[11],4) : 0);     // DCP-105 Power Enabled
+        status_DcPower.push(nthBit(resp.register[11],5) ? nthBit(resp.register[11],5) : 0);     // DCP-101 Warning
+        status_DcPower.push(nthBit(resp.register[11],6) ? nthBit(resp.register[11],6) : 0);     // DCP-102 Warning
+        status_DcPower.push(nthBit(resp.register[11],7) ? nthBit(resp.register[11],7) : 0);     // DCP-103 Warning
+        status_DcPower.push(nthBit(resp.register[11],8) ? nthBit(resp.register[11],8) : 0);     // DCP-104 Warning
+        status_DcPower.push(nthBit(resp.register[11],9) ? nthBit(resp.register[11],9) : 0);     // DCP-105 Warning
+        status_DcPower.push(nthBit(resp.register[11],10) ? nthBit(resp.register[11],10) : 0);   // DCP-101 Fault
+        status_DcPower.push(nthBit(resp.register[11],11) ? nthBit(resp.register[11],11) : 0);   // DCP-102 Fault
+        status_DcPower.push(nthBit(resp.register[11],12) ? nthBit(resp.register[11],12) : 0);   // DCP-103 Fault
+        status_DcPower.push(nthBit(resp.register[11],13) ? nthBit(resp.register[11],13) : 0);   // DCP-104 Fault
+        status_DcPower.push(nthBit(resp.register[11],14) ? nthBit(resp.register[11],14) : 0);   // DCP-105 Fault
         
         
         showStopper = 0;
@@ -247,14 +262,16 @@ if (PLCConnected){
             }   
 
             totalStatus = [ 
-                            fault_ShowStoppers,
-                            fault_ESTOP,
-                            status_WaterQuality,
-                            status_windSensor,
-                            fault_PUMPS,
-                            status_WaterLevel,
-                            status_filter,
-                            status_LIGHTS];
+                            fault_ShowStoppers,      //1
+                            fault_ESTOP,             //14
+                            status_Ethernet,         //12
+                            status_WarningFaults,    //16
+                            status_WaterQuality,     //25
+                            status_WaterLevel,       //6
+                            status_AirPressure,      //8
+                            fault_PUMPS,             //58
+                            fault_FOG,               //12
+                            status_DcPower];         //15
 
             totalStatus = bool2int(totalStatus);
 
@@ -326,7 +343,7 @@ if (PLCConnected){
                             "Basin Return Temperature Below Low": status_WaterQuality[10],
                             "Basin Temperature Below Low": status_WaterQuality[11],
                             "Bromine Dosing Timeout": status_WaterQuality[12],
-                            "DCM512 Communication Fault": status_WaterQuality[13],
+                            "MW104 DCM512  Communication Fault": status_WaterQuality[13],
                             "pH Sensor Fault": status_WaterQuality[14],
                             "ORP Sensor Fault": status_WaterQuality[15],
                             "Conductivity Sensor Fault": status_WaterQuality[16],
@@ -354,15 +371,7 @@ if (PLCConnected){
                             "PSLL1004 PressureFault":status_AirPressure[5],
                             "PSLL1005 PressureFault":status_AirPressure[6],
                             "PSLL1006 PressureFault":status_AirPressure[7],
-                            "****************************WIND STATUS********************" : "4",   
-                            "ST2001 Abort_Show": status_windSensor[0],
-                            "ST2001 Above_Hi": status_windSensor[1],
-                            "ST2001 Above_Med": status_windSensor[2],
-                            "ST2001 Above_Low": status_windSensor[3],
-                            "ST2001 No_Wind": status_windSensor[4],
-                            "ST2001 Speed_Channel_Fault": status_windSensor[5],
-                            "ST2001 Direction_Channel_Fault": status_windSensor[6],
-                            "***************************PUMPS STATUS**************************" : "5",
+                            "***************************PUMPS STATUS**************************" : "7",
                             "VFD 101 Hand Mode":fault_PUMPS[0],
                             "VFD 101 OFF Mode":fault_PUMPS[1],
                             "VFD 101 Auto Mode":fault_PUMPS[2],
@@ -421,16 +430,36 @@ if (PLCConnected){
                             "VFD 109 Pump Warning":fault_PUMPS[55],
                             "VFD 109 Pump Fault":fault_PUMPS[56],
                             "VFD 109 GFCI Tripped":fault_PUMPS[57],
-                            "***************************FILLTRATION STATUS**************************" : "7",
-                            "Scheduled Backwash Trigger":status_filter[0],
-                            "Backwash Running":status_filter[1],
-                            "PDSH Trigger":status_filter[2],
-                            "PT1001 Channel Fault":status_filter[3],
-                            "PT1002 Channel Fault":status_filter[4],
-                            "PT1003 Channel Fault":status_filter[5],
-                            "****************************DEVICE CONNECTION STATUS*************" : "8",
-                            "SPM_Heartbeat": SPM_Heartbeat,
-                            "SPM_Modbus_Connection": SPMConnected,
+                            "***************************FOG STATUS**************************" : "8",
+                            "FOG System 1 Running":fault_FOG[0],
+                            "FOG System 1 Fault":fault_FOG[1],
+                            "FOG System 1 Ring Open":fault_FOG[2],
+                            "FOG System 1 Plume Open":fault_FOG[3],
+                            "FOG System 2 Running":fault_FOG[4],
+                            "FOG System 2 Fault":fault_FOG[5],
+                            "FOG System 2 Ring Open":fault_FOG[6],
+                            "FOG System 2 Plume Open":fault_FOG[7],
+                            "FOG System 3 Running":fault_FOG[8],
+                            "FOG System 3 Fault":fault_FOG[9],
+                            "FOG System 3 Ring Open":fault_FOG[10],
+                            "FOG System 3 Plume Open":fault_FOG[11],
+                            "***************************DC POWER STATUS**************************" : "9",
+                            "DCP-101 Power Enabled":status_DcPower[0],
+                            "DCP-102 Power Enabled":status_DcPower[1],
+                            "DCP-103 Power Enabled":status_DcPower[2],
+                            "DCP-104 Power Enabled":status_DcPower[3],
+                            "DCP-105 Power Enabled":status_DcPower[4],
+                            "DCP-101 Warning":status_DcPower[5],
+                            "DCP-102 Warning":status_DcPower[6],
+                            "DCP-103 Warning":status_DcPower[7],
+                            "DCP-104 Warning":status_DcPower[8],
+                            "DCP-105 Warning":status_DcPower[9],
+                            "DCP-101 Fault":status_DcPower[10],
+                            "DCP-102 Fault":status_DcPower[11],
+                            "DCP-103 Fault":status_DcPower[12],
+                            "DCP-104 Fault":status_DcPower[13],
+                            "DCP-105 Fault":status_DcPower[14],
+                            "****************************DEVICE CONNECTION STATUS*************" : "10",
                             "PLC_Heartbeat": PLC_Heartbeat,
                             "PLC_Modbus _Connection": PLCConnected,
                             }];
@@ -466,37 +495,6 @@ var date = new Date();
 //     plc_client.writeSingleCoil(2,0,function(resp){});
 // }
 
-if (SPMConnected){
-
-     // plc_client.readCoils(3,1,function(resp){
-     //    var m3Bit = resp.coils[0];
-     //    watchDog.eventLog('Read PLC M3 value: '+m3Bit);
-     // });
-
-     // spm_client.readHoldingRegister(3052,5,function(resp){
-
-     // //     // Fire Spire data
-     // //     watchDog.eventLog("Fire 401: Value: "  +intByte_HiLo(resp.register[0])[0]);    // Fire Spire - 401
-     // //     watchDog.eventLog("Fire 402: Value: "  +intByte_HiLo(resp.register[0])[1]);    // Fire Spire - 402
-     // //     watchDog.eventLog("Fire 403: Value: "  +intByte_HiLo(resp.register[1])[0]);    // Fire Spire - 403
-     // //     watchDog.eventLog("Fire 404: Value: "  +intByte_HiLo(resp.register[1])[1]);    // Fire Spire - 404
-     // //     watchDog.eventLog("Fire 405: Value: "  +intByte_HiLo(resp.register[2])[0]);    // Fire Spire - 405
-     // //     watchDog.eventLog("Fire 406: Value: "  +intByte_HiLo(resp.register[2])[1]);    // Fire Spire - 406
-     // //     watchDog.eventLog("P:107 Value: "  +intByte_HiLo(resp.register[0])[0]);        // P-107
-     // //     watchDog.eventLog("P:207 Value: "  +intByte_HiLo(resp.register[0])[1]);        // P-207
-     // //     watchDog.eventLog("P:307 Value: "  +intByte_HiLo(resp.register[1])[0]);        // P-307
-
-     // });
-
-    if(autoMan===1){
-       plc_client.writeSingleCoil(4,1,function(resp){});
-    }
-    else{
-      plc_client.writeSingleCoil(4,0,function(resp){});
-    }
-
-}
-
     // compares current state to previous state to log differences
     function logChanges(currentState){
         // {"yes":"n/a","no":"n/a"} object template for detection but no logging... "n/a" disables log
@@ -504,100 +502,211 @@ if (SPMConnected){
         // pattern of statements must match devStatus and totalStatus format
         var statements=[
 
-            [   // Show Stopper - scio
+            [   // Show Stopper - scio - 1
                 {"yes":"Show Stopper: Estop","no":"Show Stopper Resolved: Estop"},
-                {"yes":"Show Stopper: ST2001 Wind_Speed_Abort_Show","no":"Show Stopper Resolved: Wind_Speed_Abort_Show"},
-                {"yes":"Show Stopper: LT2001 Water Level Below LL","no":"Show Stopper Resolved: Water Level"},
-                {"yes":"Show Stopper: LS2201 Water Level Below LL","no":"Show Stopper Resolved: Water Level"},
-                {"yes":"Show Stopper: LS2301 Water Level Below LL","no":"Show Stopper Resolved: Water Level"},  
             ],
 
-            [   // estop - scio 
-                {"yes":"ACP201 Estop Triggered","no":"Resolved: ACP201 Estop"}, 
-                {"yes":"MCC201 Estop Triggered","no":"Resolved: MCC201 Estop"}, 
+            [   // estop - scio - 14
+                {"yes":"CP101 Estop Triggered","no":"Resolved: CP101 Estop"}, 
+                {"yes":"DCP101 Estop Triggered","no":"Resolved: DCP101 Estop"},
+                {"yes":"DCP102 Estop Triggered","no":"Resolved: DCP102 Estop"},
+                {"yes":"DCP103 Estop Triggered","no":"Resolved: DCP103 Estop"},
+                {"yes":"DCP104 Estop Triggered","no":"Resolved: DCP104 Estop"},
+                {"yes":"DCP105 Estop Triggered","no":"Resolved: DCP105 Estop"},
+                {"yes":"MCC101 Estop Triggered","no":"Resolved: MCC101 Estop"},
+                {"yes":"MCC102 Estop Triggered","no":"Resolved: MCC102 Estop"},
+                {"yes":"Show Stop Active","no":"Resolved: Show Stop Active"},
+                {"yes":"System Normal State","no":"System Not In Normal State"},
                 {"yes":"One/More System Warnings","no":"Resolved: No System Warnings"}, 
                 {"yes":"One/More System Faults","no":"Resolved: No System Faults"}, 
-                {"yes":"SPM: In RAT Mode","no":"SPM: Not in RAT Mode"}, 
-                {"yes":"Show Playing Bit ON","no":"Show Playing Bit OFF"}, 
+                {"yes":"BMS Warning Output","no":"Resolved: BMS Warning Output"},
+                {"yes":"BMS Fault Output","no":"Resolved: BMS Fault Output"},
             ],
 
-            [   //Water Quality Status - scio
+            [   // Ethernet - scio - 12
+                {"yes":"VFD-101 Communication OK","no":"VFD-101 Communication Error"},
+                {"yes":"VFD-103 Communication OK","no":"VFD-103 Communication Error"},
+                {"yes":"VFD-104 Communication OK","no":"VFD-104 Communication Error"},
+                {"yes":"VFD-105 Communication OK","no":"VFD-105 Communication Error"},
+                {"yes":"VFD-106 Communication OK","no":"VFD-106 Communication Error"},
+                {"yes":"VFD-107 Communication OK","no":"VFD-107 Communication Error"},
+                {"yes":"VFD-108 Communication OK","no":"VFD-108 Communication Error"},
+                {"yes":"VFD-109 Communication OK","no":"VFD-109 Communication Error"},
+                {"yes":"MCC-102 REMIO Communication OK","no":"MCC-102 REMIO Communication Error"},
+                {"yes":"MCC-102 GFCI Communication OK","no":"MCC-102 GFCI Communication Error"},
+                {"yes":"Water Quality Communication OK","no":"Water Quality Communication Error"},
+                {"yes":"Weather Station Communication OK","no":"Weather Station Communication Error"},
+            ],
+
+            [   // System Warning Faults - scio - 16
+                {"yes":"Warning: Water Quality","no":"Resolved Warning: Water Quality"},
+                {"yes":"Warning: Basin WaterLevel LL","no":"Resolved Warning: Basin WaterLevel LL"},
+                {"yes":"Warning: Weather Station","no":"Resolved Warning: Weather Station"},
+                {"yes":"Warning: CleanStrainer","no":"Resolved Warning: CleanStrainer"},
+                {"yes":"Warning: Pump/VFD","no":"Resolved Warning: Pump/VFD"},
+                {"yes":"Warning: DC Power","no":"Resolved Warning: DC Power"},
+                {"yes":"Fault: EStop","no":"Resolved Fault: Estop"},
+                {"yes":"Fault: Network","no":"Resolved Fault: Network"},
+                {"yes":"Fault: Water Quality","no":"Resolved Fault: Water Quality"},
+                {"yes":"Fault: Water Level","no":"Resolved Fault: Water Level"},
+                {"yes":"Fault: Basin WaterLevel Below LLL","no":"Resolved Fault: Basin WaterLevel Below LLL"},
+                {"yes":"Fault: Weather Station","no":"Resolved Fault: Weather Station"},
+                {"yes":"Fault: Low Pressure","no":"Resolved Fault: Low Pressure"},
+                {"yes":"Fault: VFD/Pump","no":"Resolved Fault: VFD/Pump"},
+                {"yes":"Fault: Fog","no":"Resolved Fault: Fog"},
+                {"yes":"Fault: DC Power","no":"Resolved Fault: DC Power"},
+            ],
+
+            [   //Water Quality Status - scio - 25
                 
                 
                 {"yes":"PH AboveHi","no":"Resolved: PH Above Hi Alarm "},
                 {"yes":"PH Below_Low","no":"Resolved: PH Below Low Alarm "},
                 {"yes":"ORP AboveHi","no":"Resolved: ORP Above Hi Alarm "},
                 {"yes":"ORP Below_Low","no":"Resolved: ORP Below Low Alarm "},
-                {"yes":"TDS AboveHi","no":"Resolved: TDS Above Hi Alarm "},
-                {"yes":"PH Channel Fault","no":"Resolved: PH Channel Fault"},
-                {"yes":"ORP Channel Fault","no":"Resolved: ORP Channel Fault"},
-                {"yes":"TDS Channel Fault","no":"Resolved: TDS Channel Fault"},
-                {"yes":"Broming Dosing Active","no":"Broming Dosing Inactive"},
+                {"yes":"Conductivity AboveHi","no":"Resolved: Conductivity Above Hi Alarm "},
+                {"yes":"Conductivity Below_Low","no":"Resolved: Conductivity Below Low Alarm "},
+                {"yes":"Bromine AboveHi","no":"Resolved: Bromine Above Hi Alarm "},
+                {"yes":"Bromine Below_Low","no":"Resolved: Bromine Below Low Alarm "},
+                {"yes":"Filtration Temperature AboveHi","no":"Resolved: Filtration Temperature Above Hi Alarm "},
+                {"yes":"Filtration Temperature Below_Low","no":"Resolved: Filtration Temperature Below_Low Alarm "},
+                {"yes":"Basin Return Temperature Below_Low","no":"Resolved: Basin Return Temperature Below_Low Alarm "},
+                {"yes":"Basin Temperature Below_Low","no":"Resolved: Basin Temperature Below_Low Alarm "},
                 {"yes":"Broming Dosing Timeout","no":"Resolved : Broming Dosing Timeout"},
+                {"yes":"MW104 DCM512 Communication Fault","no":"Resolved : MW104 DCM512 Communication Fault"},
+                {"yes":"pH Sensor Fault","no":"Resolved : pH Sensor Fault"},
+                {"yes":"ORP Sensor Fault","no":"Resolved : ORP Sensor Fault"},
+                {"yes":"Conductivity Sensor Fault","no":"Resolved : Conductivity Sensor Fault"},
+                {"yes":"Bromine Sensor Fault","no":"Resolved : Bromine Sensor Fault"},
+                {"yes":"Filtration Temperature Sensor Fault","no":"Resolved : Filtration Temperature Sensor Fault"},
+                {"yes":"Basin Temperature Return Sensor Fault","no":"Resolved : Basin Temperature Return Sensor Fault"},
+                {"yes":"Basin Temperature Sensor Fault","no":"Resolved : Basin Temperature Sensor Fault"},
+                {"yes":"Basin Temperature Return Below LL","no":"Resolved : Basin Temperature Return Below LL"},
+                {"yes":"Basin Temperature Below LL","no":"Resolved : Basin Temperature Below LL"},
+                {"yes":"Broming Dosing On","no":"Broming Dosing Off"},
+                {"yes":"Freeze Dump Valve Open","no":"Freeze Dump Valve Close"},
                 
             ],
 
-            [   // anemometer - scio
-
-                {"yes":"ST2001 AbortShow","no":"ST2001 AbortShow Resolved"},
-                {"yes":"ST2001 Wind Speed Above Hi","no":"ST2001 Wind Above Hi Resolved"},
-                {"yes":"ST2001 Wind Speed Above Med","no":"ST2001 Wind Above Med Resolved"},
-                {"yes":"ST2001 Wind Speed Above Low","no":"ST2001 Wind Above Low Resolved"},
-                {"yes":"ST2001 Wind Speed NoWind","no":"ST2001 Wind Speed Not in NoWind"},
-                {"yes":"ST2001 Speed_Channel_Fault","no":"ST2001 Speed_Channel_Fault Resolved"},
-                {"yes":"ST2001 Direction_Channel_Fault","no":"ST2001 Direction_Channel_Fault Resolved"},
+            [   // water level - scio - 6
                 
-            ],
-
-            [   // pumps - scio
-                
-                {"yes":"P201 Strainer Warning","no":"Resolved: P201 Strainer Warning"},
-                {"yes":"P202 Strainer Warning","no":"Resolved: P202 Strainer Warning"}, 
-                {"yes":"P203 Strainer Warning","no":"Resolved: P203 Strainer Warning"}, 
-                {"yes":"P204 Strainer Warning","no":"Resolved: P204 Strainer Warning"},  
-                {"yes":"P205 Strainer Warning","no":"Resolved: P205 Strainer Warning"},
-                {"yes":"P201 Pressure Fault","no":"Resolved: P201 Pressure Fault"},
-                {"yes":"P202 Pressure Fault","no":"Resolved: P202 Pressure Fault"}, 
-                {"yes":"P203 Pressure Fault","no":"Resolved: P203 Pressure Fault"}, 
-                {"yes":"P204 Pressure Fault","no":"Resolved: P204 Pressure Fault"},  
-                {"yes":"P205 Pressure Fault","no":"Resolved: P205 Pressure Fault"}, 
-                {"yes":"P201 Pump Fault","no":"Resolved: P201 Pump Fault"},
-                {"yes":"P202 Pump Fault","no":"Resolved: P202 Pump Fault"}, 
-                {"yes":"P203 Pump Fault","no":"Resolved: P203 Pump Fault"}, 
-                {"yes":"P204 Pump Fault","no":"Resolved: P204 Pump Fault"},  
-                {"yes":"P205 Pump Fault","no":"Resolved: P205 Pump Fault"},   
-                    
-            ],
-
-            [   // water level - scio
-                
-                {"yes":"Reflecting Pool Below LL","no":"Resolved: Reflecting Pool Below LL"},
-                {"yes":"Level 2 WaterOverFlow","no":"Resolved: Level 2 WaterOverFlow"},
-                {"yes":"Level 2 WaterOverFlow Alarm","no":"Reset Level 2 WaterOverFlow"},
-                {"yes":"Level 3 WaterOverFlow","no":"Resolved: Level 3 WaterOverFlow"},
-                {"yes":"Level 3 WaterOverFlow Alarm","no":"Reset Level 3 WaterOverFlow"},
-                {"yes":"LT2001 AboveHiHi","no":"Resolved: LT2001 WaterLevel Resolved"},
-                {"yes":"LT2001 AboveHi","no":"Resolved: LT2001 WaterLevel Resolved"},
-                {"yes":"LT2001 Below_Low","no":"Resolved: LT2001 WaterLevel Resolved"},
-                {"yes":"LT2001 Below_LowLow","no":"Resolved: LT2001 WaterLevel Resolved"},
-                {"yes":"LT2001 Channel Fault","no":"Resolved: LT2001 Channel Fault Resolved"},
+                {"yes":"WaterLevel AboveHi","no":"Resolved: WaterLevel AboveHi Resolved"},
+                {"yes":"WaterLevel Below_Low","no":"Resolved: WaterLevel Below_Low Resolved"},
+                {"yes":"WaterLevel Below_LowLow","no":"Resolved: WaterLevel Below_LowLow Resolved"},
+                {"yes":"WaterLevel Below_LowLowLow","no":"Resolved: WaterLevel Below_LowLowLow Resolved"},
+                {"yes":"WaterLevel Fault","no":"Resolved: WaterLevel Fault Resolved"},
                 {"yes":"WaterMakeup On","no":"WaterMakeup Off"},
-                {"yes":"WaterMakeup Timeout","no":"Resolved: WaterMakeup Timeout"},
                 
             ],
 
-            [   // filtration - scio
+            [   // system pressure - scio - 8
                 
-                {"yes":"Scheduled Backwash Trigger ON","no":"Scheduled Backwash Trigger OFF"},
-                {"yes":"Backwash Running","no":"Backwash Not Running"},
-                {"yes":"PDSH Trigger ON","no":"PDSH Trigger OFF"},
-                {"yes":"PT1001 Channel Fault","no":"Resolved: PT1001 Channel Fault"},
-                {"yes":"PT1002 Channel Fault","no":"Resolved: PT1002 Channel Fault"},
-                {"yes":"PT1003 Channel Fault","no":"Resolved: PT1003 Channel Fault"},
+                {"yes":"PSL1001 Strainer Warning","no":"Resolved: PSL1001 Strainer Warning"},
+                {"yes":"PSL1003 Strainer Warning","no":"Resolved: PSL1003 Strainer Warning"},
+                {"yes":"PSL1005 Strainer Warning","no":"Resolved: PSL1005 Strainer Warning"},
+                {"yes":"PSLL1001 Pressure Fault","no":"Resolved: PSLL1001 Pressure Fault"},
+                {"yes":"PSLL1003 Pressure Fault","no":"Resolved: PSLL1003 Pressure Fault"},
+                {"yes":"PSLL1004 Pressure Fault","no":"Resolved: PSLL1004 Pressure Fault"},
+                {"yes":"PSLL1005 Pressure Fault","no":"Resolved: PSLL1005 Pressure Fault"},
+                {"yes":"PSLL1006 Pressure Fault","no":"Resolved: PSLL1006 Pressure Fault"},
+                   
             ],
 
-            [   // lights - scio
-                {"yes":"Reflecting Pool Disable Lights","no":"Resolved:Reflecting Pool Disable Lights"},
+            [   // pumps - scio - 58
+                
+                {"yes":"VFD 101 In Hand Mode","no":"VFD 101 NOT IN Hand Mode"},
+                {"yes":"VFD 101 In Off Mode","no":"VFD 101 NOT IN Off Mode"},
+                {"yes":"VFD 101 In Auto Mode","no":"VFD 101 NOT IN Auto Mode"},
+                {"yes":"VFD 101 Pump Running","no":"VFD 101 Pump NOT Running"},
+                {"yes":"VFD 101 Pump Warning","no":"Resolved: VFD 101 Pump Warning"},
+                {"yes":"VFD 101 Pump Fault","no":"Resolved: VFD 101 Pump Fault"},
+                {"yes":"Ozone Booster In Hand Mode","no":"Ozone Booster Pump NOT IN Hand Mode"},
+                {"yes":"Ozone Booster In Auto Mode","no":"Ozone Booster Pump NOT IN Auto Mode"},
+                {"yes":"Ozone Booster Pump Enabled","no":"Ozone Booster Pump NOT Enabled"},
+                {"yes":"Ozone Booster Pump Running","no":"Ozone Booster Pump NOT Running"},
+                {"yes":"Ozone Booster Pump Fault","no":"Resolved: Ozone Booster Pump Fault"},
+                {"yes":"Ozone Generator Active","no":"Resolved: Ozone Generator InActive"},
+                {"yes":"Ozone Destruct Active","no":"Resolved: Ozone Destruct InActive"},
+                {"yes":"VFD 103 In Hand Mode","no":"VFD 103 NOT IN Hand Mode"},
+                {"yes":"VFD 103 In Off Mode","no":"VFD 103 NOT IN Off Mode"},
+                {"yes":"VFD 103 In Auto Mode","no":"VFD 103 NOT IN Auto Mode"},
+                {"yes":"VFD 103 Pump Running","no":"VFD 103 Pump NOT Running"},
+                {"yes":"VFD 103 Pump Warning","no":"Resolved: VFD 103 Pump Warning"},
+                {"yes":"VFD 103 Pump Fault","no":"Resolved: VFD 103 Pump Fault"},
+                {"yes":"VFD 104 In Hand Mode","no":"VFD 104 NOT IN Hand Mode"},
+                {"yes":"VFD 104 In Off Mode","no":"VFD 104 NOT IN Off Mode"},
+                {"yes":"VFD 104 In Auto Mode","no":"VFD 104 NOT IN Auto Mode"},
+                {"yes":"VFD 104 Pump Running","no":"VFD 104 Pump NOT Running"},
+                {"yes":"VFD 104 Pump Warning","no":"Resolved: VFD 104 Pump Warning"},
+                {"yes":"VFD 104 Pump Fault","no":"Resolved: VFD 104 Pump Fault"},
+                {"yes":"VFD 105 In Hand Mode","no":"VFD 105 NOT IN Hand Mode"},
+                {"yes":"VFD 105 In Off Mode","no":"VFD 105 NOT IN Off Mode"},
+                {"yes":"VFD 105 In Auto Mode","no":"VFD 105 NOT IN Auto Mode"},
+                {"yes":"VFD 105 Pump Running","no":"VFD 105 Pump NOT Running"},
+                {"yes":"VFD 105 Pump Warning","no":"Resolved: VFD 105 Pump Warning"},
+                {"yes":"VFD 105 Pump Fault","no":"Resolved: VFD 105 Pump Fault"},
+                {"yes":"VFD 106 In Hand Mode","no":"VFD 106 NOT IN Hand Mode"},
+                {"yes":"VFD 106 In Off Mode","no":"VFD 106 NOT IN Off Mode"},
+                {"yes":"VFD 106 In Auto Mode","no":"VFD 106 NOT IN Auto Mode"},
+                {"yes":"VFD 106 Pump Running","no":"VFD 106 Pump NOT Running"},
+                {"yes":"VFD 106 Pump Warning","no":"Resolved: VFD 106 Pump Warning"},
+                {"yes":"VFD 106 Pump Fault","no":"Resolved: VFD 106 Pump Fault"},
+                {"yes":"VFD 107 In Hand Mode","no":"VFD 107 NOT IN Hand Mode"},
+                {"yes":"VFD 107 In Off Mode","no":"VFD 107 NOT IN Off Mode"},
+                {"yes":"VFD 107 In Auto Mode","no":"VFD 107 NOT IN Auto Mode"},
+                {"yes":"VFD 107 Pump Running","no":"VFD 107 Pump NOT Running"},
+                {"yes":"VFD 107 Pump Warning","no":"Resolved: VFD 107 Pump Warning"},
+                {"yes":"VFD 107 Pump Fault","no":"Resolved: VFD 107 Pump Fault"},
+                {"yes":"VFD 107 GFCI Tripped","no":"Resolved: VFD 107 GFCI Tripped"},
+                {"yes":"VFD 108 In Hand Mode","no":"VFD 108 NOT IN Hand Mode"},
+                {"yes":"VFD 108 In Off Mode","no":"VFD 108 NOT IN Off Mode"},
+                {"yes":"VFD 108 In Auto Mode","no":"VFD 108 NOT IN Auto Mode"},
+                {"yes":"VFD 108 Pump Running","no":"VFD 108 Pump NOT Running"},
+                {"yes":"VFD 108 Pump Warning","no":"Resolved: VFD 108 Pump Warning"},
+                {"yes":"VFD 108 Pump Fault","no":"Resolved: VFD 108 Pump Fault"},
+                {"yes":"VFD 108 GFCI Tripped","no":"Resolved: VFD 108 GFCI Tripped"},
+                {"yes":"VFD 109 In Hand Mode","no":"VFD 109 NOT IN Hand Mode"},
+                {"yes":"VFD 109 In Off Mode","no":"VFD 109 NOT IN Off Mode"},
+                {"yes":"VFD 109 In Auto Mode","no":"VFD 109 NOT IN Auto Mode"},
+                {"yes":"VFD 109 Pump Running","no":"VFD 109 Pump NOT Running"},
+                {"yes":"VFD 109 Pump Warning","no":"Resolved: VFD 109 Pump Warning"},
+                {"yes":"VFD 109 Pump Fault","no":"Resolved: VFD 109 Pump Fault"},
+                {"yes":"VFD 109 GFCI Tripped","no":"Resolved: VFD 109 GFCI Tripped"},        
+            ],
+
+            [   // Fog System - scio - 12
+                
+                {"yes":"Fog System 1 Running","no":"Fog System 1 NOT Running"},
+                {"yes":"Fog System 1 Fault","no":"Resolved:Fog System 1 Fault"},
+                {"yes":"Fog System 1 Ring Open","no":"Fog System 1 Ring Close"},
+                {"yes":"Fog System 1 Plume Open","no":"Fog System 1 Plume Close"},
+                {"yes":"Fog System 2 Running","no":"Fog System 2 NOT Running"},
+                {"yes":"Fog System 2 Fault","no":"Resolved:Fog System 2 Fault"},
+                {"yes":"Fog System 2 Ring Open","no":"Fog System 2 Ring Close"},
+                {"yes":"Fog System 2 Plume Open","no":"Fog System 2 Plume Close"},
+                {"yes":"Fog System 3 Running","no":"Fog System 3 NOT Running"},
+                {"yes":"Fog System 3 Fault","no":"Resolved:Fog System 3 Fault"},
+                {"yes":"Fog System 3 Ring Open","no":"Fog System 3 Ring Close"},
+                {"yes":"Fog System 3 Plume Open","no":"Fog System 3 Plume Close"},
+            ],
+
+            [   // filtration - scio - 15
+                
+                {"yes":"Enabled: DCP-101 Power","no":"Disabled: DCP-101 Power"},
+                {"yes":"Enabled: DCP-102 Power","no":"Disabled: DCP-102 Power"},
+                {"yes":"Enabled: DCP-103 Power","no":"Disabled: DCP-103 Power"},
+                {"yes":"Enabled: DCP-104 Power","no":"Disabled: DCP-104 Power"},
+                {"yes":"Enabled: DCP-105 Power","no":"Disabled: DCP-105 Power"},
+                {"yes":"Warning: DCP-101 Power","no":"Resolved Warning: DCP-101 Power"},
+                {"yes":"Warning: DCP-102 Power","no":"Resolved Warning: DCP-102 Power"},
+                {"yes":"Warning: DCP-103 Power","no":"Resolved Warning: DCP-103 Power"},
+                {"yes":"Warning: DCP-104 Power","no":"Resolved Warning: DCP-104 Power"},
+                {"yes":"Warning: DCP-105 Power","no":"Resolved Warning: DCP-105 Power"},
+                {"yes":"Fault: DCP-101 Power","no":"Resolved Fault: DCP-101 Power"},
+                {"yes":"Fault: DCP-102 Power","no":"Resolved Fault: DCP-102 Power"},
+                {"yes":"Fault: DCP-103 Power","no":"Resolved Fault: DCP-103 Power"},
+                {"yes":"Fault: DCP-104 Power","no":"Resolved Fault: DCP-104 Power"},
+                {"yes":"Fault: DCP-105 Power","no":"Resolved Fault: DCP-105 Power"},
             ]
         ];
         
@@ -614,18 +723,6 @@ if (SPMConnected){
                         //watchDog.eventLog('each: ' +each +' and each2: ' +each2+' and suspcts: ' +suspects);
                         watchDog.eventLog(text);
                         watchLog.eventLog(text);
-                    }
-
-                    if (text == "Reflecting Pool Disable Lights"){
-                        spmReq.sendPacketstoSPM(1,3);//id(3) = AddMsg
-                        setTimeout(function(){
-                            spmReq.sendPacketstoSPM(1,3);//id(3) = AddMsg
-                        },1000);
-                    } else if (text == "Resolved:Reflecting Pool Disable Lights") {
-                        spmReq.sendPacketstoSPM(1,5);//id(5) = DisableMsg
-                        setTimeout(function(){
-                            spmReq.sendPacketstoSPM(1,5);//id(5) = DisableMsg
-                        },1000);
                     }
                 }
             }

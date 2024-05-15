@@ -36,7 +36,7 @@ if ((isBetween(msec,0,250)) || (isBetween(msec,250,500)) || (isBetween(msec,500,
 if (isBetween(msec,250,500)){
 	if (timerCount[1] != sec){
 		//watchDog.eventLog('Hey! Execute BW');
-		backwash_timer();
+		//backwash_timer();
 		filter_timer();
 		weplay_timer();
 		//surge_timer();
@@ -52,7 +52,7 @@ if (isBetween(msec,500,750)){
 		//watchDog.eventLog('Hey! Execute WQ');
 		waterQuality_timer();
 		//runnel_timer();
-		lights_timer();
+		//lights_timer();
 		timerCount[2] = sec;
 	}
 	else{
@@ -86,7 +86,7 @@ if ( (sec%2 === 0) && (isBetween(msec,250,500)) ){
 	if (timerCount[5] != sec){
 		//watchDog.eventLog('Hey! Execute Lights');
 		if (sysStatus.length != 0){
-			filler_timer();
+			//filler_timer();
 			//sgs_timer();
 			timerCount[5] = sec;
 		}

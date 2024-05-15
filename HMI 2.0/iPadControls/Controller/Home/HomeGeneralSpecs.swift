@@ -126,9 +126,9 @@ let DATA_ACQUISITION_STATE_SUCCESS = 1
 let DATA_ACQUISITION_STATE_FAILED  = 0
 let FAULT_DETECTED                 = 1  // was 0 in previous projects it would seem. Now in ARISE it is a 1.
 
-
-let WARNING_RESET_REGISTER         = 23
-let FAULT_RESET_REGISTER           = 24
+let SET_ALL_AUTO_REGISTER          = 57
+let WARNING_RESET_REGISTER         = 55
+let FAULT_RESET_REGISTER           = 56
 let SERVER_REBOOT_BIT              = 503
 let SELECT_SERVER_BIT              = 502
 
@@ -218,3 +218,29 @@ let SCREENS = [
     ""
     
 ];
+
+public struct CS_DATA_VALUES{
+    
+    var status_progRunning       = 0
+    var status_coldStart         = 0
+    var status_warmStart         = 0
+    var status_IOError           = 0
+    var status_cycleTimeWarning  = 0
+    
+    var cfg_cycleWarningTimeDelayTimer   = 0
+    
+    var cmd_WarningLatch = 0
+    var cmd_WarningReset = 0
+    
+    var status_CurrentCycleTime = 0
+    var status_MaxCycleTime = 0
+    var status_ProgramUpTimeDays = 0
+    var status_ProgramUpTime = 0
+    var status_ProjectVersion = 0
+    var status_ProjectBuildNumber = 0
+    var status_ProjectLibraryVersion = 0
+    var status_ProjectBuildYear = 0
+    var status_ProjectBuildDay = 0
+    var status_ProjectBuildTime = 0
+}
+let PLC_DATA = (startAddr: 100, count: 15)

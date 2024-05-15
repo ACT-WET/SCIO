@@ -297,7 +297,7 @@
                                 <color key="textColor" red="0.7843137255" green="0.7843137255" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DC POWER" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xf2-bd-oUC">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DEVICE DISABLE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xf2-bd-oUC">
                                 <rect key="frame" x="114" y="320" width="250" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
@@ -330,7 +330,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.3921568627" green="0.3921568627" blue="0.3921568627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DC POWER" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CgJ-RV-VSx">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DEVICE OVERRIDE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CgJ-RV-VSx">
                                 <rect key="frame" x="114" y="403" width="250" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Verdana" family="Verdana" pointSize="14"/>
@@ -1044,6 +1044,7 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.13723513479999999" green="0.13726624849999999" blue="0.13723316790000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="R2d-by-VeM"/>
                     </view>
                     <navigationItem key="navigationItem" title="DC POWER" id="NNh-7O-3tz" userLabel="DC POWER"/>
                     <size key="freeformSize" width="1080" height="810"/>
