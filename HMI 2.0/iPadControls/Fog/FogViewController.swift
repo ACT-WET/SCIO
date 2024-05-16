@@ -144,6 +144,8 @@ class FogViewController: UIViewController{
             }
             let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
             //print(statusArrValues)
+            self.fogRingAValues.valveOpen = statusArrValues[1]
+            self.fogRingAValues.valveClose = statusArrValues[2]
             self.fogRingAValues.inAuto = statusArrValues[5]
             self.fogRingAValues.inHand = statusArrValues[6]
             
@@ -161,7 +163,8 @@ class FogViewController: UIViewController{
                 }
                 let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
                 //print(statusArrValues)
-                
+                self.fogPlumeAValues.valveOpen = statusArrValues[1]
+                self.fogPlumeAValues.valveClose = statusArrValues[2]
                 self.fogPlumeAValues.inAuto = statusArrValues[5]
                 self.fogPlumeAValues.inHand = statusArrValues[6]
                 
@@ -186,7 +189,8 @@ class FogViewController: UIViewController{
             }
             let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
             //print(statusArrValues)
-            
+            self.fogRingLValues.valveOpen = statusArrValues[1]
+            self.fogRingLValues.valveClose = statusArrValues[2]
             self.fogRingLValues.inAuto = statusArrValues[5]
             self.fogRingLValues.inHand = statusArrValues[6]
             
@@ -204,6 +208,8 @@ class FogViewController: UIViewController{
                 }
                 let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
                 //print(statusArrValues)
+                self.fogPlumeLValues.valveOpen = statusArrValues[1]
+                self.fogPlumeLValues.valveClose = statusArrValues[2]
                 self.fogPlumeLValues.inAuto = statusArrValues[5]
                 self.fogPlumeLValues.inHand = statusArrValues[6]
                 
@@ -229,6 +235,8 @@ class FogViewController: UIViewController{
             }
             let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
             //print(statusArrValues)
+            self.fogRingBValues.valveOpen = statusArrValues[1]
+            self.fogRingBValues.valveClose = statusArrValues[2]
             self.fogRingBValues.inAuto = statusArrValues[5]
             self.fogRingBValues.inHand = statusArrValues[6]
             
@@ -247,6 +255,8 @@ class FogViewController: UIViewController{
                 }
                 let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![2] as! NSNumber))
                 //print(statusArrValues)
+                self.fogPlumeBValues.valveOpen = statusArrValues[1]
+                self.fogPlumeBValues.valveClose = statusArrValues[2]
                 self.fogPlumeBValues.inAuto = statusArrValues[5]
                 self.fogPlumeBValues.inHand = statusArrValues[6]
                 
@@ -296,75 +306,84 @@ class FogViewController: UIViewController{
        if self.fogRingAValues.inAuto == 1{
             ringAautoHandImg.image = #imageLiteral(resourceName: "autoMode")
             ringAautoHandImg.rotate360Degrees(animate: true)
-            ringAPlayStopBtn.isHidden = true
+            ringAPlayStopBtn.isUserInteractionEnabled = false
         }
         if self.fogRingAValues.inHand == 1{
             ringAautoHandImg.image = #imageLiteral(resourceName: "handMode")
             ringAautoHandImg.rotate360Degrees(animate: false)
-            ringAPlayStopBtn.isHidden = false
+            ringAPlayStopBtn.isUserInteractionEnabled = true
         }
         
-        if self.fogRingAValues.cmd_HandStartStop == 1{
-            ringAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "stopButton"), for: .normal)
+        if self.fogRingAValues.valveOpen == 1{
+            ringAPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-green"), for: .normal)
+            ringAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
-        if self.fogRingAValues.cmd_HandStartStop == 0{
-            ringAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "playButton"), for: .normal)
+        if self.fogRingAValues.valveClose == 1{
+            ringAPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-red"), for: .normal)
+            ringAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
         
         if self.fogPlumeAValues.inAuto == 1{
             plumeAautoHandImg.image = #imageLiteral(resourceName: "autoMode")
             plumeAautoHandImg.rotate360Degrees(animate: true)
-            plumeAPlayStopBtn.isHidden = true
+            plumeAPlayStopBtn.isUserInteractionEnabled = false
         }
         if self.fogPlumeAValues.inHand == 1{
             plumeAautoHandImg.image = #imageLiteral(resourceName: "handMode")
             plumeAautoHandImg.rotate360Degrees(animate: false)
-            plumeAPlayStopBtn.isHidden = false
+            plumeAPlayStopBtn.isUserInteractionEnabled = true
         }
         
-        if self.fogPlumeAValues.cmd_HandStartStop == 1{
-            plumeAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "stopButton"), for: .normal)
+        if self.fogPlumeAValues.valveOpen == 1{
+            plumeAPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-green"), for: .normal)
+            plumeAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
-        if self.fogPlumeAValues.cmd_HandStartStop == 0{
-            plumeAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "playButton"), for: .normal)
+        if self.fogRingAValues.valveClose == 1{
+            plumeAPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-red"), for: .normal)
+            plumeAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
+
                 
     }
     func parseFogSystemLData(){
         if self.fogRingLValues.inAuto == 1{
             ringLautoHandImg.image = #imageLiteral(resourceName: "autoMode")
             ringLautoHandImg.rotate360Degrees(animate: true)
-            ringLPlayStopBtn.isHidden = true
+            ringLPlayStopBtn.isUserInteractionEnabled = false
         }
         if self.fogRingLValues.inHand == 1{
             ringLautoHandImg.image = #imageLiteral(resourceName: "handMode")
             ringLautoHandImg.rotate360Degrees(animate: false)
-            ringLPlayStopBtn.isHidden = false
+            ringLPlayStopBtn.isUserInteractionEnabled = true
         }
         
-        if self.fogRingLValues.cmd_HandStartStop == 1{
-            ringLPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "stopButton"), for: .normal)
+        if self.fogRingLValues.valveOpen == 1{
+            ringLPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-green"), for: .normal)
+            ringLPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
-        if self.fogRingLValues.cmd_HandStartStop == 0{
-            ringLPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "playButton"), for: .normal)
+        if self.fogRingLValues.valveClose == 1{
+            ringLPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-red"), for: .normal)
+            ringLPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
         
         if self.fogPlumeLValues.inAuto == 1{
             plumeLautoHandImg.image = #imageLiteral(resourceName: "autoMode")
             plumeLautoHandImg.rotate360Degrees(animate: true)
-            plumeLPlayStopBtn.isHidden = true
+            plumeLPlayStopBtn.isUserInteractionEnabled = false
         }
         if self.fogPlumeLValues.inHand == 1{
             plumeLautoHandImg.image = #imageLiteral(resourceName: "handMode")
             plumeLautoHandImg.rotate360Degrees(animate: false)
-            plumeLPlayStopBtn.isHidden = false
+            plumeLPlayStopBtn.isUserInteractionEnabled = true
         }
         
-        if self.fogPlumeLValues.cmd_HandStartStop == 1{
-            plumeLPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "stopButton"), for: .normal)
+        if self.fogPlumeLValues.valveOpen == 1{
+            plumeLPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-green"), for: .normal)
+            plumeLPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
-        if self.fogPlumeLValues.cmd_HandStartStop == 0{
-            plumeLPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "playButton"), for: .normal)
+        if self.fogPlumeLValues.valveClose == 1{
+            plumeLPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-red"), for: .normal)
+            plumeLPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
                 
     }
@@ -372,57 +391,48 @@ class FogViewController: UIViewController{
         if self.fogRingBValues.inAuto == 1{
             ringBautoHandImg.image = #imageLiteral(resourceName: "autoMode")
             ringBautoHandImg.rotate360Degrees(animate: true)
-            ringBPlayStopBtn.isHidden = true
+            ringBPlayStopBtn.isUserInteractionEnabled = false
         }
         if self.fogRingBValues.inHand == 1{
             ringBautoHandImg.image = #imageLiteral(resourceName: "handMode")
             ringBautoHandImg.rotate360Degrees(animate: false)
-            ringBPlayStopBtn.isHidden = false
+            ringBPlayStopBtn.isUserInteractionEnabled = true
         }
         
-        if self.fogRingBValues.cmd_HandStartStop == 1{
-            ringBPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "stopButton"), for: .normal)
+        if self.fogRingBValues.valveOpen == 1{
+            ringBPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-green"), for: .normal)
+            ringBPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
-        if self.fogRingBValues.cmd_HandStartStop == 0{
-            ringBPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "playButton"), for: .normal)
+        if self.fogRingBValues.valveClose == 1{
+            ringBPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-red"), for: .normal)
+            ringBPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
         
         if self.fogPlumeBValues.inAuto == 1{
             plumeBautoHandImg.image = #imageLiteral(resourceName: "autoMode")
             plumeBautoHandImg.rotate360Degrees(animate: true)
-            plumeBPlayStopBtn.isHidden = true
+            plumeBPlayStopBtn.isUserInteractionEnabled = false
         }
         if self.fogPlumeBValues.inHand == 1{
             plumeBautoHandImg.image = #imageLiteral(resourceName: "handMode")
             plumeBautoHandImg.rotate360Degrees(animate: false)
-            plumeBPlayStopBtn.isHidden = false
+            plumeBPlayStopBtn.isUserInteractionEnabled = true
         }
         
-        if self.fogPlumeBValues.cmd_HandStartStop == 1{
-            plumeBPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "stopButton"), for: .normal)
+        if self.fogPlumeBValues.valveOpen == 1{
+            plumeBPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-green"), for: .normal)
+            plumeBPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
-        if self.fogPlumeBValues.cmd_HandStartStop == 0{
-            plumeBPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "playButton"), for: .normal)
+        if self.fogPlumeBValues.valveClose == 1{
+            plumeBPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-red"), for: .normal)
+            plumeBPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
                 
     }
     func parseFogSystemData(){
-        let ringAOpen   = self.view.viewWithTag(1) as? UILabel
-        let plumeAOpen  = self.view.viewWithTag(2) as? UILabel
+        
         let sysAFaulted = self.view.viewWithTag(3) as? UILabel
         let sysARunning = self.view.viewWithTag(4) as? UILabel
-        
-        if self.fogSystemValues.systemARingOpen == 1{
-            ringAOpen!.alpha = 1
-        } else {
-            ringAOpen!.alpha = 0
-        }
-        
-        if self.fogSystemValues.systemAPlumeOpen == 1{
-            plumeAOpen!.alpha = 1
-        } else {
-            plumeAOpen!.alpha = 0
-        }
         
         if self.fogSystemValues.systemAFaulted == 1{
             sysAFaulted!.alpha = 1
@@ -436,22 +446,9 @@ class FogViewController: UIViewController{
             sysARunning!.alpha = 0
         }
         
-        let ringLOpen   = self.view.viewWithTag(11) as? UILabel
-        let plumeLOpen  = self.view.viewWithTag(12) as? UILabel
+        
         let sysLFaulted = self.view.viewWithTag(13) as? UILabel
         let sysLRunning = self.view.viewWithTag(14) as? UILabel
-        
-        if self.fogSystemValues.systemLRingOpen == 1{
-            ringLOpen!.alpha = 1
-        } else {
-            ringLOpen!.alpha = 0
-        }
-        
-        if self.fogSystemValues.systemLPlumeOpen == 1{
-            plumeLOpen!.alpha = 1
-        } else {
-            plumeLOpen!.alpha = 0
-        }
         
         if self.fogSystemValues.systemLFaulted == 1{
             sysLFaulted!.alpha = 1
@@ -465,22 +462,8 @@ class FogViewController: UIViewController{
             sysLRunning!.alpha = 0
         }
         
-        let ringBOpen   = self.view.viewWithTag(21) as? UILabel
-        let plumeBOpen  = self.view.viewWithTag(22) as? UILabel
         let sysBFaulted = self.view.viewWithTag(23) as? UILabel
         let sysBRunning = self.view.viewWithTag(24) as? UILabel
-        
-        if self.fogSystemValues.systemBRingOpen == 1{
-            ringBOpen!.alpha = 1
-        } else {
-            ringBOpen!.alpha = 0
-        }
-        
-        if self.fogSystemValues.systemBPlumeOpen == 1{
-            plumeBOpen!.alpha = 1
-        } else {
-            plumeBOpen!.alpha = 0
-        }
         
         if self.fogSystemValues.systemBFaulted == 1{
             sysBFaulted!.alpha = 1

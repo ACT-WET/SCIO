@@ -33,17 +33,17 @@ class FogDetailsViewController: UIViewController {
         if fogSysNumber == 5{
             self.ringLbl.text = "YV-1580"
             self.plumeLbl.text = "YV-1582"
-            self.navigationItem.title = "FOG SYSTEM A DETAILS"
+            self.navigationItem.title = "FOG SYSTEM WEST DETAILS"
         }
         if fogSysNumber == 15{
             self.ringLbl.text = "YV-1583"
             self.plumeLbl.text = "YV-1585"
-            self.navigationItem.title = "FOG SYSTEM L DETAILS"
+            self.navigationItem.title = "FOG SYSTEM SOUTH DETAILS"
         }
         if fogSysNumber == 25{
             self.ringLbl.text = "YV-1587"
             self.plumeLbl.text = "YV-1589"
-            self.navigationItem.title = "FOG SYSTEM B DETAILS"
+            self.navigationItem.title = "FOG SYSTEM EAST DETAILS"
         }
         
         //This line of code is an extension added to the view controller by showStoppers module

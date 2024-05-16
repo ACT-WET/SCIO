@@ -177,17 +177,17 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
                       pumpRegister = VFD_106_DATAREGISTER.startAddr
                       pumpCmdReg = VFD106_CMD_REG
                       self.autoManualButton.setImage(#imageLiteral(resourceName: "pumps"), for: .normal)
-            case 107: vfdNumber.text = "MS - 107"
+            case 107: vfdNumber.text = "VFD - 107"
                       pumpRegister = VFD_107_DATAREGISTER.startAddr
                       pumpCmdReg = VFD107_CMD_REG
                       self.autoManualButton.setImage(#imageLiteral(resourceName: "plume"), for: .normal)
                       self.autoManualButton.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
-            case 108: vfdNumber.text = "MS - 108"
+            case 108: vfdNumber.text = "VFD - 108"
                       pumpRegister = VFD_108_DATAREGISTER.startAddr
                       pumpCmdReg = VFD108_CMD_REG
                       self.autoManualButton.setImage(#imageLiteral(resourceName: "plume"), for: .normal)
                       self.autoManualButton.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
-            case 109: vfdNumber.text = "MS - 109"
+            case 109: vfdNumber.text = "VFD - 109"
                       pumpRegister = VFD_109_DATAREGISTER.startAddr
                       pumpCmdReg = VFD109_CMD_REG
                       self.autoManualButton.setImage(#imageLiteral(resourceName: "plume"), for: .normal)
