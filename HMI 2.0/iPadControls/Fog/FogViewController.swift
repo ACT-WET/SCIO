@@ -338,7 +338,7 @@ class FogViewController: UIViewController{
             plumeAPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-green"), for: .normal)
             plumeAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
-        if self.fogRingAValues.valveClose == 1{
+        if self.fogPlumeAValues.valveClose == 1{
             plumeAPlayStopBtn.setImage(#imageLiteral(resourceName: "valve-red"), for: .normal)
             plumeAPlayStopBtn.setBackgroundImage(#imageLiteral(resourceName: "background"), for: .normal)
         }
@@ -557,44 +557,44 @@ class FogViewController: UIViewController{
     }
     @IBAction func sendStartStopCmd(_ sender: UIButton){
        if sender.tag == 7{
-            if fogRingAValues.cmd_HandStartStop == 1{
+            if fogRingAValues.valveOpen == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGRING_YV1580_A_CMD_HANDCMD, value: 0)
-            } else {
+            } else if fogRingAValues.valveClose == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGRING_YV1580_A_CMD_HANDCMD, value: 1)
             }
        }
        if sender.tag == 17{
-            if fogRingLValues.cmd_HandStartStop == 1{
+            if fogRingLValues.valveOpen == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGRING_YV1583_L_CMD_HANDCMD, value: 0)
-            } else {
+            } else if fogRingLValues.valveClose == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGRING_YV1583_L_CMD_HANDCMD, value: 1)
             }
        }
        if sender.tag == 27{
-            if fogRingBValues.cmd_HandStartStop == 1{
+            if fogRingBValues.valveOpen == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGRING_YV1587_B_CMD_HANDCMD, value: 0)
-            } else {
+            } else if fogRingBValues.valveClose == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGRING_YV1587_B_CMD_HANDCMD, value: 1)
             }
        }
        if sender.tag == 9{
-            if fogPlumeAValues.cmd_HandStartStop == 1{
+            if fogPlumeAValues.valveOpen == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGPLUME_YV1582_A_CMD_HANDCMD, value: 0)
-            } else {
+            } else if fogPlumeAValues.valveClose == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGPLUME_YV1582_A_CMD_HANDCMD, value: 1)
             }
        }
        if sender.tag == 19{
-            if fogPlumeLValues.cmd_HandStartStop == 1{
+            if fogPlumeLValues.valveOpen == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGPLUME_YV1585_L_CMD_HANDCMD, value: 0)
-            } else {
+            } else if fogPlumeLValues.valveClose == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGPLUME_YV1585_L_CMD_HANDCMD, value: 1)
             }
        }
        if sender.tag == 29{
-            if fogPlumeBValues.cmd_HandStartStop == 1{
+            if fogPlumeBValues.valveOpen == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGPLUME_YV1589_B_CMD_HANDCMD, value: 0)
-            } else {
+            } else if fogPlumeBValues.valveClose == 1{
                 CENTRAL_SYSTEM?.writeBit(bit: FOGPLUME_YV1589_B_CMD_HANDCMD, value: 1)
             }
        }
