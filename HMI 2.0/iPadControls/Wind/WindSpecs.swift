@@ -71,3 +71,6 @@ public struct WEATHER_SYSTEM_SENSOR_VALUES{
     var gpsLogitude          = 0
     var gpsHeightAbvSea      = 0
 }
+
+let WIND_HH_TIMER = 8520
+let WIND_HH_SP    = 820

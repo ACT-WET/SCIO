@@ -9,11 +9,18 @@
 import UIKit
 
 var settingsIcon: UIButton?
+var settingsView: UIView?
 
 extension UIViewController {
 
     func addAlertAction(button: UIButton){
         let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressHappened))
+        recognizer.minimumPressDuration = 3
+        button.addGestureRecognizer(recognizer)
+    }
+    
+    func addWindAlertAction(button: UIButton){
+        let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(longWindPressHappened))
         recognizer.minimumPressDuration = 3
         button.addGestureRecognizer(recognizer)
     }
@@ -96,6 +103,61 @@ extension UIViewController {
                             
                             settingsIcon!.alpha = 1
                             settingsIcon!.isUserInteractionEnabled = true
+                            
+                        }
+                    }else{
+                        let wrongPasswordAlert = UIAlertController(title: "Wrong Password", message: "Please try again.", preferredStyle: .alert)
+                        
+                        let dismissAlert = UIAlertAction(title: "Okay", style: .cancel, handler: { (action) in
+                            print("User dismiss")
+                        })
+                        
+                        wrongPasswordAlert.addAction(dismissAlert)
+                        self.present(wrongPasswordAlert, animated: true, completion: nil)
+                    }
+                }
+                
+            }else{
+                return
+            }
+            
+        }
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (alert) in
+            print("User Cancel")
+        }
+        
+        alertController.addAction(login)
+        alertController.addAction(cancel)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    @objc func longWindPressHappened(){
+        var passwordField: UITextField?
+        
+        let alertController = UIAlertController(title: "Password", message: "Enter a password", preferredStyle: .alert)
+        alertController.view.backgroundColor = .black
+        alertController.addTextField { (textfield) in
+            passwordField = textfield
+            textfield.isSecureTextEntry = true
+        }
+        
+        let login = UIAlertAction(title: "Login", style: .default) { (alert) in
+            
+            settingsView = self.view.viewWithTag(450) as? UIView
+            
+            guard settingsView != nil else{ return }
+            
+            if (passwordField?.text?.count)! > 0 {
+                if let password = passwordField?.text {
+                    if password == APP_PASSWORD {
+                        if settingsView!.alpha == 0{
+                            
+                            settingsView!.alpha = 1
+                            
+                        }else{
+                            
+                            settingsView!.alpha = 0
                             
                         }
                     }else{

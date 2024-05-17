@@ -43,6 +43,9 @@ if (PLCConnected){
         if (resp != undefined && resp != null){  
             // Show Stoppers - atho
             fault_ShowStoppers.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0); // ShowStopper Estop Active
+            fault_ShowStoppers.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0); // ShowStopper Basin WaterLevel LL
+            fault_ShowStoppers.push(nthBit(resp.register[0],2) ? nthBit(resp.register[0],2) : 0); // ShowStopper High Wind Abort
+            fault_ShowStoppers.push(nthBit(resp.register[0],3) ? nthBit(resp.register[0],3) : 0); // ShowStopper VFD101 Not Running
         }
     });//end of first PLC modbus call  
 
@@ -262,7 +265,7 @@ if (PLCConnected){
             }   
 
             totalStatus = [ 
-                            fault_ShowStoppers,      //1
+                            fault_ShowStoppers,      //4
                             fault_ESTOP,             //14
                             status_Ethernet,         //12
                             status_WarningFaults,    //16
@@ -299,6 +302,9 @@ if (PLCConnected){
                             "BMS Warning Output": fault_ESTOP[12],
                             "BMS Fault Output": fault_ESTOP[13],
                             "ShowStopper :Estop": fault_ShowStoppers[0],
+                            "ShowStopper :WaterLevel LL": fault_ShowStoppers[1],
+                            "ShowStopper :High Wind": fault_ShowStoppers[2],
+                            "ShowStopper :VFD101 NotRunning": fault_ShowStoppers[3],
                             "***************************SYSTEM NETOWRK STATUS***************************" : "2",
                             "VFD-101 Communication OK": status_Ethernet[0],
                             "VFD-103 Communication OK": status_Ethernet[1],
@@ -502,8 +508,11 @@ var date = new Date();
         // pattern of statements must match devStatus and totalStatus format
         var statements=[
 
-            [   // Show Stopper - scio - 1
+            [   // Show Stopper - scio - 4
                 {"yes":"Show Stopper: Estop","no":"Show Stopper Resolved: Estop"},
+                {"yes":"Show Stopper: WaterLevel LL","no":"Show Stopper Resolved: WaterLevel LL"},
+                {"yes":"Show Stopper: High Wind","no":"Show Stopper Resolved: High Wind"},
+                {"yes":"Show Stopper: Filtration NotRunning","no":"Show Stopper Resolved: Filtration NotRunning"},
             ],
 
             [   // estop - scio - 14

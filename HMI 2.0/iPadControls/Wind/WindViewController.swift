@@ -22,6 +22,8 @@ import UIKit
 
 class WindViewController: UIViewController{
 
+        @IBOutlet weak var windHHTimer: UITextField!
+        @IBOutlet weak var windHHSP: UITextField!
         @IBOutlet weak var windStat: UIImageView!
         @IBOutlet weak var noConnectionView: UIView!
         @IBOutlet weak var noConnectionErrorLbl: UILabel!
@@ -41,6 +43,7 @@ class WindViewController: UIViewController{
         private var aboveHigh       = 0
         private var belowLow        = 0
         var windId = 0
+        var readOnce = 0
         private var windChannelFaults: [Int] = []
 
         /***************************************************************************
@@ -220,7 +223,31 @@ class WindViewController: UIViewController{
                    gpsLong?.text = String(format: "%.1f", Float(self.wind_sensor_1.gpsLogitude)/10.0)
                    gpsHeight?.text = String(format: "%.1f", Float(self.wind_sensor_1.gpsHeightAbvSea)/10.0)
             })
-            
+            if readOnce == 0{
+                CENTRAL_SYSTEM?.readRegister(length: 1 , startingRegister: Int32(WIND_HH_SP), completion: { (sucess, response) in
+                    
+                    //Check points to make sure the PLC Call was successful
+                    
+                    guard sucess == true else{
+                        self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                        return
+                    }
+                    let windSPValue = Float(truncating: response![0] as! NSNumber) / 10.0
+                    self.windHHSP.text = String(format: "%.1f", windSPValue)
+                })
+                CENTRAL_SYSTEM?.readRegister(length: 1 , startingRegister: Int32(WIND_HH_TIMER), completion: { (sucess, response) in
+                    
+                    //Check points to make sure the PLC Call was successful
+                    
+                    guard sucess == true else{
+                        self.logger.logData(data: "WATER LEVEL FAILED TO GET RESPONSE FROM PLC")
+                        return
+                    }
+                    
+                    self.windHHTimer.text = "\(Int(truncating: response![0] as! NSNumber))"
+                })
+                readOnce = 1
+            }
         }
         
         /***************************************************************************
@@ -259,8 +286,27 @@ class WindViewController: UIViewController{
            let directionImage = self.view.viewWithTag(directionTag) as! UIImageView
            directionImage.transform = CGAffineTransform(rotationAngle: CGFloat(rotationAngle))
         }
+    @IBAction func saveWindSettings(_ sender: UIButton) {
+        if let windHHSPVal = windHHSP.text, !windHHSPVal.isEmpty,
+             let windHHSPValue = Float(windHHSPVal) {
+            if windHHSPValue >= 0.0 && windHHSPValue <= 60.0 {
+                 let newVal = Int(windHHSPValue * 10.0)
+                 CENTRAL_SYSTEM?.writeRegister(register: WIND_HH_SP, value: newVal)
+              }
+          }
+        
+          if let windHHTimerVal = windHHTimer.text, !windHHTimerVal.isEmpty,
+             let windHHTimerValue = Int(windHHTimerVal) {
+              if windHHTimerValue >= 0 && windHHTimerValue <= 600 {
+                 CENTRAL_SYSTEM?.writeRegister(register: WIND_HH_TIMER, value: windHHTimerValue)
+              }
+          }
+          DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+            self.readOnce = 0
+          }
+    }
     
-        @IBAction func showAlertSettings(_ sender: UIButton) {
-            self.addAlertAction(button: sender)
-        }
+    @IBAction func showAlertSettings(_ sender: UIButton) {
+        self.addWindAlertAction(button: sender)
+    }
     }
