@@ -347,7 +347,7 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate {
             touchLocation.y = 461
         }
         // This is set.
-        if touchLocation.y >= 196 && touchLocation.y <= 461 {
+        if touchLocation.y >= 200.5 && touchLocation.y <= 461 {
             print(touchLocation.y)
             //Make sure that we don't go more than pump flow limit
            
