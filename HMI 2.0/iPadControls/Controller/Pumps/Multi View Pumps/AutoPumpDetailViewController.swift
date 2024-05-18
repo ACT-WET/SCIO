@@ -871,15 +871,15 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         if manSpeed == nil{
             manSpeed = 0
         }
-        if manSpeed! > 60 {
-            manSpeed = 60
+        if manSpeed! > 70 {
+            manSpeed = 70
         }
         manSpeed = manSpeed! * 10
         if shwSpeed == nil{
             shwSpeed = 0
         }
-        if shwSpeed! > 60 {
-            shwSpeed = 60
+        if shwSpeed! > 70 {
+            shwSpeed = 70
         }
         shwSpeed = shwSpeed! * 10
         

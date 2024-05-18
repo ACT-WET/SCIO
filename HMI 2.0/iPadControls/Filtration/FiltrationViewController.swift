@@ -340,8 +340,8 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate {
         frequencyIndicatorValue.textColor = DEFAULT_GRAY
         
         var touchLocation:CGPoint = sender.location(in: self.view)
-        if touchLocation.y  < 196 {
-            touchLocation.y = 196
+        if touchLocation.y  < 200.5 {
+            touchLocation.y = 200.5
         }
         if touchLocation.y  > 461 {
             touchLocation.y = 461
