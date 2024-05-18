@@ -64,6 +64,7 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     @IBOutlet weak var temperatureIndicatorValue: UILabel!
     @IBOutlet weak var temperatureGreen: UIView!
     @IBOutlet weak var temperatureYellow: UIView!
+    @IBOutlet weak var temperatureRed: UIView!
     @IBOutlet weak var temperatureBackground: UIView!
     @IBOutlet weak var temperatureLabel: UILabel!
     
@@ -102,7 +103,7 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     
     private var temperatureMaxRangeValue = 0
     private var pixelPerTemperature = 0.0
-    private var temperatureLimit = 100
+    private var temperatureLimit = 125
     private var pumpFaulted = false
     var currentScalingFactorPump = 10
     var pumpRegister = 0
@@ -366,24 +367,26 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
                 self.voltageMinRangeValue = Int(truncating: response![2] as! NSNumber)
                 self.voltageMaxRangeValue = Int(truncating: response![3] as! NSNumber)
                 self.currentMaxRangeValue = Int(truncating: response![5] as! NSNumber)
-                self.temperatureMaxRangeValue = 100
+                self.temperatureMaxRangeValue = 125
+                
+                self.frequencyValueLabel.text = "\(self.HZMax)"
+                
+                // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
+                
+                self.voltageLimit = self.voltageMaxRangeValue + 100
+                self.voltageValueLabel.text   = "\(self.voltageLimit)"
+                
+                // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
+                self.currentLimit = self.currentMaxRangeValue + 10
+                self.currentValueLabel.text = "\(self.currentLimit)"
+                
+                //Note temperature always stays at 100 limit.
+                
+                
+                //Add necessary view elements to the view
+                self.constructViewElements()
             })
-            self.frequencyValueLabel.text = "\(self.HZMax)"
             
-            // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
-            
-            self.voltageLimit = self.voltageMaxRangeValue + 100
-            self.voltageValueLabel.text   = "\(self.voltageLimit)"
-            
-            // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
-            self.currentLimit = self.currentMaxRangeValue + 10
-            self.currentValueLabel.text = "\(self.currentLimit)"
-            
-            //Note temperature always stays at 100 limit.
-            
-            
-            //Add necessary view elements to the view
-            self.constructViewElements()
         }
         if pumpNumber == 107 || pumpNumber == 108 || pumpNumber == 109 {
             CENTRAL_SYSTEM?.readRegister(length: Int32(BLOSSOM_PLUME_MAX_SP.count) , startingRegister: Int32(BLOSSOM_PLUME_MAX_SP.startAddr), completion: { (sucess, response) in
@@ -399,24 +402,26 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
                 self.voltageMinRangeValue = Int(truncating: response![8] as! NSNumber)
                 self.voltageMaxRangeValue = Int(truncating: response![9] as! NSNumber)
                 self.currentMaxRangeValue = Int(truncating: response![11] as! NSNumber)
-                self.temperatureMaxRangeValue = 100
+                self.temperatureMaxRangeValue = 125
+                
+                self.frequencyValueLabel.text = "\(self.HZMax)"
+                
+                // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
+                
+                self.voltageLimit = self.voltageMaxRangeValue + 100
+                self.voltageValueLabel.text   = "\(self.voltageLimit)"
+                
+                // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
+                self.currentLimit = self.currentMaxRangeValue + 10
+                self.currentValueLabel.text = "\(self.currentLimit)"
+                
+                //Note temperature always stays at 100 limit.
+                
+                
+                //Add necessary view elements to the view
+                self.constructViewElements()
             })
-            self.frequencyValueLabel.text = "\(self.HZMax)"
             
-            // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
-            
-            self.voltageLimit = self.voltageMaxRangeValue + 100
-            self.voltageValueLabel.text   = "\(self.voltageLimit)"
-            
-            // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
-            self.currentLimit = self.currentMaxRangeValue + 10
-            self.currentValueLabel.text = "\(self.currentLimit)"
-            
-            //Note temperature always stays at 100 limit.
-            
-            
-            //Add necessary view elements to the view
-            self.constructViewElements()
         }
         if pumpNumber == 101 {
             CENTRAL_SYSTEM?.readRegister(length: Int32(FILTRATION_MAX_SP.count) , startingRegister: Int32(FILTRATION_MAX_SP.startAddr), completion: { (sucess, response) in
@@ -432,24 +437,25 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
                 self.voltageMinRangeValue = Int(truncating: response![2] as! NSNumber)
                 self.voltageMaxRangeValue = Int(truncating: response![3] as! NSNumber)
                 self.currentMaxRangeValue = Int(truncating: response![5] as! NSNumber)
-                self.temperatureMaxRangeValue = 100
+                self.frequencyValueLabel.text = "\(self.HZMax)"
+                
+                // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
+                
+                self.voltageLimit = self.voltageMaxRangeValue + 100
+                self.voltageValueLabel.text   = "\(self.voltageLimit)"
+                
+                // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
+                self.currentLimit = self.currentMaxRangeValue + 10
+                self.currentValueLabel.text = "\(self.currentLimit)"
+                
+                //Note temperature always stays at 100 limit.
+                
+                
+                //Add necessary view elements to the view
+                self.temperatureMaxRangeValue = 125
+                self.constructViewElements()
+                
             })
-            self.frequencyValueLabel.text = "\(self.HZMax)"
-            
-            // What we are getting is a range, not the maximum value. So to get the maximum volatage value just add 100.
-            
-            self.voltageLimit = self.voltageMaxRangeValue + 100
-            self.voltageValueLabel.text   = "\(self.voltageLimit)"
-            
-            // What we are getting is a range, not the maximum value. So to get the maximum current value just add 10.
-            self.currentLimit = self.currentMaxRangeValue + 10
-            self.currentValueLabel.text = "\(self.currentLimit)"
-            
-            //Note temperature always stays at 100 limit.
-            
-            
-            //Add necessary view elements to the view
-            self.constructViewElements()
         }
     }
     
@@ -458,11 +464,7 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     private func constructViewElements(){
         constructVoltageSlider()
         constructCurrentSlider()
-        constructTemperatureSlider()
-        
-        autoModeIndicator.alpha = 0
-        handModeIndicator.alpha = 0
-        
+        constructTemperatureSlider()        
     }
     
     
@@ -503,7 +505,8 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     
     private func constructTemperatureSlider(){
         let frame = 450.0
-        let temperatureMidRangeValue = 50.0
+        let temperatureMidRangeValue = 75.0
+        let temperatureRedRangeValue = 100.0
         pixelPerTemperature = frame / Double(temperatureLimit)
         if pixelPerTemperature == Double.infinity {
             pixelPerTemperature = 0
@@ -511,13 +514,17 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         
         
         let temperatureRange = Double(temperatureMaxRangeValue) * pixelPerTemperature
-        let temperatureFrameHeight = (Double(temperatureMaxRangeValue) - temperatureMidRangeValue) * pixelPerTemperature
+        let temperatureRedHeight = (Double(temperatureMaxRangeValue) - temperatureRedRangeValue) * pixelPerTemperature
+        let temperatureYellowHeight = (Double(temperatureRedRangeValue) - temperatureMidRangeValue) * pixelPerTemperature
         
         temperatureYellow.backgroundColor = .yellow
+        temperatureRed.backgroundColor = RED_COLOR
         temperatureGreen.backgroundColor = GREEN_COLOR
         
-        temperatureYellow.frame = CGRect(x: 0, y: (SLIDER_PIXEL_RANGE - temperatureRange), width: 25, height: temperatureFrameHeight)
+        temperatureRed.frame = CGRect(x: 0, y: 0, width: 25, height: temperatureRedHeight)
+        temperatureYellow.frame = CGRect(x: 0, y: temperatureRedHeight, width: 25, height: temperatureYellowHeight)
         temperatureGreen.frame = CGRect(x: 0, y: (SLIDER_PIXEL_RANGE - temperatureRange), width: 25, height: temperatureRange)
+        
         
         
     }
@@ -605,13 +612,14 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
     
     private func getTemperatureReading(response:Int){
         let temperature = response
-        let temperatureMid = 50
-        let indicatorLocation = 690 - (Double(temperature) * pixelPerTemperature)
+        let temperatureMid = 75
+        let temperatureRed = 100
+        let indicatorLocation = 736 - (Double(temperature) * pixelPerTemperature)
         
-        if temperature >= 100 {
-            temperatureIndicator.frame = CGRect(x: 830, y: 288, width: 75, height: 23)
+        if temperature >= 125 {
+            temperatureIndicator.frame = CGRect(x: 830, y: 286, width: 75, height: 23)
         } else if temperature <= 0 {
-            temperatureIndicator.frame = CGRect(x: 830, y: 738, width: 75, height: 23)
+            temperatureIndicator.frame = CGRect(x: 830, y: 736, width: 75, height: 23)
         } else {
             temperatureIndicator.frame = CGRect(x: 830, y: indicatorLocation, width: 75, height: 23)
         }
@@ -619,9 +627,9 @@ class AutoPumpDetailViewController: UIViewController,UIGestureRecognizerDelegate
         
         temperatureIndicatorValue.text = "\(temperature)"
         
-        if temperature > temperatureMaxRangeValue {
+        if temperature >= temperatureRed && temperature <= temperatureMaxRangeValue{
             temperatureIndicatorValue.textColor = RED_COLOR
-        }else if temperature > temperatureMid && temperature < temperatureMaxRangeValue {
+        }else if temperature >= temperatureMid && temperature < temperatureRed {
             temperatureIndicatorValue.textColor = .yellow
         }else{
             temperatureIndicatorValue.textColor = GREEN_COLOR
