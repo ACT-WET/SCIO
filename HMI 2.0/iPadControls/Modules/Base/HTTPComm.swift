@@ -156,7 +156,7 @@ class HTTPComm: NSObject{
     public func httpPost(url: String, completion:@escaping (_ bool: Any?) -> ()){
         
         //parameters would be dictionary
-        let parameters = ["data": "data", "data": "data", "data": "data"]
+        let parameters = ["data": "data"]
         
         guard let url = URL(string: url) else { return }
         
@@ -179,19 +179,9 @@ class HTTPComm: NSObject{
                     
                     
                     // Convert this to json by using do try block
-                    if let data = data {
-                        do {
-                            let parsedData = try JSONSerialization.jsonObject(with: data, options: [.allowFragments])
-                            print(parsedData)
-                            completion(true)
-                        } catch {
-                            completion(false)
-                            print(error)
-                            
-                        }
-                    }
+                    completion(statusCode)
                 } else {
-                    completion(false)
+                    completion(statusCode)
                 }
             }
             }.resume()

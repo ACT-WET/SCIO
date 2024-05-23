@@ -48,8 +48,13 @@ function filterSchWrapper(){
         });
 
     }
-    else{
+    else if ((current_time >=559)&&(current_time <=600)){
+             plc_client.writeSingleCoil(8501,1,function(resp){
+                //watchDog.eventLog('Fire Sch ON');
+            });
+    } else {
         //watchDog.eventLog('Filter Sch ELSE' +on_time +' off ' +off_time);
+        
         //turn OFF
         plc_client.writeSingleCoil(8501,0,function(resp){
             //watchDog.eventLog('Fire Sch OFF');

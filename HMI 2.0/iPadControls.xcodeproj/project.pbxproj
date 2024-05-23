@@ -156,6 +156,8 @@
 		BBB411482BE5AC7000B36E93 /* WQSettingsDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */; };
 		BBCC80F8291583B200AF0683 /* FillerShowsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */; };
 		BBCC80F9291583B200AF0683 /* fillerShows.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBCC80F7291583B200AF0683 /* fillerShows.storyboard */; };
+		BBD27E202BFEA9A600F7429A /* audio.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBD27E1F2BFEA9A600F7429A /* audio.storyboard */; };
+		BBD27E222BFEAEEC00F7429A /* AudioViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBD27E212BFEAEEC00F7429A /* AudioViewController.swift */; };
 		BBEB6E8626F11840003F23B4 /* saltfill.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBEB6E8326F11840003F23B4 /* saltfill.storyboard */; };
 		BBEB6E8726F11840003F23B4 /* SaltFillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBEB6E8426F11840003F23B4 /* SaltFillViewController.swift */; };
 		BBEB6E8826F11840003F23B4 /* SaltFillSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBEB6E8526F11840003F23B4 /* SaltFillSpecs.swift */; };
@@ -376,6 +378,8 @@
 		BBB411472BE5AC7000B36E93 /* WQSettingsDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WQSettingsDetailViewController.swift; sourceTree = "<group>"; };
 		BBCC80F6291583B200AF0683 /* FillerShowsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FillerShowsViewController.swift; sourceTree = "<group>"; };
 		BBCC80F7291583B200AF0683 /* fillerShows.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = fillerShows.storyboard; sourceTree = "<group>"; };
+		BBD27E1F2BFEA9A600F7429A /* audio.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = audio.storyboard; sourceTree = "<group>"; };
+		BBD27E212BFEAEEC00F7429A /* AudioViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioViewController.swift; sourceTree = "<group>"; };
 		BBEB6E8326F11840003F23B4 /* saltfill.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = saltfill.storyboard; sourceTree = "<group>"; };
 		BBEB6E8426F11840003F23B4 /* SaltFillViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaltFillViewController.swift; sourceTree = "<group>"; };
 		BBEB6E8526F11840003F23B4 /* SaltFillSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaltFillSpecs.swift; sourceTree = "<group>"; };
@@ -483,6 +487,7 @@
 				BBF0F95E240D98FE00886076 /* Wind */,
 				BB40939E25E35D07008A110A /* Lights */,
 				9BC042B22267C265001E2F49 /* Fog */,
+				BBD27E1E2BFEA97F00F7429A /* Audio */,
 				9B5F3FB220DC5B1200D3CFDF /* Home */,
 				BB629DDC26E0124F0005D4CB /* Showlist */,
 				BB629E0226E013660005D4CB /* Playlist */,
@@ -934,6 +939,15 @@
 			path = FillerShows;
 			sourceTree = "<group>";
 		};
+		BBD27E1E2BFEA97F00F7429A /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				BBD27E1F2BFEA9A600F7429A /* audio.storyboard */,
+				BBD27E212BFEAEEC00F7429A /* AudioViewController.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
 		BBEB6E8226F11840003F23B4 /* SaltFill */ = {
 			isa = PBXGroup;
 			children = (
@@ -1068,6 +1082,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BBF0F96A240D9A2900886076 /* wind.storyboard in Resources */,
+				BBD27E202BFEA9A600F7429A /* audio.storyboard in Resources */,
 				BBCC80F9291583B200AF0683 /* fillerShows.storyboard in Resources */,
 				BBF9B8DF23F4B6F900DF67A1 /* logs.storyboard in Resources */,
 				9B5F3F0220DC5A8D00D3CFDF /* versionNum.txt in Resources */,
@@ -1204,6 +1219,7 @@
 				9B5F3F8F20DC5AD900D3CFDF /* RDVCalendarView.m in Sources */,
 				9B5F3F7B20DC5AD900D3CFDF /* AFURLConnectionOperation.m in Sources */,
 				9B5F3F7320DC5AD900D3CFDF /* UIRefreshControl+AFNetworking.m in Sources */,
+				BBD27E222BFEAEEC00F7429A /* AudioViewController.swift in Sources */,
 				9BC042B92267C265001E2F49 /* FogViewController.swift in Sources */,
 				9B5F3F7120DC5AD900D3CFDF /* UIAlertView+AFNetworking.m in Sources */,
 				BBF0F95A240D911700886076 /* FiltrationViewController.swift in Sources */,

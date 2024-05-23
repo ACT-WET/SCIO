@@ -83,6 +83,7 @@ let READ_SHOWSCAN_STATUS           = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/show
 let READ_PROJ_TEMP            = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/readPrjTempData"
 let WRITE_PJ_CMD           = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/sendMirrCmd?"
 let WRITE_SHW_CMD           = "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/readShowList?"
+let MCRX_HTTP_PASS          = "http://10.0.4.220/cgi/mcrx?TriggerSlot="
 /***************************************************************************
  * Section  : SSH Credentials
  * Comments : Credentials to access the server
@@ -211,7 +212,7 @@ let SCREENS = [
     "filtration",
     "fog",
     "weplay",
-    "",
+    "audio",
     "",
     "settings",
     "showList",
