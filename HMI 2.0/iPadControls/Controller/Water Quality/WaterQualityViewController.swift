@@ -365,9 +365,9 @@ class WaterQualityViewController: UIViewController{
             }
             
             let faulted = self.view.viewWithTag(42) as? UILabel
-            let fToOpen = self.view.viewWithTag(43) as? UIImageView
+            let fToOpen = self.view.viewWithTag(43) as? UILabel
             let fToClose = self.view.viewWithTag(44) as? UILabel
-            let eStop = self.view.viewWithTag(45) as? UIImageView
+            let eStop = self.view.viewWithTag(45) as? UILabel
             
             if self.dumpValValues.faulted == 1{
                 self.faultBtn.isHidden = false

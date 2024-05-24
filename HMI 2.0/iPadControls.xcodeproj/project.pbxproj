@@ -1458,7 +1458,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = WET.iPadControls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = IpadControlsnew2021;
+				PROVISIONING_PROFILE_SPECIFIER = IpadControlsDistribution2023;
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = IpadControlsDistribution2023;
 				SWIFT_OBJC_BRIDGING_HEADER = "iPadControls/Resources/iPadControls-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
@@ -1480,7 +1480,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = WET.iPadControls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = IpadControlsnew2021;
+				PROVISIONING_PROFILE_SPECIFIER = IpadControlsDistribution2023;
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = IpadControlsDistribution2023;
 				SWIFT_OBJC_BRIDGING_HEADER = "iPadControls/Resources/iPadControls-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
