@@ -160,44 +160,14 @@
                                 <color key="textColor" red="0.7843137255" green="0.7843137255" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pvl-wS-Cdk">
-                                <rect key="frame" x="851" y="341" width="209" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="SYSTEM FAULT RESET" backgroundImage="button_background">
-                                    <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <action selector="faultResetBtnPushed:" destination="D4P-ro-zaG" eventType="touchUpInside" id="uuu-Dy-CKn"/>
-                                </connections>
-                            </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="red" translatesAutoresizingMaskIntoConstraints="NO" id="Son-4k-nCj">
-                                <rect key="frame" x="935" y="278" width="40" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="29d-Lz-bxl">
-                                <rect key="frame" x="851" y="214" width="209" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="SYSTEM WARNING RESET" backgroundImage="button_background">
-                                    <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <action selector="warningResetBtnPushed:" destination="D4P-ro-zaG" eventType="touchUpInside" id="wKi-Yu-tux"/>
-                                </connections>
-                            </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="yellow" translatesAutoresizingMaskIntoConstraints="NO" id="qbM-d3-G0z">
-                                <rect key="frame" x="935" y="151" width="40" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.13725490200000001" green="0.13725490200000001" blue="0.13725490200000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <navigationItem key="navigationItem" title="SETTINGS" id="HsF-5a-IW5"/>
                     <connections>
                         <outlet property="autobtn" destination="zjS-69-gHA" id="k9W-Tc-PA7"/>
-                        <outlet property="faultBtn" destination="pvl-wS-Cdk" id="UQU-bb-145"/>
                         <outlet property="ipadDateLbl" destination="tkh-zP-Fo8" id="eQi-V6-bQ2"/>
                         <outlet property="syncTimeStateLbl" destination="1Hg-i6-jCZ" id="EQE-2b-Cd0"/>
-                        <outlet property="warningbtn" destination="29d-Lz-bxl" id="2wb-Wm-fok"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5xo-JI-qCM" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -208,9 +178,6 @@
     <resources>
         <image name="WETLogo" width="138" height="36"/>
         <image name="autoButton" width="208" height="208"/>
-        <image name="button_background" width="542" height="125"/>
-        <image name="red" width="89" height="89"/>
         <image name="synctime" width="250" height="250"/>
-        <image name="yellow" width="89" height="89"/>
     </resources>
 </document>

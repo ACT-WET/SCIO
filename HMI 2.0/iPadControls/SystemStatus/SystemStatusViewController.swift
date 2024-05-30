@@ -16,6 +16,8 @@ class SystemStatusViewController: UIViewController {
     @IBOutlet weak var faultsViewContainer: UIView!
     @IBOutlet weak var noConnectionView: UIView!
     @IBOutlet weak var noConnectionErrorLbl: UILabel!
+    @IBOutlet weak var faultBtn: UIButton!
+    @IBOutlet weak var warningbtn: UIButton!
     
     var yellowStateResp = 0
     var redStateResp    = 0
@@ -91,7 +93,7 @@ class SystemStatusViewController: UIViewController {
     }
     
     private func parseYellowStates(bits:[Int]){
-        var yPosition = 120
+        var yPosition = 190
         let offset    = 35
         for fault in SYSTEM_YELLOW_STATUS{
             
@@ -115,7 +117,7 @@ class SystemStatusViewController: UIViewController {
     }
     
     private func parseRedStates(bits:[Int]){
-        var yPosition = 120
+        var yPosition = 190
         let offset    = 35
         for fault in SYSTEM_RED_STATUS{
             
@@ -136,5 +138,26 @@ class SystemStatusViewController: UIViewController {
                 print(" FAULT FAULT TAG NOT FOUND ", faultTag)
             }
         }
+    }
+    
+    @IBAction func faultResetBtnPushed(_ sender: UIButton) {
+        
+        CENTRAL_SYSTEM?.writeBit(bit: FAULT_RESET_REGISTER, value: 1)
+        self.faultBtn.isUserInteractionEnabled = false
+        self.faultBtn.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute:{
+            self.faultBtn.isUserInteractionEnabled = true
+            self.faultBtn.isEnabled = true
+        })
+    }
+    
+    @IBAction func warningResetBtnPushed(_ sender: UIButton) {
+        CENTRAL_SYSTEM?.writeBit(bit: WARNING_RESET_REGISTER, value: 1)
+        self.warningbtn.isUserInteractionEnabled = false
+        self.warningbtn.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute:{
+            self.warningbtn.isUserInteractionEnabled = true
+            self.warningbtn.isEnabled = true
+        })
     }
 }
