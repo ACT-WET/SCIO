@@ -213,7 +213,7 @@ let SCREENS = [
     "fog",
     "weplay",
     "audio",
-    "",
+    "operationManual",
     "settings",
     "showList",
     ""

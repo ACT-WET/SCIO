@@ -47,18 +47,25 @@ function timeKeeperWrapper(){
         //Check if a show is playing so that show0 is trigger only when needed
         if (playing == 1 && show != 0){
             //Instruct the SPM To Play Show Zero
-            spm_client.writeSingleRegister(1005,0,function(resp){
-                show = 0;
-                spm_client.writeSingleRegister(1004,0,function(resp){
-                    spm_client.writeSingleRegister(1004,8,function(resp){
-                        playing = 0;
-                        jumpToStep_auto = 0;
-                        jumpToStep_manual = 0;
-                        watchDog.eventLog("Show Aborted");
-                    });
-                });
-            });
+            // spm_client.writeSingleRegister(1005,0,function(resp){
+            //     show = 0;
+            //     spm_client.writeSingleRegister(1004,0,function(resp){
+            //         spm_client.writeSingleRegister(1004,8,function(resp){
+            //             playing = 0;
+            //             jumpToStep_auto = 0;
+            //             jumpToStep_manual = 0;
+            //             watchDog.eventLog("Show Aborted");
+            //         });
+            //     });
+            // });
 
+            // Send StopCmd
+            show = 0;
+            stopCmd();
+            //playing = 0;
+            jumpToStep_auto = 0;
+            jumpToStep_manual = 0;
+            watchDog.eventLog("Show Aborted");
         }
         else{
             //watchDog.eventLog("Show Aborted");
@@ -72,7 +79,7 @@ function timeKeeperWrapper(){
         //Check if regular show is scheduled and if, abort filler show 
         
         //========================== MANUAL MODE =======================//
-        if(autoMan == 1 && SPMConnected){
+        if(autoMan == 1){
 
             //watchDog.eventLog("SERVER IS IN MANUAL MODE");
             jumpToStep_auto = 0;
@@ -85,17 +92,23 @@ function timeKeeperWrapper(){
             if (jumpToStep_manual == 0){//jumpToStep_manual is set to 0 when in auto mode
 
                 //Instruct the SPM To Play Show Zero
-                spm_client.writeSingleRegister(1005,0,function(resp){
-                    show = 0;
-                    spm_client.writeSingleRegister(1004,0,function(resp){
-                        spm_client.writeSingleRegister(1004,8,function(resp){
-                            jumpToStep_manual = 2;
-                            watchDog.eventLog("iPad Mode changed to Manual Playing Show #0");
-                        });
-                    });
-                });
+                // spm_client.writeSingleRegister(1005,0,function(resp){
+                //     show = 0;
+                //     spm_client.writeSingleRegister(1004,0,function(resp){
+                //         spm_client.writeSingleRegister(1004,8,function(resp){
+                //             jumpToStep_manual = 2;
+                //             watchDog.eventLog("iPad Mode changed to Manual Playing Show #0");
+                //         });
+                //     });
+                // });
 
-                jumpToStep_manual = 1;
+                // Send StopCmd
+                show = 0;
+                stopCmd();
+                jumpToStep_manual = 2;
+                watchDog.eventLog("iPad Mode changed to Manual Playing Show #0");
+
+                jumpToStep_manual = 4;
 
             }
 
@@ -110,7 +123,7 @@ function timeKeeperWrapper(){
             if (jumpToStep_manual == 4){
 
                 //Wait for user to click on PLAY button
-
+                //watchDog.eventLog("Im here ");
                 if (manPlay && jumpToStep_manual !== 8){
 
                     //steal logic for Auto mode and use betabuffer instead of alphabuffer
@@ -145,18 +158,26 @@ function timeKeeperWrapper(){
                             
                             watchDog.eventLog("This is #" + manIndex +" show in the playlist #" +manFocus +"is a ShowType "+playlists[manFocus-1].contents[2] + "with PlayReg" +playTestReg);
 
-                            spm_client.writeSingleRegister(1005,currentShow,function(resp){
-                                showType = playlists[manFocus-1].contents[2];
-                                spm_client.writeSingleRegister(1004,0,function(resp){
-                                    spm_client.writeSingleRegister(1004,playTestReg,function(resp){
-                                        playing = 1;
-                                        moment1 = moment;   //displays time on iPad
-                                        timeLastCmnd = now;
-                                        watchDog.eventLog("MANUAL: Play Show # " + currentShow);
+                            // spm_client.writeSingleRegister(1005,currentShow,function(resp){
+                            //     showType = playlists[manFocus-1].contents[2];
+                            //     spm_client.writeSingleRegister(1004,0,function(resp){
+                            //         spm_client.writeSingleRegister(1004,playTestReg,function(resp){
+                            //             playing = 1;
+                            //             moment1 = moment;   //displays time on iPad
+                            //             timeLastCmnd = now;
+                            //             watchDog.eventLog("MANUAL: Play Show # " + currentShow);
   
-                                    });
-                                });
-                            });
+                            //         });
+                            //     });
+                            // });
+
+                            // Send Hand Mode ShowStart
+                            showType = playlists[manFocus-1].contents[2];
+                            startCmd(shows[currentShow].name);
+                            //playing = 1;
+                            moment1 = moment;   //displays time on iPad
+                            timeLastCmnd = now;
+                            watchDog.eventLog("MANUAL: Play Show # " + currentShow);
 
                             jumpToStep_manual = 5;
 
@@ -164,7 +185,7 @@ function timeKeeperWrapper(){
 
                         if (now >= playlistEndtime){
 
-                            playing = 0;
+                            //playing = 0;
                             jumpToStep_manual = 6;
                             //play show0 once, logic cant be implemented if iPad does NOT set manPlay to 0
 
@@ -181,16 +202,22 @@ function timeKeeperWrapper(){
 
                 //Play show0 at the end of the playlist
 
-                spm_client.writeSingleRegister(1005,0,function(resp){
-                    show = 0;
-                    spm_client.writeSingleRegister(1004,0,function(resp){
-                        spm_client.writeSingleRegister(1004,8,function(resp){
-                            jumpToStep_manual = 8;
-                            manPlay = 0;
-                            watchDog.eventLog("END OF THE SHOW : Playing Show 0");
-                        });
-                    });
-                });
+                // spm_client.writeSingleRegister(1005,0,function(resp){
+                //     show = 0;
+                //     spm_client.writeSingleRegister(1004,0,function(resp){
+                //         spm_client.writeSingleRegister(1004,8,function(resp){
+                //             jumpToStep_manual = 8;
+                //             manPlay = 0;
+                //             watchDog.eventLog("END OF THE SHOW : Playing Show 0");
+                //         });
+                //     });
+                // });
+
+                // Send StopCmd
+                stopCmd();
+                jumpToStep_manual = 8;
+                manPlay = 0;
+                watchDog.eventLog("END OF THE SHOW : Playing Show 0");
 
                 jumpToStep_manual = 7;
 
@@ -200,25 +227,29 @@ function timeKeeperWrapper(){
 
             if (!manPlay && playing){
 
-                spm_client.writeSingleRegister(1005,0,function(resp){
-                    show = 0;
-                    spm_client.writeSingleRegister(1004,0,function(resp){
-                        spm_client.writeSingleRegister(1004,8,function(resp){
-                            jumpToStep_manual = 8;
-                            watchDog.eventLog("iPAD User press STOP Button: Playing Show 0");
-                        });
-                    });
-                }); 
+                // spm_client.writeSingleRegister(1005,0,function(resp){
+                //     show = 0;
+                //     spm_client.writeSingleRegister(1004,0,function(resp){
+                //         spm_client.writeSingleRegister(1004,8,function(resp){
+                //             jumpToStep_manual = 8;
+                //             watchDog.eventLog("iPAD User press STOP Button: Playing Show 0");
+                //         });
+                //     });
+                // }); 
+                //Send StopCmd
+                show = 0;
+                stopCmd();
+                jumpToStep_manual = 8;
+                watchDog.eventLog("iPAD User press STOP Button: Playing Show 0");
 
-                playing = 0;    
+                //playing = 0;    
             }
         }
         //========================== MANUAL MODE END =======================//
 
         //========================== AUTO MODE ========================//
-        else if(autoMan == 0  && SPMConnected){
+        else if(autoMan == 0){
 
-            //watchDog.eventLog("SERVER IS IN AUTO MODE");
             jumpToStep_manual = 0;    
 
             if(now<235950){
@@ -249,24 +280,12 @@ function timeKeeperWrapper(){
                         SCHEDULED_SHOW_TIME = (startHour*3600) + (startMin * 60) + startSec;                        
                     
                         var nowInSeconds = (moment.getHours()*3600) + (moment.getMinutes()*60) + moment.getSeconds();
-                        // watchDog.eventLog('Scheduled Show time in seconds:  ' + SCHEDULED_SHOW_TIME);
-                        // watchDog.eventLog('startHour  ' + startHour);
-                        // watchDog.eventLog('startMin  ' + startMin);
-                        // watchDog.eventLog('startSec  ' + startSec);
 
-                        // 90 seconds before show starts
-                        if(nowInSeconds == (SCHEDULED_SHOW_TIME-30))
+                        // 5 seconds before show starts
+                        if(nowInSeconds == (SCHEDULED_SHOW_TIME-3))
                         {
 
-                            if(CALLED_CONDITION_1 == 0)
-                            {
-                                watchDog.eventLog("NOW 30 Seconds Before Show" + now);
-                                GOT_SCHEDLED_SHOW = 1;
-                                CALLED_CONDITION_1 = 1;
-                            }else
-                            {
-                                //watchDog.eventLog("Could not trigger 90 second pre show the condition 1 flag did not reset");
-                            }   
+                              
                         } 
 
                         // // 15 seconds before show starts
@@ -276,10 +295,20 @@ function timeKeeperWrapper(){
                         //     CALLED_CONDITION_2 = 1;
                         // }
 
+                        // watchDog.eventLog("showTriggerTime is " + showTriggerTime);
+                        // watchDog.eventLog("now is " + now);
+                        // if (showTriggerTime - now < 2){
+                        //     stopCmd();
+                        // }
 
                         if ((now <= showTriggerTime && now >= schedule[g]) && (schedule[g+1] != 0) && (schedule[g] > timeLastCmnd)){
                             currentShow = schedule[g+1];
                             spmRequest = schedule[g];
+                            watchDog.eventLog('showTriggerTime:  ' + showTriggerTime);
+                            watchDog.eventLog('next show  ' + schedule[g+1]);
+                            watchDog.eventLog('schedule[g] is  ' + schedule[g]);
+                            watchDog.eventLog('timeLastCmnd  ' + timeLastCmnd);
+                            watchDog.eventLog('now is   ' + now);
                             //watchDog.eventLog("schedule[g] is " + schedule[g]);
 
                             jumpToStep_auto = 1;
@@ -294,17 +323,7 @@ function timeKeeperWrapper(){
                         }
                     }
 
-                    //Read Status from the SPM
-                    spm_client.readHoldingRegister(2000,1,function(resp){
-
-                        if (nthBit(resp.register[0],4) == 1){
-                            playing = 1;
-                        }
-                        else{
-                            playing = 0;
-                        }
-
-                    });
+                    //Read Status from the PLC
 
                     // ------------------ Filler Show Logic ---------------------- //
                         if ((fillerShow_ok) && (jumpToStep_auto == 0)){
@@ -313,32 +332,41 @@ function timeKeeperWrapper(){
                             if (playing === 0){
                                 //play show #3
                                 watchDog.eventLog("About to Start Filler Show ");
-                                spm_client.writeSingleRegister(1005,fillerShow.FillerShow_Number,function(resp){
-                                    show = fillerShow.FillerShow_Number;
-                                    spm_client.writeSingleRegister(1004,0,function(resp){
-                                        spm_client.writeSingleRegister(1004,8,function(resp){
-                                            playing = 1;
-                                            moment1 = moment;   //displays time on iPad
-                                            timeLastCmnd = now;
-                                            watchDog.eventLog("FILLER Show: Playing Show number " +show);
-                                            jumpToStep_manual = 0;
-                                        });
-                                    });
-                                });
+                                // spm_client.writeSingleRegister(1005,fillerShow.FillerShow_Number,function(resp){
+                                //     show = fillerShow.FillerShow_Number;
+                                //     spm_client.writeSingleRegister(1004,0,function(resp){
+                                //         spm_client.writeSingleRegister(1004,8,function(resp){
+                                //             playing = 1;
+                                //             moment1 = moment;   //displays time on iPad
+                                //             timeLastCmnd = now;
+                                //             watchDog.eventLog("FILLER Show: Playing Show number " +show);
+                                //             jumpToStep_manual = 0;
+                                //         });
+                                //     });
+                                // });
+
+                                // Send FillerShowStart
+                                show = fillerShow.FillerShow_Number;
+                                startCmd(shows[show].name);
+                                playing = 1;
+                                moment1 = moment;   //displays time on iPad
+                                timeLastCmnd = now;
+                                watchDog.eventLog("FILLER Show: Playing Show number " +show);
+                                jumpToStep_manual = 0;
 
                             }
                             else{
                                 //Read Status from the SPM
                                 //do nothing till the existing filler show ends
                                 if (now >= alphaconverter.endtime(timeLastCmnd,2)){
-                                    spm_client.readHoldingRegister(2000,1,function(resp){
-                                        if (nthBit(resp.register[0],4) == 1){
-                                            playing = 1;
-                                        }
-                                        else{
-                                            playing = 0;
-                                        }
-                                    });
+                                    // spm_client.readHoldingRegister(2000,1,function(resp){
+                                    //     if (nthBit(resp.register[0],4) == 1){
+                                    //         playing = 1;
+                                    //     }
+                                    //     else{
+                                    //         playing = 0;
+                                    //     }
+                                    // });
                                 }
                                 else{
                                     //do nothing
@@ -359,23 +387,35 @@ function timeKeeperWrapper(){
                     watchDog.eventLog("About to Start Show # " + currentShow);
                     CALLED_CONDITION_1 = 0;
                     //Issue the SPM to Play SHOW
-                    spm_client.writeSingleRegister(1005,currentShow,function(resp){
-                        show = currentShow;
-                        spm_client.writeSingleRegister(1004,0,function(resp){
-                            spm_client.writeSingleRegister(1004,8,function(resp){
-                                watchDog.eventLog("iPAD AUTO MODE: Playing Show # "+currentShow);
-                                CALLED_CONDITION_1 = 0;
-                                jumpToStep_auto = 3;
-                                playing = 1;
-                                moment1 = moment;//displays time on iPad
+                    // spm_client.writeSingleRegister(1005,currentShow,function(resp){
+                    //     show = currentShow;
+                    //     spm_client.writeSingleRegister(1004,0,function(resp){
+                    //         spm_client.writeSingleRegister(1004,8,function(resp){
+                    //             watchDog.eventLog("iPAD AUTO MODE: Playing Show # "+currentShow);
+                    //             CALLED_CONDITION_1 = 0;
+                    //             jumpToStep_auto = 3;
+                    //             playing = 1;
+                    //             moment1 = moment;//displays time on iPad
                                 
-                                //Set timeLastCmnd only after successful write to SPM
-                                //If set to now, it triggers the show twice, so I am forcing it to be scheduled time
-                                timeLastCmnd = spmRequest;  
-                                //watchDog.eventLog("timeLastCmnd : "+timeLastCmnd);
-                            });       
-                        });
-                    });
+                    //             //Set timeLastCmnd only after successful write to SPM
+                    //             //If set to now, it triggers the show twice, so I am forcing it to be scheduled time
+                    //             timeLastCmnd = spmRequest;  
+                    //             //watchDog.eventLog("timeLastCmnd : "+timeLastCmnd);
+                    //         });       
+                    //     });
+                    // });
+                    // Send Auto Mode ShowStart
+                    show = currentShow;
+                    startCmd(shows[currentShow].name);
+                    watchDog.eventLog("iPAD AUTO MODE: Playing Show # "+currentShow);
+                    CALLED_CONDITION_1 = 0;
+                    jumpToStep_auto = 3;
+                    //playing = 1;
+                    moment1 = moment;//displays time on iPad
+                    
+                    //Set timeLastCmnd only after successful write to SPM
+                    //If set to now, it triggers the show twice, so I am forcing it to be scheduled time
+                    timeLastCmnd = spmRequest;  
 
                     jumpToStep_auto = 2;
                 }    
@@ -388,18 +428,24 @@ function timeKeeperWrapper(){
 
                         //Read Status from the SPM
                         //watchDog.eventLog("IF is true in jumpStep == 3");
-                        spm_client.readHoldingRegister(2000,1,function(resp){
-                            if (nthBit(resp.register[0],4) == 1){   
-                                //Stop checking and reset jumpToStep_auto to 0
-                                jumpToStep_auto = 0;
-                                playing = 1; 
-                            }
-                        }); 
+                        // spm_client.readHoldingRegister(2000,1,function(resp){
+                        //     if (nthBit(resp.register[0],4) == 1){   
+                        //         //Stop checking and reset jumpToStep_auto to 0
+                        //         jumpToStep_auto = 0;
+                        //         playing = 1; 
+                        //     }
+                        // }); 
+                        // plc_client.readHoldingRegister(202,1,function(resp){
+                        //     if (resp.register[0] > 0){
+                        //         jumpToStep_auto = 0;
+                        //         playing = 1; 
+                        //     }
+                        // });
                     }
                     else if (now >= alphaconverter.endtime(timeLastCmnd,6)){
                         //Show did not start after issuing the command 
-                        watchDog.eventLog("SPM Status did not change");
-                        playing = 0;
+                        watchDog.eventLog("SGS Status did not change");
+                        //playing = 0;
                         timeLastCmnd == now;
                         jumpToStep_auto = 0;
                     }
@@ -423,20 +469,29 @@ function timeKeeperWrapper(){
             if (idleState_Counter >= 5){
                 watchDog.eventLog("END LOGIC: Play Show 0" );
                 // no shows having playing for 5s   
+                // show0_endShow = 1; //one shot
+                // //play show 0
+                // spm_client.writeSingleRegister(1005,0,function(resp){
+                //     show = 0;
+                //     spm_client.writeSingleRegister(1004,0,function(resp){
+                //         spm_client.writeSingleRegister(1004,8,function(resp){
+                //             playing = 0;
+                //             jumpToStep_auto = 0;
+                //             jumpToStep_manual = 0;
+                //             idleState_Counter = 0;
+                //             watchDog.eventLog("END LOGIC: Gap in scheduled shows. Playing Show 0.");
+                //         });
+                //     });
+                // });
+                // Send StopCmd
                 show0_endShow = 1; //one shot
-                //play show 0
-                spm_client.writeSingleRegister(1005,0,function(resp){
-                    show = 0;
-                    spm_client.writeSingleRegister(1004,0,function(resp){
-                        spm_client.writeSingleRegister(1004,8,function(resp){
-                            playing = 0;
-                            jumpToStep_auto = 0;
-                            jumpToStep_manual = 0;
-                            idleState_Counter = 0;
-                            watchDog.eventLog("END LOGIC: Gap in scheduled shows. Playing Show 0.");
-                        });
-                    });
-                });
+                show = 0;
+                stopCmd();
+                //playing = 0;
+                jumpToStep_auto = 0;
+                jumpToStep_manual = 0;
+                idleState_Counter = 0;
+                watchDog.eventLog("END LOGIC: Gap in scheduled shows. Playing Show 0.");
             }
         }
         if (idleState_Counter >= 30){
@@ -548,6 +603,7 @@ function timeKeeperWrapper(){
         deflate = JSON.stringify(moment1);
     }
     else{
+        showTime_remaining = 0;
         deflate = "nothing";
     }
 
@@ -644,101 +700,6 @@ function timeKeeperWrapper(){
     }
 
 //============================ RAT MODE =================================//
-spm_client.readHoldingRegister(2000,6,function(resp){
-    spmRATMode = nthBit(resp.register[0],8);
-    dayModeStatus = nthBit(resp.register[1],7);
-    plc_client.writeSingleCoil(3,nthBit(resp.register[0],4),function(resp){});
-    // var lwWind = nthBit(resp.register[1],4);
-    // var hiWind = nthBit(resp.register[1],6);
-    // var medWind = nthBit(resp.register[1],5);
-    // watchDog.eventLog('Ratmode is :: ' +spmRATMode);
-    // watchDog.eventLog('Wind Mode Low:: ' +lwWind);
-    // watchDog.eventLog('Wind Mode Med:: ' +medWind);
-    // watchDog.eventLog('Wind Mode High:: ' +hiWind);
-    plc_client.writeSingleRegister(90,resp.register[0],function(resp){});
-    plc_client.writeSingleRegister(91,resp.register[1],function(resp){});
-    plc_client.writeSingleRegister(92,resp.register[2],function(resp){});
-    plc_client.writeSingleRegister(93,resp.register[3],function(resp){});
-    plc_client.writeSingleRegister(94,resp.register[4],function(resp){});
-    plc_client.writeSingleRegister(95,resp.register[5],function(resp){});
-    
-    plc_client.readHoldingRegister(810,1,function(resp){
-       if (resp != undefined && resp != null){
-          windHA = resp.register[0];
-          // watchDog.eventLog('MW2204 Fire Spire 1 Current Val:: ' +resp.register[1]);
-        }
-    }); 
-    //watchDog.eventLog('DayMode '+dayModeStatus); 
-    if (dayModeStatus !== dayMode){
-        dayModeStatus = dayMode;
-    }
-    //spm_client.writeSingleRegister(1002,0,function(resp){});
-    if (windHA == 0){
-        if (dayModeStatus===1){
-            if(windHi==1){
-                spm_client.writeSingleRegister(1002,20,function(resp){}); 
-                //watchDog.eventLog('SPM set to High Wind and DayMode 1');  
-            } else if(windMed==1){
-                spm_client.writeSingleRegister(1002,18,function(resp){}); 
-                //watchDog.eventLog('SPM set to Low Wind and DayMode 1');  
-            } else if(windLo==1){
-                spm_client.writeSingleRegister(1002,17,function(resp){}); 
-                //watchDog.eventLog('SPM set to Low Wind and DayMode 1');  
-            } else if(windNo==1){
-                spm_client.writeSingleRegister(1002,16,function(resp){}); 
-                //watchDog.eventLog('SPM set to No Wind and DayMode 1');    
-            } 
-        } else {
-            if(windHi==1){
-                spm_client.writeSingleRegister(1002,4,function(resp){}); 
-                //watchDog.eventLog('SPM set to High Wind and DayMode 0');  
-            } else if(windMed==1){
-                spm_client.writeSingleRegister(1002,2,function(resp){}); 
-                //watchDog.eventLog('SPM set to Low Wind and DayMode 1');  
-            } else if(windLo==1){
-                spm_client.writeSingleRegister(1002,1,function(resp){}); 
-                //watchDog.eventLog('SPM set to Low Wind and DayMode 0');  
-            } else if(windNo==1){
-                spm_client.writeSingleRegister(1002,0,function(resp){}); 
-                //watchDog.eventLog('SPM set to Med Wind and DayMode 0');    
-            } 
-        }
-    } else {
-        plc_client.readHoldingRegister(810,1,function(resp){
-          if (resp != undefined && resp != null){
-
-               var spmWindMde = resp.register[0];
-               if (dayModeStatus===1){
-                   if (spmWindMde == 1){
-                      spm_client.writeSingleRegister(1002,16,function(resp){});
-                   }
-                   if (spmWindMde == 2){
-                      spm_client.writeSingleRegister(1002,17,function(resp){});
-                   }
-                   if (spmWindMde == 3){
-                      spm_client.writeSingleRegister(1002,18,function(resp){});
-                   }
-                   if (spmWindMde == 4){
-                      spm_client.writeSingleRegister(1002,20,function(resp){});
-                   }
-               } else {
-                   if (spmWindMde == 1){
-                      spm_client.writeSingleRegister(1002,0,function(resp){});
-                   }
-                   if (spmWindMde == 2){
-                      spm_client.writeSingleRegister(1002,1,function(resp){});
-                   }
-                   if (spmWindMde == 3){
-                      spm_client.writeSingleRegister(1002,2,function(resp){});
-                   }
-                   if (spmWindMde == 4){
-                      spm_client.writeSingleRegister(1002,4,function(resp){});
-                   }
-               } 
-          }      
-        });
-    }
-});
 
 // Modbus Register 2005 from SPM will give a 16-bit Int value
 

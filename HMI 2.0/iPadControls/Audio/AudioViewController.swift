@@ -15,6 +15,8 @@ class AudioViewController: UIViewController {
     @IBOutlet weak var sendCmd3Status: UILabel!
     @IBOutlet weak var sendCmd4Status: UILabel!
     @IBOutlet weak var sendCmd5Status: UILabel!
+    @IBOutlet weak var sendCmd6Status: UILabel!
+    @IBOutlet weak var sendCmd7Status: UILabel!
     
     let helper      = Helper()
     private let logger =  Logger()
@@ -191,6 +193,63 @@ class AudioViewController: UIViewController {
         }
     }
     
+    @IBAction func sendAudio6Cmds(_ sender: UIButton) {
+        self.sendCmd6Status.text = "SENDING TEN MINUTE BREAK ANNOUNCEMENT TO MCRX"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+            self.sendCmd6Status.text = "PROCESSING REQUEST"
+        }
+        httpManager.httpPost(url: "\(MCRX_HTTP_PASS)56") { (response) in
+            let statuscode = Int(truncating:response as! NSNumber)
+            if statuscode == 200{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                    self.sendCmd6Status.text = "COMMAND RECEIVED"
+                    self.sendCmd6Status.textColor =  GREEN_COLOR
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                        self.sendCmd6Status.textColor =  RED_COLOR
+                        self.sendCmd6Status.text = ""
+                    }
+                }
+                
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
+                    self.sendCmd6Status.text = "COMMAND NOT SENT"
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                        self.sendCmd6Status.textColor =  RED_COLOR
+                        self.sendCmd6Status.text = ""
+                    }
+                }
+            }
+        }
+    }
+    
+    @IBAction func sendAudio7Cmds(_ sender: UIButton) {
+        self.sendCmd7Status.text = "SENDING KEEP HANDS AND FEET OUT ANNOUNCEMENT TO MCRX"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+            self.sendCmd7Status.text = "PROCESSING REQUEST"
+        }
+        httpManager.httpPost(url: "\(MCRX_HTTP_PASS)57") { (response) in
+            let statuscode = Int(truncating:response as! NSNumber)
+            if statuscode == 200{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                    self.sendCmd7Status.text = "COMMAND RECEIVED"
+                    self.sendCmd7Status.textColor =  GREEN_COLOR
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                        self.sendCmd7Status.textColor =  RED_COLOR
+                        self.sendCmd7Status.text = ""
+                    }
+                }
+                
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
+                    self.sendCmd7Status.text = "COMMAND NOT SENT"
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                        self.sendCmd7Status.textColor =  RED_COLOR
+                        self.sendCmd7Status.text = ""
+                    }
+                }
+            }
+        }
+    }
     
     /*
     // MARK: - Navigation

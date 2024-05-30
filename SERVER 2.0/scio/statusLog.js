@@ -223,6 +223,9 @@ if (PLCConnected){
         fault_PUMPS.push(nthBit(resp.register[9],5) ? nthBit(resp.register[9],5) : 0); // VFD 109 Pump Fault (Fog Plume3)
         fault_PUMPS.push(nthBit(resp.register[9],6) ? nthBit(resp.register[9],6) : 0); // VFD 109 GFCI Tripped (Fog Plume3)
 
+        fault_PUMPS.push(nthBit(resp.register[5],6) ? nthBit(resp.register[5],6) : 0); // Filter 101A Running(Filter Pump)
+        fault_PUMPS.push(nthBit(resp.register[5],7) ? nthBit(resp.register[5],7) : 0); // Filter 101B Running(Filter Pump)
+
         //Fog
         fault_FOG.push(nthBit(resp.register[10],0) ? nthBit(resp.register[10],0) : 0);     // Fog System1 Running
         fault_FOG.push(nthBit(resp.register[10],1) ? nthBit(resp.register[10],1) : 0);     // Fog System1 Fault
@@ -272,7 +275,7 @@ if (PLCConnected){
                             status_WaterQuality,     //25
                             status_WaterLevel,       //6
                             status_AirPressure,      //8
-                            fault_PUMPS,             //58
+                            fault_PUMPS,             //60
                             fault_FOG,               //12
                             status_DcPower];         //15
 
@@ -436,6 +439,8 @@ if (PLCConnected){
                             "VFD 109 Pump Warning":fault_PUMPS[55],
                             "VFD 109 Pump Fault":fault_PUMPS[56],
                             "VFD 109 GFCI Tripped":fault_PUMPS[57],
+                            "F101A Running":fault_PUMPS[58],
+                            "F101B Running":fault_PUMPS[59],
                             "***************************FOG STATUS**************************" : "8",
                             "FOG System 1 Running":fault_FOG[0],
                             "FOG System 1 Fault":fault_FOG[1],
@@ -482,7 +487,10 @@ if (PLCConnected){
                             "Service Required": serviceRequired,
                             "next Show Time": nxtTime,
                             "next Show Num": nxtShow,
-                            "canSendCmd": cmdFlag
+                            "playCmdIssued": playCmdIssued,
+                            "stopCmdIssued": stopCmdIssued,
+                            "jumpToStep_manual": jumpToStep_manual,
+                            "jumpToStep_auto": jumpToStep_auto
                             }];
                             
             playMode_init = {"autoMan":autoMan};
@@ -493,6 +501,20 @@ if (PLCConnected){
     });
 }
 var date = new Date();
+
+plc_client.readHoldingRegister(202,1,function(resp){
+    if (resp.register[0] > 0){
+        playing = 1;
+        //watchDog.eventLog("Show Playing");
+        //watchDog.eventLog("Show Playing is :: "+resp.register[0]);
+        show = resp.register[0];
+        //watchDog.eventLog("Show Playing Name :: "+shows[show].name);
+    } else{
+        playing = 0;
+        //watchDog.eventLog("Show Stopped");
+    }
+});
+
 // if(((date.getMonth() > 5) && (date.getDate() > 21)) || (date.getMonth() > 6)){
 //     serviceRequired = 1;
 //     plc_client.writeSingleCoil(2,1,function(resp){});
@@ -680,7 +702,9 @@ var date = new Date();
                 {"yes":"VFD 109 Pump Running","no":"VFD 109 Pump NOT Running"},
                 {"yes":"VFD 109 Pump Warning","no":"Resolved: VFD 109 Pump Warning"},
                 {"yes":"VFD 109 Pump Fault","no":"Resolved: VFD 109 Pump Fault"},
-                {"yes":"VFD 109 GFCI Tripped","no":"Resolved: VFD 109 GFCI Tripped"},        
+                {"yes":"VFD 109 GFCI Tripped","no":"Resolved: VFD 109 GFCI Tripped"},
+                {"yes":"F101A Running","no":"F101A NOT Running"},
+                {"yes":"F101B Running","no":"F101B NOT Running"},        
             ],
 
             [   // Fog System - scio - 12
@@ -731,7 +755,7 @@ var date = new Date();
                     if(text !== "n/a"){
                         //watchDog.eventLog('each: ' +each +' and each2: ' +each2+' and suspcts: ' +suspects);
                         watchDog.eventLog(text);
-                        watchLog.eventLog(text);
+                        //watchLog.eventLog(text);
                     }
                 }
             }

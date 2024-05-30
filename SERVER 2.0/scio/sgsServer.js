@@ -11,24 +11,16 @@ var packageDefinition = protoLoader.loadSync(
      oneofs: true
     });
 var show_proto = grpc.loadPackageDefinition(packageDefinition).show;
-let dummyRecord = {
-    show_id: "153642", name: "Rakesh", frame_count: 12, mtime: 243445
-};
 
 /**
  * Implements the SayHello RPC method.
  */
+function sayHello(call, callback) {
+  callback(null, {message: 'Hello ' + call.request.name});
+}
 
-function StartShow(call, callback) {
+function startShow(call, callback) {
   callback(null, {session_id: 'Value is  ' +call.request.frame, error: 'Value is  ' +call.request.show_id});
-}
-
-function StopShow(call, callback) {
-  callback(null, {error: 'Show Stopped ' +call.request.session_id});
-}
-
-function Init(call, callback) {
-  callback(null, {show_id: 'Show Id is ' +dummyRecord.show_id, name: 'Show Name is ' +dummyRecord.name, frame_count: 'Frame Count is '+dummyRecord.frame_count, mtime: 'Time is  '+dummyRecord.mtime});
 }
 
 /**
@@ -37,9 +29,9 @@ function Init(call, callback) {
  */
 function main() {
   var server = new grpc.Server();
-  server.addService(show_proto.ShowService.service, {StartShow: StartShow, StopShow: StopShow, Init:Init});
+  server.addService(show_proto.ShowService.service, {sayHello: sayHello, startShow: startShow});
   server.bindAsync('127.0.0.1:50051', grpc.ServerCredentials.createInsecure(), () => {
-    console.log("gRPC server started");
+    console.log("gRPC server started at ");
   });
 }
 

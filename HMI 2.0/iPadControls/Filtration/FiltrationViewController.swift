@@ -257,6 +257,8 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate {
             let psll1004 = self.view.viewWithTag(2006) as? UIImageView
             let psll1005 = self.view.viewWithTag(2007) as? UIImageView
             let psll1006 = self.view.viewWithTag(2008) as? UIImageView
+            let f101ANR  = self.view.viewWithTag(2009) as? UIImageView
+            let f101BNR  = self.view.viewWithTag(2010) as? UIImageView
             
             statusArrValues[0] == 1 ? (psl1001?.image = #imageLiteral(resourceName: "yellow")) : (psl1001?.image = #imageLiteral(resourceName: "blank_icon_on"))
             statusArrValues[1] == 1 ? (psl1003?.image = #imageLiteral(resourceName: "yellow")) : (psl1003?.image = #imageLiteral(resourceName: "blank_icon_on"))
@@ -266,6 +268,8 @@ class FiltrationViewController: UIViewController,UIGestureRecognizerDelegate {
             statusArrValues[5] == 1 ? (psll1004?.image = #imageLiteral(resourceName: "red")) : (psll1004?.image = #imageLiteral(resourceName: "blank_icon_on"))
             statusArrValues[6] == 1 ? (psll1005?.image = #imageLiteral(resourceName: "red")) : (psll1005?.image = #imageLiteral(resourceName: "blank_icon_on"))
             statusArrValues[7] == 1 ? (psll1006?.image = #imageLiteral(resourceName: "red")) : (psll1006?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            statusArrValues[14] == 1 ? (f101ANR?.image = #imageLiteral(resourceName: "red")) : (f101ANR?.image = #imageLiteral(resourceName: "blank_icon_on"))
+            statusArrValues[15] == 1 ? (f101BNR?.image = #imageLiteral(resourceName: "red")) : (f101BNR?.image = #imageLiteral(resourceName: "blank_icon_on"))
             
             if statusArrValues[3] == 1 || statusArrValues[4] == 1 || statusArrValues[5] == 1 || statusArrValues[6] == 1 || statusArrValues[7] == 1 {
                 self.cleanStrainerIndicator.isHidden = false

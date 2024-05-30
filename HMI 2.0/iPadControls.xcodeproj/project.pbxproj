@@ -119,6 +119,7 @@
 		BB00B55B2BE94E4200F8649D /* ShootersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00B55A2BE94E4200F8649D /* ShootersViewController.swift */; };
 		BB2479DA270F778900C94588 /* SaltPurgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2479D9270F778900C94588 /* SaltPurgeViewController.swift */; };
 		BB2479DC2710B3D700C94588 /* SaltPurgeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2479DB2710B3D700C94588 /* SaltPurgeSettingsViewController.swift */; };
+		BB26E4DD2C07FED200641CA9 /* OManual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = BB26E4DC2C07FED200641CA9 /* OManual.pdf */; };
 		BB3723FC29CB7B97002BE775 /* SupervisorySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3723E929CB7B97002BE775 /* SupervisorySettingsViewController.swift */; };
 		BB3723FF29CB7B97002BE775 /* supervisory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB3723EC29CB7B97002BE775 /* supervisory.storyboard */; };
 		BB37240729CB7B97002BE775 /* SupervisorySpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3723F429CB7B97002BE775 /* SupervisorySpecs.swift */; };
@@ -128,7 +129,6 @@
 		BB4093A225E35D07008A110A /* lights.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB40939F25E35D07008A110A /* lights.storyboard */; };
 		BB4093A325E35D07008A110A /* LightsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4093A025E35D07008A110A /* LightsViewController.swift */; };
 		BB4093A425E35D07008A110A /* LightsSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4093A125E35D07008A110A /* LightsSpecs.swift */; };
-		BB45A1A72A85CDCD0054C038 /* OManual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = BB45A1A62A85CDCD0054C038 /* OManual.pdf */; };
 		BB59252323E35A6400F49039 /* EStop.png in Resources */ = {isa = PBXBuildFile; fileRef = BB59252223E35A6400F49039 /* EStop.png */; };
 		BB629DE226E012500005D4CB /* ACTInstantPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB629DDD26E0124F0005D4CB /* ACTInstantPlayViewController.m */; };
 		BB629DE326E012500005D4CB /* showList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB629DDE26E0124F0005D4CB /* showList.storyboard */; };
@@ -332,6 +332,7 @@
 		BB00B55A2BE94E4200F8649D /* ShootersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShootersViewController.swift; sourceTree = "<group>"; };
 		BB2479D9270F778900C94588 /* SaltPurgeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaltPurgeViewController.swift; sourceTree = "<group>"; };
 		BB2479DB2710B3D700C94588 /* SaltPurgeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaltPurgeSettingsViewController.swift; sourceTree = "<group>"; };
+		BB26E4DC2C07FED200641CA9 /* OManual.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OManual.pdf; sourceTree = "<group>"; };
 		BB3723E929CB7B97002BE775 /* SupervisorySettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupervisorySettingsViewController.swift; sourceTree = "<group>"; };
 		BB3723EC29CB7B97002BE775 /* supervisory.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = supervisory.storyboard; sourceTree = "<group>"; };
 		BB3723F429CB7B97002BE775 /* SupervisorySpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupervisorySpecs.swift; sourceTree = "<group>"; };
@@ -341,7 +342,6 @@
 		BB40939F25E35D07008A110A /* lights.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = lights.storyboard; sourceTree = "<group>"; };
 		BB4093A025E35D07008A110A /* LightsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightsViewController.swift; sourceTree = "<group>"; };
 		BB4093A125E35D07008A110A /* LightsSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightsSpecs.swift; sourceTree = "<group>"; };
-		BB45A1A62A85CDCD0054C038 /* OManual.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OManual.pdf; sourceTree = "<group>"; };
 		BB59252223E35A6400F49039 /* EStop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EStop.png; sourceTree = "<group>"; };
 		BB629DDD26E0124F0005D4CB /* ACTInstantPlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACTInstantPlayViewController.m; sourceTree = "<group>"; };
 		BB629DDE26E0124F0005D4CB /* showList.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = showList.storyboard; sourceTree = "<group>"; };
@@ -775,7 +775,7 @@
 		9B5F3FE420DC5B1200D3CFDF /* Operation Manual */ = {
 			isa = PBXGroup;
 			children = (
-				BB45A1A62A85CDCD0054C038 /* OManual.pdf */,
+				BB26E4DC2C07FED200641CA9 /* OManual.pdf */,
 				9B5F3FE520DC5B1200D3CFDF /* OperationManual.swift */,
 			);
 			name = "Operation Manual";
@@ -1108,7 +1108,6 @@
 				BB8FD1BC2BCDA3FE00D09321 /* weplay.storyboard in Resources */,
 				BB59252323E35A6400F49039 /* EStop.png in Resources */,
 				9B5F403B20DC5B1200D3CFDF /* alarm_pump.png in Resources */,
-				BB45A1A72A85CDCD0054C038 /* OManual.pdf in Resources */,
 				BBEB6E8626F11840003F23B4 /* saltfill.storyboard in Resources */,
 				9B4E1082218265B700604006 /* WQMultiple.storyboard in Resources */,
 				9B147C9D20DC68C0003DDFE8 /* LaunchScreen.storyboard in Resources */,
@@ -1122,6 +1121,7 @@
 				9B5F3F8820DC5AD900D3CFDF /* NEWS in Resources */,
 				9B5F404220DC5B1200D3CFDF /* alarm_fog.png in Resources */,
 				9B5F403D20DC5B1200D3CFDF /* alarm_wind.png in Resources */,
+				BB26E4DD2C07FED200641CA9 /* OManual.pdf in Resources */,
 				9B5F404020DC5B1200D3CFDF /* air_pressure_fault.png in Resources */,
 				9B5F3F8A20DC5AD900D3CFDF /* README.rst in Resources */,
 				9B5F3F6F20DC5AD900D3CFDF /* LICENSE in Resources */,

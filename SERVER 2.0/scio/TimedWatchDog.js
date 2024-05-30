@@ -62,7 +62,7 @@ function tmdWrapper(){
   //========================== SPM CONNECTION ===========//
 
   if((SPMConnected == 0) && (10 <= SPM_Heartbeat) && (SPM_Heartbeat < 15)){
-    watchDog.eventLog('Attempted to reconnect to SPM ' +SPM_Heartbeat);
+  //  watchDog.eventLog('Attempted to reconnect to SPM ' +SPM_Heartbeat);
 
     spm_client.destroy();
     spm_client=null;
@@ -76,7 +76,7 @@ function tmdWrapper(){
 
       }else{
 
-        watchDog.eventLog('SPM MODBUS CONNECTION SUCCESSFUL');
+        //watchDog.eventLog('SPM MODBUS CONNECTION SUCCESSFUL');
         SPMConnected = 1;
         SPM_Heartbeat = 0;
         jumpToStep_auto = 0;

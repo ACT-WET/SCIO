@@ -8,9 +8,11 @@ var querystring = require("querystring");
 var url = require("url");
 var os = require("os");
 var util = require("util");
+var childProcess = require('child_process');
 
 //===============  Scripts
-
+homeD = __dirname;       //Location of the main scripts
+proj = 'SCIO';    //display this on WatchDog. Also extracted from the folder name on the server
 var download_files = require("./Includes/download_files");
 var logger = require("./Includes/logger");
 
@@ -21,14 +23,17 @@ spmReq = require("./spmTrial.js");
 jsModbus = require("./Includes/jsModbus");
 watchDog = require("./Includes/watchDog");
 watchLog = require("./Includes/watchLog");
+startCmd = require("./sgsClientStart.js");
+stopCmd = require("./sgsClientStop.js");
+readSgsShows = require("./sgsClient.js");
 
 //emailReq = require("./emailClient.js");
 vfdCode = require("./vfdFaultcode.js");
 alphaconverter = require("./Includes/alphaconverter");
 //===============  Global Parameters
 
-homeD = __dirname;       //Location of the main scripts
-proj = 'SCIO';    //display this on WatchDog. Also extracted from the folder name on the server    
+playCmdIssued = 0;
+stopCmdIssued = 0;
 timerCount = [0,0,0,0,0,0,0,0,0,0];
 sysStatus = [];          //Array that is displayed on Read ErrorLog - old
 devStatus = [];          //Array is used to compare with sysStatus to determine change in status
@@ -350,6 +355,57 @@ function onRequest(request, response){
                 response.writeHead(200,{"Content-Type": "text"});
                 watchDog.eventLog('Time Synced from iPad');
 
+            }else if (path === '/readSGSShows'){
+            
+                response.writeHead(200,{"Content-Type": "text"});
+                watchDog.eventLog('Sending Commands to SGS to ReadShows');
+                //require('child_process').fork('./sgsClientDup.js');
+                //require('child_process').fork('./sgsClientDup.js');
+                const { exec } = require('child_process');
+                // Run another Node.js script
+                exec('node /root/scio/sgsClientDup.js ', (error, stdout, stderr) => {
+                  if (error) {
+                    watchDog.eventLog(`Error: ${error.message}`);
+                    return;
+                  }
+                  if (stderr) {
+                    watchDog.eventLog(`stderr: ${stderr}`);
+                    return;
+                  }
+                  watchDog.eventLog("Successfully executed ShowRead");
+                });
+                //readShows();
+                //readSgsShows();
+                response.end(JSON.stringify("Done"));
+            
+            }else if (path === '/startSGSShow'){
+                var z = parseInt(query, 10);
+                watchDog.eventLog('Sending Commands to SGS to StartShow ::  '+z);
+                response.writeHead(200,{"Content-Type": "text"});
+                switch (z){
+                    case 1: startCmd("XX_Intro Musical Show");
+                            break;
+                    case 2: startCmd("Fog Show");
+                            break;
+                    case 3: startCmd("Lights Only Show");
+                            break;
+                    case 4: startCmd("Silent Show 2");
+                            break;
+                    case 5: startCmd("Silent Show 1");
+                            break;
+                    case 6: startCmd("Opening Show");
+                            break;
+                    default:
+                        watchDog.eventLog("Show Not Found");
+                }
+                response.end(JSON.stringify("Done"));
+            }else if (path === '/stopSGSShow'){
+            
+                response.writeHead(200,{"Content-Type": "text"});
+                watchDog.eventLog('Sending Commands to SGS to StopShow');
+                stopCmd();
+                response.end(JSON.stringify("Done"));
+            
             }else if (path === '/readFillerShow'){
             
                 response.writeHead(200,{"Content-Type": "text"});
@@ -799,27 +855,27 @@ function onRequest(request, response){
                     '<br>' + 'Next Time: ' + (nxtTime === 0 ? '---' : nxtTime) + 
                     '<br>' + 'Next Show: ' + (nxtShow === 0 ? '---' : nxtShow) + 
                     '<br>' +
-                    '<br>' + 'Show Stopping Condition: ' + showStopper +
-                    '<br>' + 'RATMODE Status: ' + Boolean(spmRATMode) +
                     '<br>' +
                     '<br>PLC-MB? <strong>'+PLCConnected+'</strong>' + '<input type=\'button\' onclick=\"location.href=\'/plcTest\';\" value=\'PLC Test\' />'+
-                    '<br>SPM-MB? <strong>'+spm_client.isConnected()+'</strong>'+
                     '<br>' +
-                    '<br><input type=\'button\' onclick=\"location.href=\'/startShowScanner\';\" value=\'ScanSPMShows\' />' +
-                    '<input type=\'button\' onclick=\"location.href=\'/showScannerStatus\';\" value=\'ScanStatus\' /><br>' +
 
                     '<br><input type=\'button\' onclick=\"location.href=\'/readShows\';\" value=\'Shows\' /><br>' +
+                    '<br><input type=\'button\' onclick=\"location.href=\'/readSGSShows\';\" value=\'Read SGSShows\' /><br>' +
+
+                    '<br><input type=\'button\' onclick=\"location.href=\'/startSGSShow?1\';\" value=\'StartShow 1\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?2\';\" value=\'StartShow 2\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?3\';\" value=\'StartShow 3\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?4\';\" value=\'StartShow 4\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?5\';\" value=\'StartShow 5\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?6\';\" value=\'StartShow 6\' /><br>' +
+
+                    '<br><input type=\'button\' onclick=\"location.href=\'/stopSGSShow\';\" value=\'StopShow\' /><br>' +
 
                     '<br><input type=\'button\' onclick=\"location.href=\'/readPlaylists\';\" value=\'Playlists\' /><br>' +
                     '<br><input type=\'button\' onclick=\"location.href=\'/readScheduler?1\';\" value=\'Schedule 1\' />' +
                     '<input type=\'button\' onclick=\"location.href=\'/readScheduler?2\';\" value=\'Schedule 2\' />' +
                     '<input type=\'button\' onclick=\"location.href=\'/readScheduler?3\';\" value=\'Schedule 3\' />' +
                     '<input type=\'button\' onclick=\"location.href=\'/readScheduler?4\';\" value=\'Schedule 4\' /><br>' +
-
-                    '<br><input type=\'button\' onclick=\"location.href=\'/enabledisableLights?1\';\" value=\'Enable - Disable Grp1\' />' +
-                    '<input type=\'button\' onclick=\"location.href=\'/loadMask?1\';\" value=\'LoadDisable Grp1\' />' +
-                    '<input type=\'button\' onclick=\"location.href=\'/disabledisableLights?1\';\" value=\'Disable - Disable Grp1\' />' +
-                    '<input type=\'button\' onclick=\"location.href=\'/clearDisables\';\" value=\'Clear All Disables\' /><br>' +
 
                     '<br><input type=\'button\' onclick=\"location.href=\'/readLog\';\" value=\'Read Log\' /><br>' +
                     '<br><input type=\'button\' onclick=\"location.href=\'/readStatusLog\';\" value=\'Read StatusLog\' /><br>' +
