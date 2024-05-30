@@ -177,10 +177,10 @@
                                     <action selector="pushToStoryboard:" destination="pKM-ao-vnB" eventType="touchUpInside" id="5gM-hP-HgV"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="14" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6pd-LH-9vS" userLabel="Air Pressure">
+                            <button opaque="NO" tag="14" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6pd-LH-9vS" userLabel="Air Pressure">
                                 <rect key="frame" x="618" y="619" width="130" height="130"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" backgroundImage="camera">
+                                <state key="normal" image="speakerIcon" backgroundImage="background">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -254,10 +254,10 @@
                                     <action selector="pushToStoryboard:" destination="pKM-ao-vnB" eventType="touchUpInside" id="t5L-ih-eZD"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" userInteractionEnabled="NO" tag="4" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="opI-cK-w2S" userLabel="FillerShow">
+                            <button opaque="NO" tag="4" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="opI-cK-w2S" userLabel="FillerShow">
                                 <rect key="frame" x="898" y="199" width="130" height="130"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" backgroundImage="background">
+                                <state key="normal" backgroundImage="systemStatus">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -528,7 +528,6 @@
         <image name="WETLogo" width="138" height="36"/>
         <image name="background" width="313" height="313"/>
         <image name="button_background" width="542" height="125"/>
-        <image name="camera" width="500" height="500"/>
         <image name="dcPower" width="50" height="50"/>
         <image name="filtration" width="500" height="500"/>
         <image name="flame" catalog="system" width="109" height="128"/>
@@ -542,6 +541,8 @@
         <image name="settings" width="251" height="251"/>
         <image name="shooter" width="50" height="50"/>
         <image name="shortcut_playlist_off" width="315" height="315"/>
+        <image name="speakerIcon" width="75" height="75"/>
+        <image name="systemStatus" width="313" height="313"/>
         <image name="water_level" width="500" height="500"/>
         <image name="water_quality" width="500" height="500"/>
         <image name="weplay" width="120" height="120"/>

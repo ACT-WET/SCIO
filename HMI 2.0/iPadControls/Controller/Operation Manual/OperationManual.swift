@@ -70,7 +70,7 @@ public class OperationManual{
         let readerController = PDFViewController.createNew(with: document!)
         readerController.backgroundColor = .black
         readerController.scrollDirection = .horizontal
-        readerController.view.transform = CGAffineTransform(rotationAngle: 3 * .pi / 2)
+        //readerController.view.transform = CGAffineTransform(rotationAngle: 4 * .pi / 2)
         readerController.title = "OPERATION MANUAL"
         return readerController
     }

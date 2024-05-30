@@ -176,7 +176,6 @@
 		BBF9B8D723F4B4F800DF67A1 /* SystemStatusSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF9B8D323F4B4F800DF67A1 /* SystemStatusSpecs.swift */; };
 		BBF9B8D823F4B4F800DF67A1 /* SystemStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF9B8D423F4B4F800DF67A1 /* SystemStatusViewController.swift */; };
 		BBF9B8D923F4B4F800DF67A1 /* systemstatus.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBF9B8D523F4B4F800DF67A1 /* systemstatus.storyboard */; };
-		BBF9B8DA23F4B4F800DF67A1 /* SystemFaultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF9B8D623F4B4F800DF67A1 /* SystemFaultViewController.swift */; };
 		BBF9B8DF23F4B6F900DF67A1 /* logs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBF9B8DC23F4B6F900DF67A1 /* logs.storyboard */; };
 		BBF9B8E023F4B6F900DF67A1 /* LogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF9B8DD23F4B6F900DF67A1 /* LogsViewController.swift */; };
 		BBF9B8E123F4B6F900DF67A1 /* StatusLogSpecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF9B8DE23F4B6F900DF67A1 /* StatusLogSpecs.swift */; };
@@ -398,7 +397,6 @@
 		BBF9B8D323F4B4F800DF67A1 /* SystemStatusSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemStatusSpecs.swift; sourceTree = "<group>"; };
 		BBF9B8D423F4B4F800DF67A1 /* SystemStatusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemStatusViewController.swift; sourceTree = "<group>"; };
 		BBF9B8D523F4B4F800DF67A1 /* systemstatus.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = systemstatus.storyboard; sourceTree = "<group>"; };
-		BBF9B8D623F4B4F800DF67A1 /* SystemFaultViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemFaultViewController.swift; sourceTree = "<group>"; };
 		BBF9B8DC23F4B6F900DF67A1 /* logs.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = logs.storyboard; sourceTree = "<group>"; };
 		BBF9B8DD23F4B6F900DF67A1 /* LogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogsViewController.swift; sourceTree = "<group>"; };
 		BBF9B8DE23F4B6F900DF67A1 /* StatusLogSpecs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusLogSpecs.swift; sourceTree = "<group>"; };
@@ -992,7 +990,6 @@
 				BBF9B8D323F4B4F800DF67A1 /* SystemStatusSpecs.swift */,
 				BBF9B8D423F4B4F800DF67A1 /* SystemStatusViewController.swift */,
 				BBF9B8D523F4B4F800DF67A1 /* systemstatus.storyboard */,
-				BBF9B8D623F4B4F800DF67A1 /* SystemFaultViewController.swift */,
 			);
 			path = SystemStatus;
 			sourceTree = "<group>";
@@ -1200,7 +1197,6 @@
 				BBB411402BE18F4800B36E93 /* DCSettingsViewController.swift in Sources */,
 				BB629DE526E012500005D4CB /* ACTPlaylistSettingsViewController.m in Sources */,
 				9B5F3F1B20DC5AB400D3CFDF /* PumpDetail+CoreDataProperties.swift in Sources */,
-				BBF9B8DA23F4B4F800DF67A1 /* SystemFaultViewController.swift in Sources */,
 				9B5F3FAC20DC5AF400D3CFDF /* HTTPComm.swift in Sources */,
 				9B3D3B6F20DC615B00E34BE4 /* AppDelegate.swift in Sources */,
 				BBB411482BE5AC7000B36E93 /* WQSettingsDetailViewController.swift in Sources */,
