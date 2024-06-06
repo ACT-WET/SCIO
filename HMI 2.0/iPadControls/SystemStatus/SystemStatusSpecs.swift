@@ -30,5 +30,6 @@ let SYSTEM_RED_STATUS = [
     (tag: 16, bitwiseLocation: 6),
     (tag: 17, bitwiseLocation: 7),
     (tag: 18, bitwiseLocation: 8),
-    (tag: 19, bitwiseLocation: 9)
+    (tag: 19, bitwiseLocation: 9),
+    (tag: 20, bitwiseLocation: 10)
 ]

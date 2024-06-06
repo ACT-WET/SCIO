@@ -18,6 +18,7 @@ class SystemStatusViewController: UIViewController {
     @IBOutlet weak var noConnectionErrorLbl: UILabel!
     @IBOutlet weak var faultBtn: UIButton!
     @IBOutlet weak var warningbtn: UIButton!
+    @IBOutlet weak var shwStpBtn: UIButton!
     
     var yellowStateResp = 0
     var redStateResp    = 0
@@ -125,7 +126,7 @@ class SystemStatusViewController: UIViewController {
             let state = bits[fault.bitwiseLocation]
             let indicator = view.viewWithTag(faultTag) as? UILabel
             switch faultTag {
-            case 10...19:
+            case 10...20:
                 
             if state == 0 {
                 indicator?.isHidden = true
@@ -158,6 +159,16 @@ class SystemStatusViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute:{
             self.warningbtn.isUserInteractionEnabled = true
             self.warningbtn.isEnabled = true
+        })
+    }
+    
+    @IBAction func digShwStopBtnPushed(_ sender: UIButton) {
+        CENTRAL_SYSTEM?.writeBit(bit: DIG_SHOW_STOP_REGISTER, value: 1)
+        self.shwStpBtn.isUserInteractionEnabled = false
+        self.shwStpBtn.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute:{
+            self.shwStpBtn.isUserInteractionEnabled = true
+            self.shwStpBtn.isEnabled = true
         })
     }
 }

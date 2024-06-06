@@ -45,65 +45,56 @@ class ShowStopperChecker: UIViewController {
     
     @objc private func getShowStoppers(){
         
-        CENTRAL_SYSTEM?.readBits(length: Int32(SHOW_STOPPERS_PLC_REGISTERS.count), startingRegister: Int32(SHOW_STOPPERS_PLC_REGISTERS.startAddress), completion: { (success, response) in
+        CENTRAL_SYSTEM?.readRegister(length: Int32(SHOW_STOPPERS_PLC_REGISTERS.count), startingRegister: Int32(SHOW_STOPPERS_PLC_REGISTERS.startAddress), completion: { (success, response) in
             
-            guard success == true else { return }
+           guard success == true else { return }
             
-            if let showStopperResponse = response {
-                self.processShowStoppers(response: showStopperResponse)
-            }
+           let statusArrValues = self.convertIntToBitArr(a: Int(truncating: response![0] as! NSNumber))
+
+           //Estop Show Stopper
+           let estopNot_ok                 = statusArrValues[0]
+           let physStop                    = statusArrValues[4]
+           let digStop                     = statusArrValues[5]
+           //Water Level speed show stopper
+           let water_level_below_ll        = statusArrValues[1]
+           //Wind Show Stopper
+           let wind_speed_1_abort_show     = statusArrValues[2]
+           //Filtration Pump Not Running
+           let filterNR                    = statusArrValues[3]
+    
+           /* DO NOT CHANGE THE (showStopper: "NAME"). ALREADY SET AND CORRESPONDS TO THE CORRECT IMAGE NAME */
+           
+           
+           if water_level_below_ll == FAULT_DETECTED{
+               self.createShowStoppers(showStopper: "showStopperWaterLevel")
+           } else {
+               self.removeShowStopper(showStopper: "showStopperWaterLevel")
+           }
+           
+           if wind_speed_1_abort_show == FAULT_DETECTED {
+               self.createShowStoppers(showStopper: "showStopperWind")
+           } else {
+               self.removeShowStopper(showStopper: "showStopperWind")
+           }
+           
+           if estopNot_ok == FAULT_DETECTED{
+               self.createShowStoppers(showStopper: "eStop")
+           } else {
+               self.removeShowStopper(showStopper: "eStop")
+           }
             
+           if physStop == FAULT_DETECTED || digStop == FAULT_DETECTED {
+               self.createShowStoppers(showStopper: "showStopperClient")
+           } else {
+               self.removeShowStopper(showStopper: "showStopperClient")
+           }
+            
+           if filterNR == FAULT_DETECTED{
+               self.createShowStoppers(showStopper: "showStopperPumps")
+           } else {
+               self.removeShowStopper(showStopper: "showStopperPumps")
+           }
         })
-        
-    }
-    
-    /***************************************************************************
-     * Function :  processShowStoppers
-     * Input    :  show stopper states response from PLC
-     * Output   :  none
-     * Comment  :
-     ***************************************************************************/
-    
-    private func processShowStoppers(response:[AnyObject]){
-        
-               //Estop Show Stopper
-               let estopNot_ok                 = Int(truncating: response[0] as! NSNumber)
-            
-               //Wind speed show stopper
-               let wind_speed_1_abort_show     = Int(truncating: response[1] as! NSNumber)
-        
-               //Water Level Show Stopper
-               let water_level_below_ll     = Int(truncating: response[2] as! NSNumber)
-               let ls201OF              = Int(truncating: response[3] as! NSNumber)
-               let ls301OF              = Int(truncating: response[4] as! NSNumber)
-        
-               /* DO NOT CHANGE THE (showStopper: "NAME"). ALREADY SET AND CORRESPONDS TO THE CORRECT IMAGE NAME */
-               let ratmode = self.showManager.getStatusLogFromServer()
-               let ratmode_status = ratmode.spmRatmode
-               
-               if water_level_below_ll == FAULT_DETECTED || ls201OF == FAULT_DETECTED || ls301OF == FAULT_DETECTED {
-                   createShowStoppers(showStopper: "showStopperWaterLevel")
-               } else {
-                   removeShowStopper(showStopper: "showStopperWaterLevel")
-               }
-               
-               if wind_speed_1_abort_show == FAULT_DETECTED {
-                   createShowStoppers(showStopper: "showStopperWind")
-               } else {
-                   removeShowStopper(showStopper: "showStopperWind")
-               }
-               
-               if estopNot_ok == FAULT_DETECTED {
-                   createShowStoppers(showStopper: "eStop")
-               } else {
-                   removeShowStopper(showStopper: "eStop")
-               }
-               
-               if ratmode_status == FAULT_DETECTED {
-                   createShowStoppers(showStopper: "showStopperRATmode")
-               } else {
-                   removeShowStopper(showStopper: "showStopperRATmode")
-               }
         
     }
     

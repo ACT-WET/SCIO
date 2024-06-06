@@ -34,6 +34,11 @@ alphaconverter = require("./Includes/alphaconverter");
 
 playCmdIssued = 0;
 stopCmdIssued = 0;
+mw152Playing = 0;
+sgs200 = 0;
+sgs201 = 0;
+sgs202 = 0;
+sgs203 = 0;
 timerCount = [0,0,0,0,0,0,0,0,0,0];
 sysStatus = [];          //Array that is displayed on Read ErrorLog - old
 devStatus = [];          //Array is used to compare with sysStatus to determine change in status
@@ -163,17 +168,6 @@ plc_client = jsModbus.createTCPClient(502,'10.0.4.230',function(err){
     }
 });
 
-spm_client = jsModbus.createTCPClient(502,'10.0.4.201',function(err){
-    if(err){
-        watchDog.eventLog('SPM Modbus Connection Failed');
-        SPMConnected=false; 
-    }
-    else{
-        watchDog.eventLog('SPM Modbus Connection Successful');
-        SPMConnected=true;
-    }
-});
-
 //==================== User File Directories
 
 //Global Persistent Data
@@ -278,24 +272,6 @@ function onRequest(request, response){
                 response.writeHead(200,{"Content-Type": "text"});
                 setRunnelSch(query);
                 response.end(JSON.stringify(runnelSch));
-
-            }else if (path === '/forceWindMode'){
-                // Write Microshooter Basin Pump Scheduler
-                response.writeHead(200,{"Content-Type": "text"});
-                query = decodeURIComponent(query);
-                if (query == 0){
-                    spm_client.writeSingleRegister(1002,0,function(resp){});
-                    response.end(JSON.stringify({"WindMode": "Nowind"}));
-                } else if (query == 1) {
-                    spm_client.writeSingleRegister(1002,1,function(resp){});
-                    response.end(JSON.stringify({"WindMode": "Low"}));
-                } else if (query == 2) {
-                    spm_client.writeSingleRegister(1002,2,function(resp){});
-                    response.end(JSON.stringify({"WindMode": "Medium"}));
-                } else if (query == 4) {
-                    spm_client.writeSingleRegister(1002,4,function(resp){});
-                    response.end(JSON.stringify({"WindMode": "High"}));
-                } 
 
             }else if (path === '/writePLC'){
             
@@ -666,6 +642,7 @@ function onRequest(request, response){
             }else if (path === '/readShows'){
 
                 response.writeHead(200,{"Content-Type": "text"});
+                shows=riskyParse(fs.readFileSync(__dirname+'/UserFiles/shows.txt','utf-8'),'shows','showsBkp',1);
                 response.end(JSON.stringify(shows));
 
             }else if (path === '/writeShows'){
@@ -740,14 +717,6 @@ function onRequest(request, response){
 
                 response.end(JSON.stringify([manPlay]));
 
-            }else if (path === '/startShowScanner'){
-                scanStatus.done = false;
-                startShowScanner();
-                response.writeHead(200,{"Content-Type": "text"});
-                response.end(JSON.stringify({"started": true}));   
-            }else if (path === '/showScannerStatus'){
-                response.writeHead(200,{"Content-Type": "text"});
-                response.end(JSON.stringify([scanStatus]));
             }else if (path === '/createBkps'){
 
                 var success = createBkps(['shows','playlists','schedule1','schedule2','schedule3','schedule4','timetable','lights']);
@@ -860,7 +829,7 @@ function onRequest(request, response){
                     '<br>' +
 
                     '<br><input type=\'button\' onclick=\"location.href=\'/readShows\';\" value=\'Shows\' /><br>' +
-                    '<br><input type=\'button\' onclick=\"location.href=\'/readSGSShows\';\" value=\'Read SGSShows\' /><br>' +
+                    '<br><input type=\'button\' onclick=\"location.href=\'/readSGSShows\';\" value=\'Scan SGSShows\' /><br>' +
 
                     '<br><input type=\'button\' onclick=\"location.href=\'/startSGSShow?1\';\" value=\'StartShow 1\' />' +
                     '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?2\';\" value=\'StartShow 2\' />' +
@@ -1016,7 +985,6 @@ function onRequest(request, response){
                     '<br>' + 'Show Stopping Condition: ' + showStopper +
                     '<br>' +
                     '<br>PLC-MB? <strong>'+plc_client.isConnected()+'</strong>' +
-                    '<br>SPM-MB? <strong>'+spm_client.isConnected()+'</strong>'+
                     '<br><input type=\'button\' onclick=\"location.href=\'/readLog_2\';\" value=\'Read Log\' /><br>' +
                     '<br>');
 
@@ -1213,20 +1181,6 @@ function mbWriteReal(pasd,query){
             pasd(resp);
 
         });
-    });
-}
-
-function mbReadSPM(pasd,query){
-
-    spm_client.readHoldingRegister(parseInt(query, 10),1,function(resp){
-        pasd(JSON.stringify(resp));
-    });
-}
-
-function mbWriteSPM(pasd,query){
-
-    spm_client.writeSingleRegister(parseInt(query.addr, 10),parseInt(query.val, 10),function(resp){
-        pasd(JSON.stringify(resp));
     });
 }
 
@@ -1858,12 +1812,6 @@ function elminiateExtraQoutes(fileName,text){
 }
 
 //==================== Show Scanner
-
-function startShowScanner(){
-   var ss = require(homeD+'/Includes/showScanner.js');
-   ss();
-   watchDog.eventLog('Scan Shows from SPM');  
-}
 
 //TODO: Try to eliminiate this function
 

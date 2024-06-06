@@ -1042,6 +1042,16 @@
                                     <segue destination="9FX-W2-r8c" kind="show" id="rcK-xg-eDA"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" tag="160" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5xv-cx-BE8">
+                                <rect key="frame" x="449" y="662" width="185" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="DCP POWER CYCLE" backgroundImage="button_background">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="sendCmdPwrCycle:" destination="d4z-vd-BE0" eventType="touchUpInside" id="27v-Cg-o9N"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.13723513479999999" green="0.13726624849999999" blue="0.13723316790000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="R2d-by-VeM"/>
@@ -1064,6 +1074,7 @@
                         <outlet property="dcp105ResetBtn" destination="qpE-Aj-Xm2" id="1Qv-3a-g92"/>
                         <outlet property="dcp105autoHandImg" destination="V3Y-pW-dgE" id="4WR-L9-zG4"/>
                         <outlet property="dcp105fanStartStpBtn" destination="OIg-6t-qid" id="sz3-8h-pzj"/>
+                        <outlet property="dcpPwrCycleBtn" destination="5xv-cx-BE8" id="Tho-kP-uM3"/>
                         <outlet property="noConnectionErrorLbl" destination="X4y-E4-ynx" id="MJV-qw-j2u"/>
                         <outlet property="noConnectionView" destination="YBH-xp-veM" id="ydd-m3-Zhw"/>
                     </connections>

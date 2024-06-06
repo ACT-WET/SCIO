@@ -14,7 +14,7 @@ function startShow(shwname){
       });
   const show_proto = grpc.loadPackageDefinition(packageDefinition).show;
 
-  const client = new show_proto.ShowService('10.0.4.200:50051',grpc.credentials.createInsecure());
+  const client = new show_proto.ShowService('10.0.6.200:50051',grpc.credentials.createInsecure());
 
   const startShowRequest = { name: shwname};
   client.StartShow(startShowRequest, (err, response) => {

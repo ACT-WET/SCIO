@@ -2,7 +2,17 @@
   fs = require("fs");
   homeD = __dirname; 
   proj = 'SCIO'; 
-  const PROTO_PATH = './root/ShowInfo.proto';
+  const PROTO_PATH = './root/scio/ShowInfo.proto';
+  const math = require('mathjs');
+  tmpshows  = [];
+  for ( var j =0; j <= 1024 ; j++){
+      //watchDog.eventLog('values ' +JSON.stringify(temp));
+      tmpshows[j]={"name":"-","number":j,"duration":0,"test":false,"color":1};
+  }
+  for ( var k =1025; k <= 2049 ; k++){
+      //watchDog.eventLog('values ' +JSON.stringify(temp));
+      tmpshows[k]={"name":"-","number":k-1025,"duration":0,"test":true,"color":1};
+  }
   //console.log('Before await3');
 
   const parseArgs = require('./../grpc-node/examples/node_modules/minimist');
@@ -24,10 +34,15 @@
 
   const printShowInfo = (shows) => {
     for (const show of shows) {
-          watchDog.eventLog(
-            `Name: ${show.name}, Frame Count: ${show.frame_count}, Show Number: ${show.plc_id}`,
-          );
+          var nem = show.name;
+          // watchDog.eventLog('Name: '+show.name);
+          // watchDog.eventLog('Number: '+show.plc_id);
+          // watchDog.eventLog('Duration: '+math.ceil(show.frame_count/30));
+          tmpshows[show.plc_id]={"name":show.name,"number":show.plc_id,"duration":math.ceil(show.frame_count/30),"test": false,"color":1};
+          watchDog.eventLog('Shows '+JSON.stringify(tmpshows));
         }
+        fs.writeFileSync(homeD+'/UserFiles/shows.txt',JSON.stringify(tmpshows),'utf-8');
+        fs.writeFileSync(homeD+'/UserFiles/showsBkp.txt',JSON.stringify(tmpshows),'utf-8');
     };
 
   function sgsReadShows(client) {
@@ -47,9 +62,57 @@
   }
 
   async function main() {
-    const client = new show_proto.ShowService('10.0.4.200:50051',grpc.credentials.createInsecure());
+    const client = new show_proto.ShowService('10.0.6.200:50051',grpc.credentials.createInsecure());
     await sgsReadShows(client);
   }
+
+  function riskyParse(text,what,bkp,xsafe){
+
+    var lamb=0;
+
+    try{
+
+        //First we want to make sure there are no extra qiated inside the text while parsing
+        text = elminiateExtraQoutes(what,text);
+        lamb = JSON.parse(text);
+
+    }catch(e){
+
+        watchDog.eventLog(what + ':Server Read Successful');
+        watchDog.eventLog("Caught this :" +JSON.stringify(e));
+
+    }finally{
+
+        //Check if extra file safety check is desired
+        //TODO: Check what is this used for and f we can eliminate it
+
+        if(xsafe){
+
+            if(riskyParse(fs.readFileSync(__dirname+'/UserFiles/'+bkp+'.txt','utf-8'),'xsafe '+what) !== 0){
+                //Parsing of Bkp file was successfule, do nothing
+
+            }else if(lamb !== 0){
+                fs.writeFileSync(__dirname+'/UserFiles/'+bkp+'.txt',text,'utf-8');
+
+            }
+        }
+
+        //Check if parsing to back-up on initial failure is not desired
+
+        if(!bkp || (bkp && lamb !== 0)){
+            
+            lamb = (lamb === null) ? 0 : lamb;
+            return lamb;
+        
+        }
+        else{
+            watchDog.eventLog(what+" file recovered and parsed to bkp");
+            lamb = fs.readFileSync(__dirname+'/UserFiles/'+bkp+'.txt','utf-8');
+            fs.writeFileSync(__dirname+'/UserFiles/'+what+'.txt',lamb,'utf-8');
+            return riskyParse(lamb,what);
+        }
+    }
+}
 
   main();
 /*

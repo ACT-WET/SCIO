@@ -1,16 +1,16 @@
 function sgsClient(){
   // watchDog.eventLog('Before await');
   // watchDog.eventLog('Before await2');
-  var PROTO_PATH = './ShowInfo.proto';
+  const PROTO_PATH = './root/scio/ShowInfo.proto';
   //watchDog.eventLog('Before await3');
 
-  var parseArgs = require('./../grpc-node/examples/node_modules/minimist');
+  const parseArgs = require('./../grpc-node/examples/node_modules/minimist');
   //watchDog.eventLog('Before await4');
-  var grpc = require('./../grpc-node/examples/node_modules/@grpc/grpc-js');
+  const grpc = require('./../grpc-node/examples/node_modules/@grpc/grpc-js');
   //watchDog.eventLog('Before await5');
-  var protoLoader = require('./../grpc-node/examples/node_modules/@grpc/proto-loader');
+  const protoLoader = require('./../grpc-node/examples/node_modules/@grpc/proto-loader');
   //watchDog.eventLog('Before await6');
-  var packageDefinition = protoLoader.loadSync(PROTO_PATH,
+  const packageDefinition = protoLoader.loadSync(PROTO_PATH,
     {
      keepCase: true,
      longs: String,
@@ -19,9 +19,9 @@ function sgsClient(){
      oneofs: true
     });
   //watchDog.eventLog('Before await7');
-  var show_proto = grpc.loadPackageDefinition(packageDefinition).show;
+  const show_proto = grpc.loadPackageDefinition(packageDefinition).show;
   //watchDog.eventLog('Before await8');
-  var sgsClient = new show_proto.ShowService('10.0.4.200:50051',grpc.credentials.createInsecure());
+  const sgsClient = new show_proto.ShowService('10.0.4.200:50051',grpc.credentials.createInsecure());
   //watchDog.eventLog('Before await9');
 
   const printShowInfo = (shows) => {

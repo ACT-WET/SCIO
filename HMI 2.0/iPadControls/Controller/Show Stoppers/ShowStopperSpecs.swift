@@ -14,7 +14,7 @@ import Foundation
  *             to validate these registers, consult with Controls Engineers
  ***************************************************************************/
 
-let SHOW_STOPPERS_PLC_REGISTERS = (startAddress: 5, type:"EBOOL", count: 5)
+let SHOW_STOPPERS_PLC_REGISTERS = (startAddress: 55, type:"EBOOL", count: 1)
 
 
 public struct ShowStoppers{

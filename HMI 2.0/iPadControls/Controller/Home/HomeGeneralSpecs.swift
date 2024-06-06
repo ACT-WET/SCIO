@@ -127,6 +127,8 @@ let DATA_ACQUISITION_STATE_SUCCESS = 1
 let DATA_ACQUISITION_STATE_FAILED  = 0
 let FAULT_DETECTED                 = 1  // was 0 in previous projects it would seem. Now in ARISE it is a 1.
 
+let DIG_SHOW_STOP_REGISTER         = 58
+let DCP_POWER_CYCLE_CMD            = 3300
 let SET_ALL_AUTO_REGISTER          = 57
 let WARNING_RESET_REGISTER         = 55
 let FAULT_RESET_REGISTER           = 56

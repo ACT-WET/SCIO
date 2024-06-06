@@ -12,6 +12,8 @@ function wePlayWrapper(){
 
     var presentDayFiller = filler;
     var presentDayWePlay = weplay;
+    var isFillerEnable = fillerShow.FillerShow_Enable;
+    var fillerNum = fillerShow.FillerShow_Number;
     var showData = fillerShow;
     var presentStartTimeFillerArr = [];
     var presentStartTimeWeplayArr = [];
@@ -30,9 +32,19 @@ function wePlayWrapper(){
 
     //watchDog.eventLog('Today is Weekend   '+weeknweekD[current_day]);
 
-    if ((weeknweekD[current_day] === 0) && (autoMan === 0)){
-        presentDayFiller = filler;
-        presentDayWePlay = weplay;
+    if (weeknweekD[current_day] === 0){
+       presentDayFiller = filler;
+       presentDayWePlay = weplay;
+       isFillerEnable = fillerShow.FillerShow_Enable;
+       fillerNum = fillerShow.FillerShow_Number;
+    } else {
+       presentDayFiller = wfiller;
+       presentDayWePlay = wweplay;
+       isFillerEnable = fillerShow.WFillerShow_Enable;
+       fillerNum = fillerShow.WFillerShow_Number;
+    }
+
+    if ((autoMan === 0) && (isFillerEnable == 1) && (showStopper < 1)) {
         // watchDog.eventLog('Weekend Filler is  :: '+presentDayFiller);
         for (let i = 0; i < presentDayFiller.length; i+=2) {
           //watchDog.eventLog('Weekend Filler is  :: '+presentDayFiller[i]);
@@ -53,18 +65,28 @@ function wePlayWrapper(){
                         stopCmd();
                         stopCmdIssued = 1;
                     } 
-                    //change the filler show back to Silent show 1 (show 5) after EOD
+                    //change the filler show back to Silent show 1 (show 7) after EOD
                     if (now === 220000){
-                       fillerShow.FillerShow_Number = 5;
+                       fillerNum = 6;
+                       if (weeknweekD[current_day] === 0){
+                           fillerShow.FillerShow_Number = fillerNum;
+                       } else {
+                           fillerShow.WFillerShow_Number = fillerNum;
+                       }
                     }
                 }
             }
             if ((current_time >= presentDayFiller[i]) && (current_time < presentDayFiller[i+1])){
                 // at 7:00pm we are changing the filler show to Show 3 (Lights only show) 
                 if (now >= 190000){
-                   fillerShow.FillerShow_Number = 3;
+                   fillerNum = 3;
+                   if (weeknweekD[current_day] === 0){
+                       fillerShow.FillerShow_Number = fillerNum;
+                   } else {
+                       fillerShow.WFillerShow_Number = fillerNum;
+                   }
                 }
-                if ((fillerShow.FillerShow_Enable == 1) && (playing == 0)){
+                if (playing == 0){
                     // if (wePlayRunning != 1){
                     //     //Send FillerShow Commands To SGS to Start a Show and break the loop beacuse it will enter this condition every 1 sec adn we dont want to execute this command 60 times 
                     // } else {
@@ -74,8 +96,13 @@ function wePlayWrapper(){
                         // when filler show schedule starts issue playcommand when show is not playing
                         if (playCmdIssued == 0){
                             watchDog.eventLog("About to Start Filler Show ");
-                            show = fillerShow.FillerShow_Number;
+                            show = fillerNum;
                             startCmd(shows[show].name);
+                            setTimeout(function(){
+                                if (mw152Playing === 0){
+                                   watchDog.eventLog("MW152 SGS Not Playing intended show :: "+fillerNum);
+                                }
+                            },5000);
                             watchDog.eventLog('Filler Start Time is ::    '+now);
                             watchDog.eventLog('PlayCommand Issued Was ::    '+playCmdIssued);
                             playCmdIssued = 1;
@@ -83,13 +110,23 @@ function wePlayWrapper(){
                             timeLastCmnd = now;
                             watchDog.eventLog("FILLER Show: Playing Show number " +show);
                             if (now > 190000){
-                               fillerShow.FillerShow_Number = 3;
-                            } else {
-                               // we are alternating show 4 and 5 to be filler show playing continuosly till end of the schedule.
-                               if (fillerShow.FillerShow_Number == 4){
-                                fillerShow.FillerShow_Number = 5;
+                               fillerNum = 3;
+                               if (weeknweekD[current_day] === 0){
+                                   fillerShow.FillerShow_Number = fillerNum;
                                } else {
-                                fillerShow.FillerShow_Number = 4;
+                                   fillerShow.WFillerShow_Number = fillerNum;
+                               }
+                            } else {
+                               // we are alternating show 6 and 7 to be filler show playing continuosly till end of the schedule.
+                               if (fillerNum == 6){
+                                fillerNum = 7;
+                               } else {
+                                fillerNum = 6;
+                               }
+                               if (weeknweekD[current_day] === 0){
+                                   fillerShow.FillerShow_Number = fillerNum;
+                               } else {
+                                   fillerShow.WFillerShow_Number = fillerNum;
                                }
                             }
                             
@@ -120,12 +157,7 @@ function wePlayWrapper(){
         //   }
         // }
 
-    } else {
-        presentDayFiller = wfiller;
-        presentDayWePlay = wweplay;
-        //watchDog.eventLog('Weekday Filler is  :: '+presentDayFiller);
-        //watchDog.eventLog('Weekday WePlay is  :: '+presentDayWePlay);
-    }
+    } 
 }
 
 module.exports = wePlayWrapper;

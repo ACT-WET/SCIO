@@ -29,6 +29,7 @@ class DCPowerViewController: UIViewController {
     @IBOutlet weak var dcp103ResetBtn: UIButton!
     @IBOutlet weak var dcp104ResetBtn: UIButton!
     @IBOutlet weak var dcp105ResetBtn: UIButton!
+    @IBOutlet weak var dcpPwrCycleBtn: UIButton!
     
     var dc1Values  = DC_POWER_VALUES()
     var dc2Values  = DC_POWER_VALUES()
@@ -664,6 +665,18 @@ class DCPowerViewController: UIViewController {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1){
                 self.read5Once = 0
             }
+        }
+    }
+    
+    @IBAction func sendCmdPwrCycle(_ sender: UIButton) {
+        if sender.tag == 160{
+           CENTRAL_SYSTEM?.writeBit(bit: DCP_POWER_CYCLE_CMD, value: 1)
+           self.dcpPwrCycleBtn.isUserInteractionEnabled = false
+           self.dcpPwrCycleBtn.isEnabled = false
+           DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute:{
+               self.dcpPwrCycleBtn.isUserInteractionEnabled = true
+               self.dcpPwrCycleBtn.isEnabled = true
+           })
         }
     }
     

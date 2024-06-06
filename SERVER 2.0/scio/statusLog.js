@@ -46,6 +46,8 @@ if (PLCConnected){
             fault_ShowStoppers.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0); // ShowStopper Basin WaterLevel LL
             fault_ShowStoppers.push(nthBit(resp.register[0],2) ? nthBit(resp.register[0],2) : 0); // ShowStopper High Wind Abort
             fault_ShowStoppers.push(nthBit(resp.register[0],3) ? nthBit(resp.register[0],3) : 0); // ShowStopper VFD101 Not Running
+            fault_ShowStoppers.push(nthBit(resp.register[0],4) ? nthBit(resp.register[0],4) : 0); // ShowStopper Physcial ShowStop
+            fault_ShowStoppers.push(nthBit(resp.register[0],5) ? nthBit(resp.register[0],5) : 0); // ShowStopper Digital ShowStop
         }
     });//end of first PLC modbus call  
 
@@ -95,6 +97,15 @@ if (PLCConnected){
             status_WarningFaults.push(nthBit(resp.register[0],7) ? nthBit(resp.register[0],7) : 0);   // Pump Fault
             status_WarningFaults.push(nthBit(resp.register[0],8) ? nthBit(resp.register[0],8) : 0);   // Fog Fault
             status_WarningFaults.push(nthBit(resp.register[0],9) ? nthBit(resp.register[0],9) : 0);   // DC Power Fault
+        }
+    });//end of first PLC modbus call 
+
+    plc_client.readHoldingRegister(152,1,function(resp){
+        
+        if (resp != undefined && resp != null){  
+            // Show Stoppers - atho
+            status_WarningFaults.push(nthBit(resp.register[0],0) ? nthBit(resp.register[0],0) : 0);   // SGS Running
+            status_WarningFaults.push(nthBit(resp.register[0],1) ? nthBit(resp.register[0],1) : 0);   // SGS ShowPlaying  
         }
     });//end of first PLC modbus call 
 
@@ -268,10 +279,10 @@ if (PLCConnected){
             }   
 
             totalStatus = [ 
-                            fault_ShowStoppers,      //4
+                            fault_ShowStoppers,      //6
                             fault_ESTOP,             //14
                             status_Ethernet,         //12
-                            status_WarningFaults,    //16
+                            status_WarningFaults,    //18
                             status_WaterQuality,     //25
                             status_WaterLevel,       //6
                             status_AirPressure,      //8
@@ -308,6 +319,8 @@ if (PLCConnected){
                             "ShowStopper :WaterLevel LL": fault_ShowStoppers[1],
                             "ShowStopper :High Wind": fault_ShowStoppers[2],
                             "ShowStopper :VFD101 NotRunning": fault_ShowStoppers[3],
+                            "ShowStopper :Physical Button ShowStop": fault_ShowStoppers[4],
+                            "ShowStopper :Digital ShowStop": fault_ShowStoppers[5],
                             "***************************SYSTEM NETOWRK STATUS***************************" : "2",
                             "VFD-101 Communication OK": status_Ethernet[0],
                             "VFD-103 Communication OK": status_Ethernet[1],
@@ -473,6 +486,8 @@ if (PLCConnected){
                             "****************************DEVICE CONNECTION STATUS*************" : "10",
                             "PLC_Heartbeat": PLC_Heartbeat,
                             "PLC_Modbus _Connection": PLCConnected,
+                            "SGS Running": status_WarningFaults[16],
+                            "SGS Show Playing": status_WarningFaults[17],
                             }];
 
             playStatus = [{
@@ -507,12 +522,46 @@ plc_client.readHoldingRegister(202,1,function(resp){
         playing = 1;
         //watchDog.eventLog("Show Playing");
         //watchDog.eventLog("Show Playing is :: "+resp.register[0]);
-        show = resp.register[0];
+        //show = resp.register[0];
         //watchDog.eventLog("Show Playing Name :: "+shows[show].name);
     } else{
         playing = 0;
         //watchDog.eventLog("Show Stopped");
     }
+});
+
+plc_client.readHoldingRegister(152,1,function(resp){
+    mw152Playing = nthBit(resp.register[0],1);
+});
+
+plc_client.readHoldingRegister(200,4,function(resp){
+    if (resp.register[0] !== sgs200){
+        sgs200 = resp.register[0];
+        if (sgs200 < 1){
+           watchDog.eventLog("MW200 SGS Stopped");  
+        }
+    }
+    if (resp.register[1] !== sgs201){
+        sgs201 = resp.register[1];
+        watchDog.eventLog("MW201 Number Of Clients Active ::   "+sgs201); 
+    }
+    if (resp.register[2] !== sgs202){
+        sgs202 = resp.register[2];
+        show = resp.register[2];
+        watchDog.eventLog("MW202 Current Show Playing ::   "+sgs202); 
+    }
+    // if (resp.register[3] !== sgs203){
+    //     sgs203 = resp.register[3];
+    //     if (sgs203 > 0){
+    //         setTimeout(function(){
+    //             plc_client.readHoldingRegister(152,1,function(resp){
+    //                 if (nthBit(resp.register[0],1) < 1){
+    //                     watchDog.eventLog("MW152 SGS Show Not Playing as Expected. Show Not Playing");
+    //                 }
+    //             });
+    //         },5000);
+    //     } 
+    // }
 });
 
 // if(((date.getMonth() > 5) && (date.getDate() > 21)) || (date.getMonth() > 6)){
@@ -535,6 +584,8 @@ plc_client.readHoldingRegister(202,1,function(resp){
                 {"yes":"Show Stopper: WaterLevel LL","no":"Show Stopper Resolved: WaterLevel LL"},
                 {"yes":"Show Stopper: High Wind","no":"Show Stopper Resolved: High Wind"},
                 {"yes":"Show Stopper: Filtration NotRunning","no":"Show Stopper Resolved: Filtration NotRunning"},
+                {"yes":"Show Stopper: Physical Button ShowStop","no":"Show Stopper Resolved: Physical Button ShowStop"},
+                {"yes":"Show Stopper: Digital ShowStop","no":"Show Stopper Resolved: Digital ShowStop"},
             ],
 
             [   // estop - scio - 14
@@ -569,7 +620,7 @@ plc_client.readHoldingRegister(202,1,function(resp){
                 {"yes":"Weather Station Communication OK","no":"Weather Station Communication Error"},
             ],
 
-            [   // System Warning Faults - scio - 16
+            [   // System Warning Faults - scio - 18
                 {"yes":"Warning: Water Quality","no":"Resolved Warning: Water Quality"},
                 {"yes":"Warning: Basin WaterLevel LL","no":"Resolved Warning: Basin WaterLevel LL"},
                 {"yes":"Warning: Weather Station","no":"Resolved Warning: Weather Station"},
@@ -586,6 +637,8 @@ plc_client.readHoldingRegister(202,1,function(resp){
                 {"yes":"Fault: VFD/Pump","no":"Resolved Fault: VFD/Pump"},
                 {"yes":"Fault: Fog","no":"Resolved Fault: Fog"},
                 {"yes":"Fault: DC Power","no":"Resolved Fault: DC Power"},
+                {"yes":"SGS Running","no":"SGS Stopped"},
+                {"yes":"SGS ShowPlaying","no":"SGS ShowStopped"},
             ],
 
             [   //Water Quality Status - scio - 25

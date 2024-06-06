@@ -106,7 +106,7 @@ function timeKeeperWrapper(){
                 show = 0;
                 stopCmd();
                 jumpToStep_manual = 2;
-                watchDog.eventLog("iPad Mode changed to Manual Playing Show #0");
+                watchDog.eventLog("iPad Mode changed to Manual");
 
                 jumpToStep_manual = 4;
 
@@ -217,7 +217,7 @@ function timeKeeperWrapper(){
                 stopCmd();
                 jumpToStep_manual = 8;
                 manPlay = 0;
-                watchDog.eventLog("END OF THE SHOW : Playing Show 0");
+                watchDog.eventLog("END OF THE SHOW");
 
                 jumpToStep_manual = 7;
 
@@ -240,7 +240,7 @@ function timeKeeperWrapper(){
                 show = 0;
                 stopCmd();
                 jumpToStep_manual = 8;
-                watchDog.eventLog("iPAD User press STOP Button: Playing Show 0");
+                watchDog.eventLog("iPAD User press STOP Button");
 
                 //playing = 0;    
             }
@@ -465,9 +465,9 @@ function timeKeeperWrapper(){
         idleState_Counter++;
         //watchDog.eventLog("END LOGIC: IDLE state " +idleState_Counter +"show0_endShow: " +show0_endShow); 
         if(show0_endShow == 0){
-            watchDog.eventLog("END LOGIC: Prepping to play Show0 " );
+            //watchDog.eventLog("END LOGIC: Prepping to play Show0 " );
             if (idleState_Counter >= 5){
-                watchDog.eventLog("END LOGIC: Play Show 0" );
+                //watchDog.eventLog("END LOGIC: Play Show 0" );
                 // no shows having playing for 5s   
                 // show0_endShow = 1; //one shot
                 // //play show 0
@@ -486,12 +486,12 @@ function timeKeeperWrapper(){
                 // Send StopCmd
                 show0_endShow = 1; //one shot
                 show = 0;
-                stopCmd();
+                //stopCmd();
                 //playing = 0;
                 jumpToStep_auto = 0;
                 jumpToStep_manual = 0;
                 idleState_Counter = 0;
-                watchDog.eventLog("END LOGIC: Gap in scheduled shows. Playing Show 0.");
+                //watchDog.eventLog("END LOGIC: Gap in scheduled shows. Playing Show 0.");
             }
         }
         if (idleState_Counter >= 30){
@@ -610,23 +610,23 @@ function timeKeeperWrapper(){
     //========================== NEXT SHOW IDENTIFICATION =======================//
     //========================== SPM PLC CONNECTION STATUS =======================//
     //Check SPM Connection
-    if(SPM_Heartbeat == 2){
-        spm_client.readHoldingRegister(2000,1,function(resp){
-            SPM_Heartbeat = 0; //check again in the next scan
-            SPMConnected = true;       
-        });
-        SPM_Heartbeat = 3;
-    }
-    else{
-        SPM_Heartbeat++;
-    }
+    // if(SPM_Heartbeat == 2){
+    //     spm_client.readHoldingRegister(2000,1,function(resp){
+    //         SPM_Heartbeat = 0; //check again in the next scan
+    //         SPMConnected = true;       
+    //     });
+    //     SPM_Heartbeat = 3;
+    // }
+    // else{
+    //     SPM_Heartbeat++;
+    // }
 
-    if(SPM_Heartbeat==9){
-        if (SPMConnected){
-            watchDog.eventLog('TK:SPM MODBUS CONNECTION FAILED');
-        }//log it only once
-        SPMConnected = false;
-    }
+    // if(SPM_Heartbeat==9){
+    //     if (SPMConnected){
+    //         watchDog.eventLog('TK:SPM MODBUS CONNECTION FAILED');
+    //     }//log it only once
+    //     SPMConnected = false;
+    // }
     //Check SPM Connection
 
     //Check PLC Connection

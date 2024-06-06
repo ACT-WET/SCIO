@@ -14,10 +14,9 @@ function stopShow(){
       });
   const show_proto = grpc.loadPackageDefinition(packageDefinition).show;
 
-  const client = new show_proto.ShowService('10.0.4.200:50051',grpc.credentials.createInsecure());
+  const client = new show_proto.ShowService('10.0.6.200:50051',grpc.credentials.createInsecure());
 
-  const stopShowRequest = { session_id: '55793bfa-5be9-4a7b-aab3-b215a2d6f782' };
-  client.StopShow(stopShowRequest, (err, response) => {
+  client.StopShow({}, (err, response) => {
     if (err) {
       watchDog.eventLog('Error during StopShow:', err);
       setTimeout(function(){
