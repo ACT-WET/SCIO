@@ -174,6 +174,11 @@ function timeKeeperWrapper(){
                             // Send Hand Mode ShowStart
                             showType = playlists[manFocus-1].contents[2];
                             startCmd(shows[currentShow].name);
+                            setTimeout(function(){
+                                if (mw152Playing === 0){
+                                   watchDog.eventLog("MW152 SGS Not Playing intended show :: "+currentShow);
+                                }
+                            },5000);
                             //playing = 1;
                             moment1 = moment;   //displays time on iPad
                             timeLastCmnd = now;
@@ -407,6 +412,11 @@ function timeKeeperWrapper(){
                     // Send Auto Mode ShowStart
                     show = currentShow;
                     startCmd(shows[currentShow].name);
+                    setTimeout(function(){
+                        if (mw152Playing === 0){
+                           watchDog.eventLog("MW152 SGS Not Playing intended show :: "+currentShow);
+                        }
+                    },5000);
                     watchDog.eventLog("iPAD AUTO MODE: Playing Show # "+currentShow);
                     CALLED_CONDITION_1 = 0;
                     jumpToStep_auto = 3;

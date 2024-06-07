@@ -169,7 +169,7 @@ extension UIViewController {
             if let specialSchedule3 = responseArray[2] as? [String : Int] {
                 self.checkSpecialSchedule(response: specialSchedule3, month: month, day: day, currentDateInSchedule: &currentDateInSpecialSchedule3)
             }
-            UserDefaults.standard.set(1, forKey: "CurrentSchedule")
+            
             if currentDateInSpecialSchedule1 {
                currentSchedule = 2
             } else if currentDateInSpecialSchedule2 {
@@ -179,6 +179,8 @@ extension UIViewController {
             } else {
               currentSchedule = 1
             }
+            UserDefaults.standard.set(currentSchedule, forKey: "CurrentSchedule")
+            UserDefaults.standard.synchronize()
 
             httpComm.httpGet(url: "\(HTTP_PASS)\(SERVER_IP_ADDRESS):8080/readScheduler\(currentSchedule)?") { (response, success) in
                 if success == true {

@@ -359,17 +359,19 @@ function onRequest(request, response){
                 watchDog.eventLog('Sending Commands to SGS to StartShow ::  '+z);
                 response.writeHead(200,{"Content-Type": "text"});
                 switch (z){
-                    case 1: startCmd("XX_Intro Musical Show");
+                    case 1: startCmd("01 XX_Intro Musical Show");
                             break;
-                    case 2: startCmd("Fog Show");
+                    case 2: startCmd("02 Fog Show");
                             break;
-                    case 3: startCmd("Lights Only Show");
+                    case 3: startCmd("03 Lights Only Show");
                             break;
-                    case 4: startCmd("Silent Show 2");
+                    case 4: startCmd("04 Low_Power_30M_debug");
                             break;
-                    case 5: startCmd("Silent Show 1");
+                    case 5: startCmd("05 Opening Show");
                             break;
-                    case 6: startCmd("Opening Show");
+                    case 6: startCmd("06 Silent Show 1");
+                            break;
+                    case 7: startCmd("07 Silent Show 2");
                             break;
                     default:
                         watchDog.eventLog("Show Not Found");
@@ -831,12 +833,13 @@ function onRequest(request, response){
                     '<br><input type=\'button\' onclick=\"location.href=\'/readShows\';\" value=\'Shows\' /><br>' +
                     '<br><input type=\'button\' onclick=\"location.href=\'/readSGSShows\';\" value=\'Scan SGSShows\' /><br>' +
 
-                    '<br><input type=\'button\' onclick=\"location.href=\'/startSGSShow?1\';\" value=\'StartShow 1\' />' +
-                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?2\';\" value=\'StartShow 2\' />' +
-                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?3\';\" value=\'StartShow 3\' />' +
-                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?4\';\" value=\'StartShow 4\' />' +
-                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?5\';\" value=\'StartShow 5\' />' +
-                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?6\';\" value=\'StartShow 6\' /><br>' +
+                    '<br><input type=\'button\' onclick=\"location.href=\'/startSGSShow?1\';\" value=\'StartShow Intro\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?2\';\" value=\'StartShow Fog\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?3\';\" value=\'StartShow LightsOnly\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?4\';\" value=\'StartShow LowPower\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?5\';\" value=\'StartShow OpeningShow\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?6\';\" value=\'StartShow Silent1\' />' +
+                    '<input type=\'button\' onclick=\"location.href=\'/startSGSShow?7\';\" value=\'StartShow Silent2\' /><br>' +
 
                     '<br><input type=\'button\' onclick=\"location.href=\'/stopSGSShow\';\" value=\'StopShow\' /><br>' +
 
