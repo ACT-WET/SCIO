@@ -38,7 +38,7 @@
           // watchDog.eventLog('Name: '+show.name);
           // watchDog.eventLog('Number: '+show.plc_id);
           // watchDog.eventLog('Duration: '+math.ceil(show.frame_count/30));
-          tmpshows[show.plc_id]={"name":show.name,"number":show.plc_id,"duration":math.ceil(show.frame_count/30),"test": false,"color":1};
+          tmpshows[show.plc_id]={"name":show.name,"number":show.plc_id,"duration":math.floor(show.frame_count/30),"test": false,"color":1};
           watchDog.eventLog('Shows '+JSON.stringify(tmpshows));
         }
         fs.writeFileSync(homeD+'/UserFiles/shows.txt',JSON.stringify(tmpshows),'utf-8');

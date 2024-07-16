@@ -16,6 +16,7 @@ class DCPowerViewController: UIViewController {
     @IBOutlet weak var dcp104autoHandImg: UIImageView!
     @IBOutlet weak var dcp105autoHandImg: UIImageView!
     
+    @IBOutlet weak var parLightSwitch: UISwitch!
     @IBOutlet weak var dcp101fanStartStpBtn: UIButton!
     @IBOutlet weak var dcp102fanStartStpBtn: UIButton!
     @IBOutlet weak var dcp103fanStartStpBtn: UIButton!
@@ -41,6 +42,7 @@ class DCPowerViewController: UIViewController {
     var read3Once = 0
     var read4Once = 0
     var read5Once = 0
+    var read6Once = 0
     private var centralSystem = CentralSystem()
     private let logger =  Logger()
     
@@ -50,7 +52,6 @@ class DCPowerViewController: UIViewController {
         centralSystem.connect()
         CENTRAL_SYSTEM = centralSystem
         NotificationCenter.default.addObserver(self, selector: #selector(checkSystemStat), name: NSNotification.Name(rawValue: "updateSystemStat"), object: nil)
-        
         //This line of code is an extension added to the view controller by showStoppers module
         //This is the only line needed to add show stopper
     }
@@ -74,6 +75,7 @@ class DCPowerViewController: UIViewController {
             
             //Now that the connection is established, run functions
             getDCPDataFromPLC()
+            readParLights()
             
         } else {
             noConnectionView.alpha = 1
@@ -91,6 +93,23 @@ class DCPowerViewController: UIViewController {
 
           // Do any additional setup after loading the view.
       }
+    func readParLights(){
+        if self.read6Once == 0{
+           CENTRAL_SYSTEM?.readBits(length: 1, startingRegister: Int32(PAR_LIGHT_POWER_BIT), completion: { (success, response) in
+               
+               guard success == true else { return }
+               
+               let status = Int(truncating: response![0] as! NSNumber)
+               
+               if status == 1{
+                   self.parLightSwitch.isOn = true
+               } else {
+                   self.parLightSwitch.isOn = false
+               }
+               self.read6Once = 1
+           })
+        }
+    }
     
     func getDCPDataFromPLC(){
         CENTRAL_SYSTEM?.readRegister(length:7 , startingRegister: Int32(DCP101_POWER.startAddr), completion: { (sucess, response) in
@@ -680,6 +699,16 @@ class DCPowerViewController: UIViewController {
         }
     }
     
+    @IBAction func sendCmdSwtch(_ sender: UISwitch) {
+        if self.parLightSwitch.isOn == true{
+           CENTRAL_SYSTEM?.writeBit(bit: PAR_LIGHT_POWER_BIT, value: 1)
+        } else {
+           CENTRAL_SYSTEM?.writeBit(bit: PAR_LIGHT_POWER_BIT, value: 0)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+            self.read6Once = 0
+        }
+    }
     @IBAction func settingsButtonPressed(_ sender: UIButton) {
        self.addAlertAction(button: sender)
     }

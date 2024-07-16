@@ -5,45 +5,36 @@ function waterQualityWrapper(){
   var date = new Date();
   var time = date.getFullYear() + "."+  ((date.getMonth() + 1) < 10 ? "0" :"") + (date.getMonth() + 1) + "." + (date.getDate() < 10 ? "0" : "") + date.getDate() + " " + (date.getHours() < 10 ? "0" : "") + date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes() + ":" + (date.getSeconds() < 10 ? "0" : "") + date.getSeconds();
 
-  var wq1PH;
+  var wq1Conductivity;
   var wq1ORP;
-  var wq1TDS;
   var wq1BR;
+  var wq1BREnabled;
+  var wq1BRDosing;
 
   // var api_key = 'a0ee63861869cbd8a0ea5df06ba404dd-db4df449-1b45ef0f';
   // var domain = 'mailgun.wetdesign.com';
   // var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
 
+
+  // ORP ScaledVal = 429,Conductivity ScaledVal = 454, Bromine ScaledVal = 479
+  // Bromine Enabled/Disabled = 577 bit 0, Bromine Dosing/Not = 577 bit 1
+
   if (PLCConnected){
     if ((date.getSeconds() === 29) || (date.getSeconds() === 59)) {
-        plc_client.readHoldingRegister(304,3,function(resp){
-
-        wq1PH  = resp.register[0]/1000;
-        wq1ORP = resp.register[1]/10;
-        wq1TDS = resp.register[2]/10;
-
-          plc_client.readHoldingRegister(342,1,function(resp1){
-            wq1BR= nthBit(resp1.register[0],1);
-
-            //"LIVE" data
-            //sampling frequency is once every second
-            //collect and display only 15 mins worth data
-            if (wq1_Live["ph"].length > 900) {
-              wq1_Live["ph"].shift();
-              wq1_Live["orp"].shift();
-              wq1_Live["tds"].shift();
-              wq1_Live["br"].shift();
-              wq1_Live["date"].shift();
-            }
-
-            wq1_Live["ph"].push(wq1PH);
-            wq1_Live["orp"].push(wq1ORP);
-            wq1_Live["tds"].push(wq1TDS);
-            wq1_Live["br"].push(wq1BR);
-            wq1_Live["date"].push(time);
-
-          }); 
-      });
+       plc_client.readHoldingRegister(429,1,function(resp){
+        wq1ORP  = resp.register[0]/10;
+          plc_client.readHoldingRegister(454,1,function(resp){
+              wq1Conductivity  = resp.register[0]/10;
+              plc_client.readHoldingRegister(479,1,function(resp){
+                  wq1BR  = resp.register[0]/10;
+                  plc_client.readHoldingRegister(577,1,function(resp){
+                      wq1BREnabled  = nthBit(resp.register[0],0);
+                      wq1BRDosing  = nthBit(resp.register[0],1); 
+                      wqLog.wqEventLog('ORP:   '+wq1ORP+ '   Conductivity:   '+wq1Conductivity+ '   Bromine:   '+wq1BR+ '   BromineEnabled:   '+wq1BREnabled+ '   BromineDosing:   '+wq1BRDosing+ '   time:   '+time);
+                  });
+              });
+          });
+       });   
     }
   } 
 

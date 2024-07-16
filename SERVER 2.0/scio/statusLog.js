@@ -486,6 +486,8 @@ if (PLCConnected){
                             "****************************DEVICE CONNECTION STATUS*************" : "10",
                             "PLC_Heartbeat": PLC_Heartbeat,
                             "PLC_Modbus _Connection": PLCConnected,
+                            "isSGSRestartTriggered" : isSGSRestartTriggered,
+                            "trigger_sgs_restartTimer" : trigger_sgs_restartTimer,
                             "SGS Running": status_WarningFaults[16],
                             "SGS Show Playing": status_WarningFaults[17],
                             }];
@@ -503,6 +505,7 @@ if (PLCConnected){
                             "next Show Time": nxtTime,
                             "next Show Num": nxtShow,
                             "playCmdIssued": playCmdIssued,
+                            "loopCount": loopCount,
                             "stopCmdIssued": stopCmdIssued,
                             "jumpToStep_manual": jumpToStep_manual,
                             "jumpToStep_auto": jumpToStep_auto
@@ -516,6 +519,12 @@ if (PLCConnected){
     });
 }
 var date = new Date();
+
+if (trigger_sgs_restartTimer === 0){
+    isSGSRestartTriggered = 0;
+} else {
+    isSGSRestartTriggered = 1;
+}
 
 plc_client.readHoldingRegister(202,1,function(resp){
     if (resp.register[0] > 0){
@@ -531,6 +540,7 @@ plc_client.readHoldingRegister(202,1,function(resp){
 });
 
 plc_client.readHoldingRegister(152,1,function(resp){
+    mw152Stopped = nthBit(resp.register[0],0);
     mw152Playing = nthBit(resp.register[0],1);
 });
 

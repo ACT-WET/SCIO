@@ -22,6 +22,7 @@ fs = require("fs");
 spmReq = require("./spmTrial.js");
 jsModbus = require("./Includes/jsModbus");
 watchDog = require("./Includes/watchDog");
+wqLog = require("./Includes/wqLog");
 watchLog = require("./Includes/watchLog");
 startCmd = require("./sgsClientStart.js");
 stopCmd = require("./sgsClientStop.js");
@@ -31,10 +32,13 @@ readSgsShows = require("./sgsClient.js");
 vfdCode = require("./vfdFaultcode.js");
 alphaconverter = require("./Includes/alphaconverter");
 //===============  Global Parameters
-
+loopCount=0;
 playCmdIssued = 0;
 stopCmdIssued = 0;
 mw152Playing = 0;
+mw152Stopped = 0;
+isSGSRestartTriggered = 0;
+trigger_sgs_restartTimer = 0;
 sgs200 = 0;
 sgs201 = 0;
 sgs202 = 0;

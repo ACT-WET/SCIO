@@ -19,6 +19,7 @@ message InitResponse {
 
 message StartShowRequest {
   string name = 1;
+  bool is_loop = 2;
 }
 
 message StartShowResponse {

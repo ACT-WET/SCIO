@@ -1,4 +1,4 @@
-function startShow(shwname){
+function startShow(shwname,loop){
   const PROTO_PATH = './root/scio/ShowInfo.proto';
 
   const parseArgs = require('./../grpc-node/examples/node_modules/minimist');
@@ -16,7 +16,7 @@ function startShow(shwname){
 
   const client = new show_proto.ShowService('10.0.6.200:50051',grpc.credentials.createInsecure());
 
-  const startShowRequest = { name: shwname};
+  const startShowRequest = { name: shwname, is_loop: loop};
   client.StartShow(startShowRequest, (err, response) => {
     if (err) {
       watchDog.eventLog('Error during StartShow:', err);

@@ -19,6 +19,8 @@ function wePlayWrapper(){
     var presentStartTimeWeplayArr = [];
     var presentEndTimeFillerArr   = [];
     var presentEndTimeWeplayArr   = [];
+    var timerID = 0;
+    var shouldLoop = false;
     
     weeknweekD[0] = fillerShow.Sunday;
     weeknweekD[1] = fillerShow.Monday;
@@ -79,7 +81,11 @@ function wePlayWrapper(){
             if ((current_time >= presentDayFiller[i]) && (current_time < presentDayFiller[i+1])){
                 // at 7:00pm we are changing the filler show to Show 3 (Lights only show) 
                 if (now >= 190000){
+                   shouldLoop = true;
                    fillerNum = 3;
+                   // if (now >= 191500){
+                   //    shouldLoop = false;
+                   // }  
                    if (weeknweekD[current_day] === 0){
                        fillerShow.FillerShow_Number = fillerNum;
                    } else {
@@ -97,13 +103,20 @@ function wePlayWrapper(){
                         if (playCmdIssued == 0){
                             watchDog.eventLog("About to Start Filler Show ");
                             show = fillerNum;
-                            startCmd(shows[show].name);
+                            startCmd(shows[show].name,shouldLoop);
                             setTimeout(function(){
                                 if (mw152Playing === 0){
-                                   watchDog.eventLog("MW152 SGS Not Playing intended show :: "+fillerNum);
+                                   watchDog.eventLog("MW152 SGS Not Playing intended Filler show :: "+fillerNum);
+                                   if (isSGSRestartTriggered === 0){
+                                      trigger_sgs_restart();
+                                      watchDog.eventLog('SGS Restart Triggered at  :: '+now);
+                                      trigger_sgs_restartTimer = 1;
+                                      timerID = setInterval(myTimer, 1000);
+                                    }
                                 }
                             },5000);
                             watchDog.eventLog('Filler Start Time is ::    '+now);
+                            watchDog.eventLog('shouldLoop is ::    '+shouldLoop);
                             watchDog.eventLog('PlayCommand Issued Was ::    '+playCmdIssued);
                             playCmdIssued = 1;
                             moment1 = moment;   //displays time on iPad
@@ -111,6 +124,26 @@ function wePlayWrapper(){
                             watchDog.eventLog("FILLER Show: Playing Show number " +show);
                             if (now > 190000){
                                fillerNum = 3;
+                               // if (now >= 191500){
+                               //    if (loopCount<6){
+                               //       if (fillerNum == 11){
+                               //        fillerNum = 12;
+                               //       } else {
+                               //        fillerNum = 11;
+                               //       } 
+                               //       loopCount = loopCount+1;
+                               //    } else {
+                               //       if (fillerNum == 6) {
+                               //        fillerNum = 7;
+                               //       } else {
+                               //        fillerNum = 6;
+                               //       }
+                               //       loopCount = loopCount+2;
+                               //    }
+                               // } 
+                               // if (loopCount >= 12){
+                               //    loopCount = 0;
+                               // } 
                                if (weeknweekD[current_day] === 0){
                                    fillerShow.FillerShow_Number = fillerNum;
                                } else {
@@ -158,6 +191,31 @@ function wePlayWrapper(){
         // }
 
     } 
+}
+function myTimer() {
+  if (trigger_sgs_restartTimer < 600){
+    trigger_sgs_restartTimer = trigger_sgs_restartTimer + 1;
+  } else {
+    trigger_sgs_restartTimer = 0;
+    clearInterval(timerID);
+  }
+}
+
+function trigger_sgs_restart() {
+    
+    // Code to perform the restart from Patrick
+    const { exec } = require('child_process');
+    exec('sudo systemctl restart app.service', (error, stdout, stderr) => {
+        if (error) {
+            watchDog.eventLog(`Restart Error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            watchDog.eventLog(`Restart Stderr: ${stderr}`);
+            return;
+        }
+        watchDog.eventLog(`Restart Stdout: ${stdout}`);
+    });
 }
 
 module.exports = wePlayWrapper;

@@ -134,6 +134,7 @@ let WARNING_RESET_REGISTER         = 55
 let FAULT_RESET_REGISTER           = 56
 let SERVER_REBOOT_BIT              = 503
 let SELECT_SERVER_BIT              = 502
+let PAR_LIGHT_POWER_BIT            = 3301
 
 /***************************************************************************
  * Section  : PLC CONVERSION

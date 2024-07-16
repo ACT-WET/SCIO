@@ -8,12 +8,13 @@
 
 **********************/
 
-var SCHEDULED_SHOW_TIME = 0
-var GOT_SCHEDLED_SHOW   = 0
-var CALLED_CONDITION_2  = 0
-var CALLED_CONDITION_1  = 0
-var CALLED_CONDITION_5  = 0
-var CALLED_CONDITION_6  = 0
+var SCHEDULED_SHOW_TIME = 0;
+var GOT_SCHEDLED_SHOW   = 0;
+var CALLED_CONDITION_2  = 0;
+var CALLED_CONDITION_1  = 0;
+var CALLED_CONDITION_5  = 0;
+var CALLED_CONDITION_6  = 0;
+var timerID = 0;
 
 function timeKeeperWrapper(){
 
@@ -173,7 +174,7 @@ function timeKeeperWrapper(){
 
                             // Send Hand Mode ShowStart
                             showType = playlists[manFocus-1].contents[2];
-                            startCmd(shows[currentShow].name);
+                            startCmd(shows[currentShow].name,false);
                             setTimeout(function(){
                                 if (mw152Playing === 0){
                                    watchDog.eventLog("MW152 SGS Not Playing intended show :: "+currentShow);
@@ -286,13 +287,25 @@ function timeKeeperWrapper(){
                     
                         var nowInSeconds = (moment.getHours()*3600) + (moment.getMinutes()*60) + moment.getSeconds();
 
-                        // 5 seconds before show starts
-                        if(nowInSeconds == (SCHEDULED_SHOW_TIME-3))
+                        // 10 seconds before show starts
+                        // watchDog.eventLog("showTriggerTime - now is "+(showTriggerTime - now));
+                        if(((showTriggerTime - now) > 0) && ((showTriggerTime - now) < 30))
                         {
-
-                              
+                            //watchDog.eventLog("10 seconds before showStartTime");
+                            //watchDog.eventLog("showTriggerTime - now is "+(showTriggerTime - now));
+                            if (mw152Stopped === 0){
+                               watchDog.eventLog("SGS restart command issued due to MW152 SGS Stopped bit is 0");
+                               if (isSGSRestartTriggered === 0){
+                                  trigger_sgs_restart();
+                                  watchDog.eventLog('TK1: SGS Restart Triggered at  :: '+now);
+                                  trigger_sgs_restartTimer = 1;
+                                  timerID = setInterval(myTimer, 1000);
+                               }
+                            } 
                         } 
 
+                        // watchDog.eventLog("showTriggerTime is " + showTriggerTime);
+                        // watchDog.eventLog("now is " + now);
                         // // 15 seconds before show starts
                         // if(nowInSeconds == (SCHEDULED_SHOW_TIME-15) && CALLED_CONDITION_2 == 0)
                         // {
@@ -300,20 +313,14 @@ function timeKeeperWrapper(){
                         //     CALLED_CONDITION_2 = 1;
                         // }
 
-                        // watchDog.eventLog("showTriggerTime is " + showTriggerTime);
-                        // watchDog.eventLog("now is " + now);
-                        // if (showTriggerTime - now < 2){
-                        //     stopCmd();
-                        // }
-
                         if ((now <= showTriggerTime && now >= schedule[g]) && (schedule[g+1] != 0) && (schedule[g] > timeLastCmnd)){
                             currentShow = schedule[g+1];
                             spmRequest = schedule[g];
-                            watchDog.eventLog('showTriggerTime:  ' + showTriggerTime);
-                            watchDog.eventLog('next show  ' + schedule[g+1]);
-                            watchDog.eventLog('schedule[g] is  ' + schedule[g]);
-                            watchDog.eventLog('timeLastCmnd  ' + timeLastCmnd);
-                            watchDog.eventLog('now is   ' + now);
+                            // watchDog.eventLog('showTriggerTime:  ' + showTriggerTime);
+                            // watchDog.eventLog('next show  ' + schedule[g+1]);
+                            // watchDog.eventLog('schedule[g] is  ' + schedule[g]);
+                            // watchDog.eventLog('timeLastCmnd  ' + timeLastCmnd);
+                            // watchDog.eventLog('now is   ' + now);
                             //watchDog.eventLog("schedule[g] is " + schedule[g]);
 
                             jumpToStep_auto = 1;
@@ -352,7 +359,7 @@ function timeKeeperWrapper(){
 
                                 // Send FillerShowStart
                                 show = fillerShow.FillerShow_Number;
-                                startCmd(shows[show].name);
+                                startCmd(shows[show].name,false);
                                 playing = 1;
                                 moment1 = moment;   //displays time on iPad
                                 timeLastCmnd = now;
@@ -411,10 +418,16 @@ function timeKeeperWrapper(){
                     // });
                     // Send Auto Mode ShowStart
                     show = currentShow;
-                    startCmd(shows[currentShow].name);
+                    startCmd(shows[currentShow].name,false);
                     setTimeout(function(){
                         if (mw152Playing === 0){
                            watchDog.eventLog("MW152 SGS Not Playing intended show :: "+currentShow);
+                           if (isSGSRestartTriggered === 0){
+                              trigger_sgs_restart();
+                              watchDog.eventLog('TK2: SGS Restart Triggered at  :: '+now);
+                              trigger_sgs_restartTimer = 1;
+                              timerID = setInterval(myTimer, 1000);
+                           }
                         }
                     },5000);
                     watchDog.eventLog("iPAD AUTO MODE: Playing Show # "+currentShow);
@@ -428,6 +441,10 @@ function timeKeeperWrapper(){
                     timeLastCmnd = spmRequest;  
 
                     jumpToStep_auto = 2;
+                    setTimeout(function(){
+                        jumpToStep_auto = 0;
+                        jumpToStep_manual = 0;
+                    },5000);
                 }    
 
                 if (jumpToStep_auto == 3){
@@ -471,56 +488,56 @@ function timeKeeperWrapper(){
     
     }
     
-     if (playing == 0){
-        idleState_Counter++;
-        //watchDog.eventLog("END LOGIC: IDLE state " +idleState_Counter +"show0_endShow: " +show0_endShow); 
-        if(show0_endShow == 0){
-            //watchDog.eventLog("END LOGIC: Prepping to play Show0 " );
-            if (idleState_Counter >= 5){
-                //watchDog.eventLog("END LOGIC: Play Show 0" );
-                // no shows having playing for 5s   
-                // show0_endShow = 1; //one shot
-                // //play show 0
-                // spm_client.writeSingleRegister(1005,0,function(resp){
-                //     show = 0;
-                //     spm_client.writeSingleRegister(1004,0,function(resp){
-                //         spm_client.writeSingleRegister(1004,8,function(resp){
-                //             playing = 0;
-                //             jumpToStep_auto = 0;
-                //             jumpToStep_manual = 0;
-                //             idleState_Counter = 0;
-                //             watchDog.eventLog("END LOGIC: Gap in scheduled shows. Playing Show 0.");
-                //         });
-                //     });
-                // });
-                // Send StopCmd
-                show0_endShow = 1; //one shot
-                show = 0;
-                //stopCmd();
-                //playing = 0;
-                jumpToStep_auto = 0;
-                jumpToStep_manual = 0;
-                idleState_Counter = 0;
-                //watchDog.eventLog("END LOGIC: Gap in scheduled shows. Playing Show 0.");
-            }
-        }
-        if (idleState_Counter >= 30){
-            //reset counter
-            idleState_Counter = 0;
-            //watchDog.eventLog("END LOGIC: Show0 already played. SPM is IDLE. Reset Counter" );
-        }
-    }
-    else{
-        if (show != 0){
-            //some other show is playing
-            //watchDog.eventLog("END LOGIC: Show #"+show +" is playing");
-            idleState_Counter = 0; //sets counterback to 0
-            show0_endShow = 0; //sets up server to play show0 no show is running
-        }
-        else{
-            //watchDog.eventLog("END LOGIC: Show 0 is playing");
-        }
-    }
+    //  if (playing == 0){
+    //     idleState_Counter++;
+    //     //watchDog.eventLog("END LOGIC: IDLE state " +idleState_Counter +"show0_endShow: " +show0_endShow); 
+    //     if(show0_endShow == 0){
+    //         //watchDog.eventLog("END LOGIC: Prepping to play Show0 " );
+    //         if (idleState_Counter >= 5){
+    //             //watchDog.eventLog("END LOGIC: Play Show 0" );
+    //             // no shows having playing for 5s   
+    //             // show0_endShow = 1; //one shot
+    //             // //play show 0
+    //             // spm_client.writeSingleRegister(1005,0,function(resp){
+    //             //     show = 0;
+    //             //     spm_client.writeSingleRegister(1004,0,function(resp){
+    //             //         spm_client.writeSingleRegister(1004,8,function(resp){
+    //             //             playing = 0;
+    //             //             jumpToStep_auto = 0;
+    //             //             jumpToStep_manual = 0;
+    //             //             idleState_Counter = 0;
+    //             //             watchDog.eventLog("END LOGIC: Gap in scheduled shows. Playing Show 0.");
+    //             //         });
+    //             //     });
+    //             // });
+    //             // Send StopCmd
+    //             show0_endShow = 1; //one shot
+    //             show = 0;
+    //             //stopCmd();
+    //             //playing = 0;
+    //             jumpToStep_auto = 0;
+    //             jumpToStep_manual = 0;
+    //             idleState_Counter = 0;
+    //             //watchDog.eventLog("END LOGIC: Gap in scheduled shows. Playing Show 0.");
+    //         }
+    //     }
+    //     if (idleState_Counter >= 30){
+    //         //reset counter
+    //         idleState_Counter = 0;
+    //         //watchDog.eventLog("END LOGIC: Show0 already played. SPM is IDLE. Reset Counter" );
+    //     }
+    // }
+    // else{
+    //     if (show != 0){
+    //         //some other show is playing
+    //         //watchDog.eventLog("END LOGIC: Show #"+show +" is playing");
+    //         idleState_Counter = 0; //sets counterback to 0
+    //         show0_endShow = 0; //sets up server to play show0 no show is running
+    //     }
+    //     else{
+    //         //watchDog.eventLog("END LOGIC: Show 0 is playing");
+    //     }
+    // }
 
     //============================== offset show playing Time  ============//
     //Cesar
@@ -755,6 +772,33 @@ function timeKeeperWrapper(){
 //     }
     
 // });  
+}
+
+function trigger_sgs_restart() {
+    
+    // Code to perform the restart from Patrick
+    const { exec } = require('child_process');
+    exec('sudo systemctl restart app.service', (error, stdout, stderr) => {
+        if (error) {
+            watchDog.eventLog(`Restart Error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            watchDog.eventLog(`Restart Stderr: ${stderr}`);
+            return;
+        }
+        watchDog.eventLog(`Restart Stdout: ${stdout}`);
+    });
+}
+
+function myTimer() {
+  if (trigger_sgs_restartTimer < 600){
+    trigger_sgs_restartTimer = trigger_sgs_restartTimer + 1;
+  } else {
+    trigger_sgs_restartTimer = 0;
+    clearInterval(timerID);
+    watchDog.eventLog('SGS Restart Timer Reset');
+  }
 }
 
 //==== Return the value of the b-th of n 
