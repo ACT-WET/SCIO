@@ -11,7 +11,7 @@ function waterQualityWrapper(){
   var wq1BREnabled;
   var wq1BRDosing;
 
-  // var api_key = 'a0ee63861869cbd8a0ea5df06ba404dd-db4df449-1b45ef0f';
+  // var api_key = 'This is X apikeya0ee63861869cbd8a0ea5df06ba404dd-db4df449-1b45ef0f';
   // var domain = 'mailgun.wetdesign.com';
   // var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
 
